@@ -1,6 +1,6 @@
 import { FaGithub } from 'react-icons/fa';
-import { Button } from "./ui/button";
-import { buttonVariants } from "./ui/button";
+import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { HeroCards } from "./HeroCards";
 
 export const Hero = () => {

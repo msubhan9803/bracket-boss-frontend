@@ -1,18 +1,18 @@
-import { About } from "@/components/About";
-import { Cta } from "@/components/Cta";
-import { FAQ } from "@/components/FAQ";
-import { Features } from "@/components/Features";
-import { Footer } from "@/components/Footer";
-import { Hero } from "@/components/Hero";
-import { HowItWorks } from "@/components/HowItWorks";
-import { Navbar } from "@/components/Navbar";
-import { Newsletter } from "@/components/Newsletter";
-import { Pricing } from "@/components/Pricing";
-import { ScrollToTop } from "@/components/ScrollToTop";
-import { Services } from "@/components/Services";
-import { Sponsors } from "@/components/Sponsors";
-import { Team } from "@/components/Team";
-import { Testimonials } from "@/components/Testimonials";
+import { About } from "@/components/landing-page/About";
+import { Cta } from "@/components/landing-page/Cta";
+import { FAQ } from "@/components/landing-page/FAQ";
+import { Features } from "@/components/landing-page/Features";
+import { Footer } from "@/components/landing-page/Footer";
+import { Hero } from "@/components/landing-page/Hero";
+import { HowItWorks } from "@/components/landing-page/HowItWorks";
+import { Navbar } from "@/components/landing-page/Navbar";
+import { Newsletter } from "@/components/landing-page/Newsletter";
+import { Pricing } from "@/components/landing-page/Pricing";
+import { ScrollToTop } from "@/components/landing-page/ScrollToTop";
+import { Services } from "@/components/landing-page/Services";
+import { Sponsors } from "@/components/landing-page/Sponsors";
+import { Team } from "@/components/landing-page/Team";
+import { Testimonials } from "@/components/landing-page/Testimonials";
 
 function Homepage() {
   return (

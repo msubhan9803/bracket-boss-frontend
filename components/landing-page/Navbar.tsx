@@ -12,10 +12,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { buttonVariants } from "./ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Menu } from "lucide-react";
-import { ThemeSwitcherButton } from "./theme-switcher-button";
-import { LogoIcon } from "./Icons";
+import { ThemeSwitcherButton } from "../theme-switcher-button";
+import { LogoIcon } from "../Icons";
 import Link from "next/link";
 
 interface RouteProps {

@@ -1,6 +1,6 @@
-import { Statistics } from "./Statistics";
 import Image from "next/image";
-import pilot from "../public/images/pilot.png";
+import pilot from "@/public/images/pilot.png";
+import { Statistics } from "./Statistics";
 
 export const About = () => {
   return (

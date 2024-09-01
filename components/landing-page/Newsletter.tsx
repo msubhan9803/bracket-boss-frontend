@@ -1,6 +1,6 @@
 'use client'
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export const Newsletter = () => {
   const handleSubmit = (e: any) => {

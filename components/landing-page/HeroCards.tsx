@@ -1,4 +1,4 @@
-import { Badge } from "./ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -10,8 +10,8 @@ import {
 } from "@/components/ui/card";
 import { Check, Linkedin } from "lucide-react";
 import { FaGithub } from 'react-icons/fa';
-import { LightBulbIcon } from "./Icons";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { LightBulbIcon } from "../Icons";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
 
 export const HeroCards = () => {

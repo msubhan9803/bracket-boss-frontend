@@ -1,4 +1,3 @@
-import { Badge } from "./ui/badge";
 import {
   Card,
   CardContent,
@@ -6,10 +5,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import image from "../public/images/growth.png";
-import image3 from "../public/images/reflecting.png";
-import image4 from "../public/images/looking-ahead.png";
+import image from "@/public/images/growth.png";
+import image3 from "@/public/images/reflecting.png";
+import image4 from "@/public/images/looking-ahead.png";
 import Image, { StaticImageData } from "next/image";
+import { Badge } from "@/components/ui/badge";
 
 interface FeatureProps {
   title: string;
