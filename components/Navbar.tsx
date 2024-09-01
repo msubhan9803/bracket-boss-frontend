@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/sheet";
 import { buttonVariants } from "./ui/button";
 import { Menu } from "lucide-react";
-import { ModeToggle } from "./mode-toggle";
+import { ThemeSwitcherButton } from "./theme-switcher-button";
 import { LogoIcon } from "./Icons";
 import Link from "next/link";
 
@@ -61,7 +61,7 @@ export const Navbar = () => {
 
           {/* mobile */}
           <span className="flex md:hidden">
-            <ModeToggle />
+            <ThemeSwitcherButton />
 
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger className="px-2">
@@ -126,7 +126,7 @@ export const Navbar = () => {
               Login
             </Link>
 
-            <ModeToggle />
+            <ThemeSwitcherButton />
           </div>
         </NavigationMenuList>
       </NavigationMenu>

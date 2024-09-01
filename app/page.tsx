@@ -14,7 +14,7 @@ import { Sponsors } from "@/components/Sponsors";
 import { Team } from "@/components/Team";
 import { Testimonials } from "@/components/Testimonials";
 
-function App() {
+function Homepage() {
   return (
     <>
       <Navbar />
@@ -36,4 +36,4 @@ function App() {
   );
 }
 
-export default App;
+export default Homepage;
