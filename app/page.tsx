@@ -1,38 +1,39 @@
-"use client"
-import * as React from "react"
-import { HiMoon, HiSun } from "react-icons/hi"
-import { useTheme } from "next-themes"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { About } from "@/components/About";
+import { Cta } from "@/components/Cta";
+import { FAQ } from "@/components/FAQ";
+import { Features } from "@/components/Features";
+import { Footer } from "@/components/Footer";
+import { Hero } from "@/components/Hero";
+import { HowItWorks } from "@/components/HowItWorks";
+import { Navbar } from "@/components/Navbar";
+import { Newsletter } from "@/components/Newsletter";
+import { Pricing } from "@/components/Pricing";
+import { ScrollToTop } from "@/components/ScrollToTop";
+import { Services } from "@/components/Services";
+import { Sponsors } from "@/components/Sponsors";
+import { Team } from "@/components/Team";
+import { Testimonials } from "@/components/Testimonials";
 
-export default function Home() {
-  const { setTheme } = useTheme()
-
+function App() {
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
-          <HiSun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <HiMoon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
-          Light
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Dark
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          System
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
+    <>
+      <Navbar />
+      <Hero />
+      <Sponsors />
+      <About />
+      <HowItWorks />
+      <Features />
+      <Services />
+      <Cta />
+      <Testimonials />
+      <Team />
+      <Pricing />
+      <Newsletter />
+      <FAQ />
+      <Footer />
+      <ScrollToTop />
+    </>
+  );
 }
+
+export default App;
