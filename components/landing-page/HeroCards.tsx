@@ -29,12 +29,14 @@ export const HeroCards = () => {
           </Avatar>
 
           <div className="flex flex-col">
-            <CardTitle className="text-lg">John Doe React</CardTitle>
-            <CardDescription>@john_doe</CardDescription>
+            <CardTitle className="text-lg">Sarah Johnson</CardTitle>
+            <CardDescription>@sarah_pickles</CardDescription>
           </div>
         </CardHeader>
 
-        <CardContent>This landing page is awesome!</CardContent>
+        <CardContent>
+          I love this platform!
+        </CardContent>
       </Card>
 
       {/* Team */}
@@ -49,14 +51,13 @@ export const HeroCards = () => {
           />
           <CardTitle className="text-center">Leo Miranda</CardTitle>
           <CardDescription className="font-normal text-primary">
-            Frontend Developer
+            Tournament Coordinator
           </CardDescription>
         </CardHeader>
 
         <CardContent className="text-center pb-2">
           <p>
-            I really enjoy transforming ideas into functional software that
-            exceeds expectations
+            I love using Bracket Boss to handle player registrations and manage tournament brackets with ease.
           </p>
         </CardContent>
 
@@ -115,12 +116,12 @@ export const HeroCards = () => {
       <Card className="absolute top-[150px] left-[50px] w-72  drop-shadow-xl shadow-black/10 dark:shadow-white/10">
         <CardHeader>
           <CardTitle className="flex item-center justify-between">
-            Free
+            Free Plan
             <Badge
               variant="secondary"
               className="text-sm text-primary"
             >
-              Most popular
+              Most Popular
             </Badge>
           </CardTitle>
           <div>
@@ -129,7 +130,7 @@ export const HeroCards = () => {
           </div>
 
           <CardDescription>
-            Lorem ipsum dolor sit, amet ipsum consectetur adipisicing elit.
+            Manage up to 4 tournaments with the free plan
           </CardDescription>
         </CardHeader>
 
@@ -141,7 +142,7 @@ export const HeroCards = () => {
 
         <CardFooter className="flex">
           <div className="space-y-4">
-            {["4 Team member", "4 GB Storage", "Upto 6 pages"].map(
+            {["4 Tournaments", "2 GB Storage", "Basic Support"].map(
               (benefit: string) => (
                 <span
                   key={benefit}
@@ -163,10 +164,9 @@ export const HeroCards = () => {
             <LightBulbIcon />
           </div>
           <div>
-            <CardTitle>Light & dark mode</CardTitle>
+            <CardTitle>Easy Scheduling</CardTitle>
             <CardDescription className="text-md mt-2">
-              Lorem ipsum dolor sit amet consect adipisicing elit. Consectetur
-              natusm.
+              Organize Pickleball matches and tournaments with an intuitive scheduling tool.
             </CardDescription>
           </div>
         </CardHeader>

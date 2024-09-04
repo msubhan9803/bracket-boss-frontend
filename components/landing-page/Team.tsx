@@ -26,11 +26,11 @@ const teamList: TeamProps[] = [
   {
     imageUrl: "https://i.pravatar.cc/150?img=35",
     name: "Emma Smith",
-    position: "Product Manager",
+    position: "Tournament Director",
     socialNetworks: [
       {
         name: "Linkedin",
-        url: "https://www.linkedin.com/in/leopoldo-miranda/",
+        url: "https://www.linkedin.com/in/emma-smith/",
       },
       {
         name: "Facebook",
@@ -45,11 +45,11 @@ const teamList: TeamProps[] = [
   {
     imageUrl: "https://i.pravatar.cc/150?img=60",
     name: "John Doe",
-    position: "Tech Lead",
+    position: "Lead Developer",
     socialNetworks: [
       {
         name: "Linkedin",
-        url: "https://www.linkedin.com/in/leopoldo-miranda/",
+        url: "https://www.linkedin.com/in/john-doe/",
       },
       {
         name: "Facebook",
@@ -68,9 +68,8 @@ const teamList: TeamProps[] = [
     socialNetworks: [
       {
         name: "Linkedin",
-        url: "https://www.linkedin.com/in/leopoldo-miranda/",
+        url: "https://www.linkedin.com/in/ashley-ross/",
       },
-
       {
         name: "Instagram",
         url: "https://www.instagram.com/",
@@ -84,7 +83,7 @@ const teamList: TeamProps[] = [
     socialNetworks: [
       {
         name: "Linkedin",
-        url: "https://www.linkedin.com/in/leopoldo-miranda/",
+        url: "https://www.linkedin.com/in/bruce-rogers/",
       },
       {
         name: "Facebook",
@@ -99,10 +98,8 @@ export const Team = () => {
     switch (iconName) {
       case "Linkedin":
         return <Linkedin size="20" />;
-
       case "Facebook":
         return <Facebook size="20" />;
-
       case "Instagram":
         return <Instagram size="20" />;
     }
@@ -115,14 +112,13 @@ export const Team = () => {
     >
       <h2 className="text-3xl md:text-4xl font-bold">
         <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
-          Our Dedicated{" "}
+          Meet Our{" "}
         </span>
-        Crew
+        Expert Team
       </h2>
 
       <p className="mt-4 mb-10 text-xl text-muted-foreground">
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Veritatis
-        dolor pariatur sit!
+        Our team of dedicated professionals is here to ensure your Pickleball tournaments run smoothly.
       </p>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 gap-y-10">
@@ -147,7 +143,9 @@ export const Team = () => {
               </CardHeader>
 
               <CardContent className="text-center pb-2">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                <p>
+                  {`${name} is responsible for ensuring seamless tournament organization and excellent user experience.`}
+                </p>
               </CardContent>
 
               <CardFooter>

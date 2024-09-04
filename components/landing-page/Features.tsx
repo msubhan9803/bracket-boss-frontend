@@ -19,35 +19,35 @@ interface FeatureProps {
 
 const features: FeatureProps[] = [
   {
-    title: "Responsive Design",
+    title: "Real-Time Score Tracking",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi nesciunt est nostrum omnis ab sapiente.",
+      "Keep track of scores live during matches and provide real-time updates to players and spectators.",
     image: image4,
   },
   {
-    title: "Intuitive user interface",
+    title: "Easy Tournament Management",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi nesciunt est nostrum omnis ab sapiente.",
+      "Simplify the setup and management of Pickleball tournaments with intuitive bracket and scheduling tools.",
     image: image3,
   },
   {
-    title: "AI-Powered insights",
+    title: "AI-Powered Player Insights",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi nesciunt est nostrum omnis ab sapiente.",
+      "Analyze player performance and trends using advanced AI-powered insights to improve future strategies.",
     image: image,
   },
 ];
 
 const featureList: string[] = [
-  "Dark/Light theme",
-  "Reviews",
-  "Features",
-  "Pricing",
-  "Contact form",
-  "Our team",
-  "Responsive design",
-  "Newsletter",
-  "Minimalist",
+  "Live Scores",
+  "Tournament Setup",
+  "Player Management",
+  "Team Scheduling",
+  "Analytics Dashboard",
+  "Event Registration",
+  "Club Growth Tools",
+  "AI-Powered Insights",
+  "Customizable Brackets",
 ];
 
 export const Features = () => {
@@ -59,7 +59,7 @@ export const Features = () => {
       <h2 className="text-3xl lg:text-4xl font-bold md:text-center">
         Many{" "}
         <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
-          Great Features
+          Amazing Features
         </span>
       </h2>
 
@@ -88,7 +88,7 @@ export const Features = () => {
             <CardFooter>
               <Image
                 src={image}
-                alt="About feature"
+                alt="Feature image"
                 className="w-[200px] lg:w-[300px] mx-auto"
                 width={200}
               />

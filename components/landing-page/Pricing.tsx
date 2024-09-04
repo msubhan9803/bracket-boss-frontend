@@ -30,14 +30,13 @@ const pricingList: PricingProps[] = [
     popular: 0,
     price: 0,
     description:
-      "Lorem ipsum dolor sit, amet ipsum consectetur adipisicing elit.",
+      "Perfect for small clubs looking to organize a few events with basic management tools.",
     buttonText: "Get Started",
     benefitList: [
-      "1 Team member",
-      "2 GB Storage",
-      "Upto 4 pages",
-      "Community support",
-      "lorem ipsum dolor",
+      "1 Tournament",
+      "Basic Scheduling",
+      "Community Support",
+      "Access to Club Management",
     ],
   },
   {
@@ -45,14 +44,13 @@ const pricingList: PricingProps[] = [
     popular: 1,
     price: 5,
     description:
-      "Lorem ipsum dolor sit, amet ipsum consectetur adipisicing elit.",
+      "Ideal for growing clubs that need advanced features for tournament and player management.",
     buttonText: "Start Free Trial",
     benefitList: [
-      "4 Team member",
-      "4 GB Storage",
-      "Upto 6 pages",
-      "Priority support",
-      "lorem ipsum dolor",
+      "4 Tournaments",
+      "Advanced Scheduling",
+      "Priority Support",
+      "Team Management Tools",
     ],
   },
   {
@@ -60,14 +58,13 @@ const pricingList: PricingProps[] = [
     popular: 0,
     price: 40,
     description:
-      "Lorem ipsum dolor sit, amet ipsum consectetur adipisicing elit.",
-    buttonText: "Contact US",
+      "Designed for large clubs and organizations managing multiple events with full customization.",
+    buttonText: "Contact Us",
     benefitList: [
-      "10 Team member",
-      "8 GB Storage",
-      "Upto 10 pages",
-      "Priority support",
-      "lorem ipsum dolor",
+      "Unlimited Tournaments",
+      "Custom Scheduling",
+      "24/7 Priority Support",
+      "Detailed Analytics & Reports",
     ],
   },
 ];
@@ -79,16 +76,15 @@ export const Pricing = () => {
       className="container py-24 sm:py-32"
     >
       <h2 className="text-3xl md:text-4xl font-bold text-center">
-        Get
+        Unlock
         <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
           {" "}
-          Unlimited{" "}
+          Full Access{" "}
         </span>
-        Access
+        to Pickleball Management
       </h2>
       <h3 className="text-xl text-center text-muted-foreground pt-4 pb-8">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias
-        reiciendis.
+        Choose the plan that best suits your club’s needs and take your Pickleball tournaments to the next level.
       </h3>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         {pricingList.map((pricing: PricingProps) => (
@@ -145,3 +141,4 @@ export const Pricing = () => {
     </section>
   );
 };
+

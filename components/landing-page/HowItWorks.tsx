@@ -10,27 +10,27 @@ interface FeatureProps {
 const features: FeatureProps[] = [
   {
     icon: <MedalIcon />,
-    title: "Accessibility",
+    title: "Player Management",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum quas provident cum",
+      "Easily register, track, and manage players in your Pickleball tournaments with real-time updates.",
   },
   {
     icon: <MapIcon />,
-    title: "Community",
+    title: "Tournament Scheduling",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum quas provident cum",
+      "Organize tournaments with customizable match schedules and bracket structures tailored to your needs.",
   },
   {
     icon: <PlaneIcon />,
-    title: "Scalability",
+    title: "Club Growth",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum quas provident cum",
+      "Scale your Pickleball club effortlessly with tools for handling multiple events and teams simultaneously.",
   },
   {
     icon: <GiftIcon />,
-    title: "Gamification",
+    title: "Rewards System",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum quas provident cum",
+      "Engage players with gamification features, including badges and rewards for tournament achievements.",
   },
 ];
 
@@ -48,8 +48,7 @@ export const HowItWorks = () => {
         Step-by-Step Guide
       </h2>
       <p className="md:w-3/4 mx-auto mt-4 mb-8 text-xl text-muted-foreground">
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Veritatis
-        dolor pariatur sit!
+        Discover how Bracket Boss simplifies managing your Pickleball tournaments, players, and events.
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

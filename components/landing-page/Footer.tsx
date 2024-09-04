@@ -1,4 +1,4 @@
-import { LogoIcon } from "../Icons";
+import Image from 'next/image';
 
 export const Footer = () => {
   return (
@@ -10,22 +10,25 @@ export const Footer = () => {
           <a
             rel="noreferrer noopener"
             href="/"
-            className="font-bold text-xl flex"
+            className="font-bold text-xl flex items-center"
           >
-            <LogoIcon />
-            ShadcnUI/React
+            <Image src='/images/logo.svg' alt="logo" width={120} height={120} />
+            Bracket Boss
           </a>
+          <p className="opacity-60 mt-2">
+            Your ultimate Pickleball club and tournament management solution.
+          </p>
         </div>
 
         <div className="flex flex-col gap-2">
-          <h3 className="font-bold text-lg">Follow US</h3>
+          <h3 className="font-bold text-lg">Follow Us</h3>
           <div>
             <a
               rel="noreferrer noopener"
               href="#"
               className="opacity-60 hover:opacity-100"
             >
-              Github
+              Facebook
             </a>
           </div>
 
@@ -35,7 +38,7 @@ export const Footer = () => {
               href="#"
               className="opacity-60 hover:opacity-100"
             >
-              Twitter
+              Instagram
             </a>
           </div>
 
@@ -45,7 +48,7 @@ export const Footer = () => {
               href="#"
               className="opacity-60 hover:opacity-100"
             >
-              Dribbble
+              LinkedIn
             </a>
           </div>
         </div>
@@ -124,7 +127,7 @@ export const Footer = () => {
               href="#"
               className="opacity-60 hover:opacity-100"
             >
-              Youtube
+              YouTube
             </a>
           </div>
 
@@ -152,7 +155,7 @@ export const Footer = () => {
 
       <section className="container pb-14 text-center">
         <h3>
-          &copy; 2024 Landing page made by{" "}
+          &copy; 2024 Bracket Boss, crafted with care for Pickleball clubs worldwide. Created by{" "}
           <a
             rel="noreferrer noopener"
             target="_blank"

@@ -17,6 +17,8 @@ import { Menu } from "lucide-react";
 import { ThemeSwitcherButton } from "../theme-switcher-button";
 import { LogoIcon } from "../Icons";
 import Link from "next/link";
+import Logo from '@/public/images/logo.svg'
+import Image from "next/image";
 
 interface RouteProps {
   href: string;
@@ -52,9 +54,9 @@ export const Navbar = () => {
             <a
               rel="noreferrer noopener"
               href="/"
-              className="ml-2 font-bold text-xl flex"
+              className="ml-2 font-bold text-xl flex items-center"
             >
-              <LogoIcon />
+              <Image src='/images/logo.svg' alt="logo" width={70} height={70} />
               The Bracket Boss
             </a>
           </NavigationMenuItem>

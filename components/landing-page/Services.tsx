@@ -11,23 +11,23 @@ interface ServiceProps {
 
 const serviceList: ServiceProps[] = [
   {
-    title: "Code Collaboration",
+    title: "Tournament Planning",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi nesciunt est nostrum omnis ab sapiente.",
+      "Effortlessly plan and schedule Pickleball tournaments with customizable brackets and event timelines.",
     icon: <ChartIcon />,
   },
   {
-    title: "Project Management",
+    title: "Club Management",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi nesciunt est nostrum omnis ab sapiente.",
+      "Manage all aspects of your Pickleball club, from player registrations to team organization, in one place.",
     icon: <WalletIcon />,
   },
   {
-    title: "Task Automation",
+    title: "Automated Scheduling",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi nesciunt est nostrum omnis ab sapiente.",
+      "Automatically schedule matches and events, ensuring optimal times for all players while avoiding conflicts.",
     icon: <MagnifierIcon />,
-  },
+  }
 ];
 
 export const Services = () => {
@@ -37,14 +37,13 @@ export const Services = () => {
         <div>
           <h2 className="text-3xl md:text-4xl font-bold">
             <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
-              Client-Centric{" "}
+              Pickleball{" "}
             </span>
-            Services
+            Management Services
           </h2>
 
           <p className="text-muted-foreground text-xl mt-4 mb-8 ">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Veritatis
-            dolor.
+            Discover the tools and services that make running your Pickleball club and tournaments a breeze.
           </p>
 
           <div className="flex flex-col gap-8">
@@ -69,7 +68,7 @@ export const Services = () => {
         <Image
           src={cubeLeg}
           className="w-[300px] md:w-[500px] lg:w-[600px] object-contain"
-          alt="About services"
+          alt="Pickleball management services"
           width={300}
         />
       </div>
