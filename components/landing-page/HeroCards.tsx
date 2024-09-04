@@ -142,7 +142,7 @@ export const HeroCards = () => {
 
         <CardFooter className="flex">
           <div className="space-y-4">
-            {["4 Tournaments", "2 GB Storage", "Basic Support"].map(
+            {["4 Tournaments", "Basic Support"].map(
               (benefit: string) => (
                 <span
                   key={benefit}
