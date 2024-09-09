@@ -1,14 +1,15 @@
-'use client'
+"use client";
+import { useEffect, useState } from "react";
+import { FcGoogle } from "react-icons/fc";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import useAuth from "@/hooks/useAuth";
-import { useEffect, useState } from "react";
 
 export default function Login() {
-  const { session, handleSignIn } = useAuth();
+  const { handleSignIn } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -16,10 +17,6 @@ export default function Login() {
     e.preventDefault();
     await handleSignIn(email, password);
   };
-
-  useEffect(() => {
-    console.log('session: ', session);
-  }, [session])
 
   return (
     <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
@@ -64,9 +61,13 @@ export default function Login() {
             <Button type="submit" className="w-full">
               Login
             </Button>
-            {/* <Button variant="outline" className="w-full">
+            <Button
+              variant="outline"
+              className="w-full flex items-center justify-center"
+            >
+              <FcGoogle className="mr-2" size={24} />
               Login with Google
-            </Button> */}
+            </Button>
           </form>
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}

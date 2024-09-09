@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -12,13 +12,22 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { buttonVariants } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { CircleUser, Menu } from "lucide-react";
 import { ThemeSwitcherButton } from "../theme-switcher-button";
-import { LogoIcon } from "../Icons";
 import Link from "next/link";
-import Logo from '@/public/images/logo.svg'
+import Logo from "@/public/images/logo.svg";
 import Image from "next/image";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { signOut } from "next-auth/react";
+import useAuth from "@/hooks/useAuth";
 
 interface RouteProps {
   href: string;
@@ -46,6 +55,7 @@ const routeList: RouteProps[] = [
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
   return (
     <header className="sticky border-b-[1px] top-0 z-40 w-full bg-white dark:border-b-slate-700 dark:bg-background">
       <NavigationMenu className="mx-auto">
@@ -56,7 +66,7 @@ export const Navbar = () => {
               href="/"
               className="ml-2 font-bold text-xl flex items-center"
             >
-              <Image src='/images/logo.svg' alt="logo" width={70} height={70} />
+              <Image src={Logo} alt="logo" width={70} height={70} />
               The Bracket Boss
             </a>
           </NavigationMenuItem>
@@ -64,6 +74,8 @@ export const Navbar = () => {
           {/* mobile */}
           <span className="flex md:hidden">
             <ThemeSwitcherButton />
+
+            <UserAvatar />
 
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger className="px-2">
@@ -89,15 +101,8 @@ export const Navbar = () => {
                       {label}
                     </Link>
                   ))}
-                  <Link
-                    rel="noreferrer noopener"
-                    href="/login"
-                    className={`w-[110px] border ${buttonVariants({
-                      variant: "default",
-                    })}`}
-                  >
-                    Login
-                  </Link>
+
+                  <LoginButton href="/login" />
                 </nav>
               </SheetContent>
             </Sheet>
@@ -120,18 +125,71 @@ export const Navbar = () => {
           </nav>
 
           <div className="hidden md:flex gap-2">
-            <Link
-              rel="noreferrer noopener"
-              href="/login"
-              className={`border ${buttonVariants({ variant: "default" })}`}
-            >
-              Login
-            </Link>
-
+            <LoginButton href="/login" />
+            <UserAvatar />
             <ThemeSwitcherButton />
           </div>
         </NavigationMenuList>
       </NavigationMenu>
     </header>
+  );
+};
+
+const UserAvatar = () => {
+  const { session } = useAuth();
+
+  if (!session) return;
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="secondary" size="icon" className="rounded-full">
+          <CircleUser className="h-5 w-5" />
+          <span className="sr-only">Toggle user menu</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel>
+          <Link href="/dashboard">Dashbaord</Link>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => signOut()}>Logout</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+interface LoginButtonProps {
+  href: string;
+  width?: string;
+  variant?:
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link"
+    | null
+    | undefined;
+}
+
+const LoginButton: React.FC<LoginButtonProps> = ({
+  href = "/login",
+  width = "w-[110px]",
+  variant = "default",
+}) => {
+  const { session } = useAuth();
+
+  if (session) return;
+
+  return (
+    <Link
+      rel="noreferrer noopener"
+      href={href}
+      className={`border ${width} ${buttonVariants({ variant })}`}
+    >
+      Login
+    </Link>
   );
 };
