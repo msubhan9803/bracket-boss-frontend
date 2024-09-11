@@ -16,13 +16,14 @@ const middlewares = {
    * Redirect to /dashboard if user is authenticated
    */
   "/login": [guestMiddleware],
+  "/register": [guestMiddleware],
 
   /*
    * Match all routes, but exclude the ones specified.
-   * This example excludes `/`, `/login`, `/about`, and `/contact`.
+   * This example excludes `/`, `/login`, `/register` etc..
    * Redirect to /login if user isn't authenticated
    */
-  "/((?!login|about|contact|$).*)": [authenticatedMiddleware],
+  "/((?!login|register|$).*)": [authenticatedMiddleware],
 } satisfies MiddlewareConfig;
 
 // Create middlewares helper
