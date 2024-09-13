@@ -13,38 +13,52 @@ import { DynamicFormField } from "@/global";
 import FormWrapper from "@/components/core/FormWrapper";
 import AuthSideImage from "@/public/images/auth-side-image-sportsman.jpeg";
 
-const formSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
-  password: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters long" }),
-});
+const formSchema = z
+  .object({
+    name: z.string().min(1, { message: "Name is required" }),
+    email: z.string().email({ message: "Invalid email address" }),
+    password: z
+      .string()
+      .min(6, { message: "Password must be at least 6 characters long" }),
+    confirmPassword: z
+      .string()
+      .min(6, {
+        message: "Confirm Password must be at least 6 characters long",
+      }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 type FormData = z.infer<typeof formSchema>;
 
-type SubmitValuesType = {
-  email: string;
-  password: string;
-};
-
-export default function Login() {
-  const { loginMutation } = useAuth();
+export default function Register() {
+  const { registerUserMutation } = useAuth();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
   const fields = useMemo<DynamicFormField<FormData>[]>(
     () => [
       {
+        label: "Name",
+        name: "name",
+        type: "text",
+        placeholder: "Enter your name",
+      },
+      {
         label: "Email",
         name: "email",
         type: "email",
-        placeholder: "m@example.com",
+        placeholder: "Enter your email",
       },
       {
         label: "Password",
@@ -52,13 +66,19 @@ export default function Login() {
         type: "password",
         placeholder: "Enter your password",
       },
+      {
+        label: "Confirm Password",
+        name: "confirmPassword",
+        type: "password",
+        placeholder: "Confirm your password",
+      },
     ],
     []
   );
 
-  const onSubmit = async (values: SubmitValuesType) => {
-    const { email, password } = values;
-    await loginMutation.mutateAsync({ email, password });
+  const onSubmit = async (values: FormData) => {
+    const { name, email, password } = values;
+    await registerUserMutation.mutateAsync({ name, email, password });
   };
 
   return (
@@ -66,9 +86,9 @@ export default function Login() {
       <div className="flex items-center justify-center py-12">
         <div className="mx-auto grid w-[350px] gap-6">
           <div className="grid gap-2 text-center">
-            <h1 className="text-3xl font-bold">Login</h1>
+            <h1 className="text-3xl font-bold">Register</h1>
             <p className="text-balance text-muted-foreground">
-              Enter your email below to login to your account
+              Enter your details below to create your account
             </p>
           </div>
           <Button
@@ -76,7 +96,7 @@ export default function Login() {
             className="w-full flex items-center justify-center"
           >
             <FcGoogle className="mr-2" size={24} />
-            Login with Google
+            Register with Google
           </Button>
 
           <Button
@@ -87,7 +107,7 @@ export default function Login() {
               className="mr-2 text-facebook dark:text-white"
               size={24}
             />
-            Login with Facebook
+            Register with Facebook
           </Button>
 
           <div className="relative">
@@ -105,13 +125,13 @@ export default function Login() {
             form={form}
             fields={fields}
             onSubmit={onSubmit}
-            submitButtonLabel="Login"
+            submitButtonLabel="Register"
           />
 
           <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{" "}
-            <Link href="/register" className="underline">
-              Register
+            Already have an account?{" "}
+            <Link href="/login" className="underline">
+              Log in
             </Link>
           </div>
         </div>

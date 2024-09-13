@@ -1,5 +1,6 @@
 import { TypedDocumentString } from "@/graphql/generated/graphql";
 import { redirect } from "next/navigation";
+import { getSession } from "next-auth/react";
 
 export async function execute<TResult, TVariables>(
   query: TypedDocumentString<TResult, TVariables>,
@@ -12,7 +13,11 @@ export async function execute<TResult, TVariables>(
     "Content-Type": "application/json",
     Accept: "application/graphql-response+json",
   };
+
   try {
+    const session = await getSession();
+    const token = session?.authTokens.accessToken;
+
     const response = await fetch(
       process.env.NEXT_PUBLIC_BACKEND_URL as string,
       {
@@ -20,17 +25,18 @@ export async function execute<TResult, TVariables>(
         headers: {
           ...defaultHeaders,
           ...(customHeaders || {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({
           query,
           variables,
         }),
       }
-    ).then(res => res.json());
+    ).then((res) => res.json());
 
     return response.data as TResult;
   } catch (error: any) {
-    if (error.response.errors) {
+    if (error.response?.errors) {
       const unauthenticatedError = error.response.errors.find(
         (err: { message: string }) =>
           err.message.includes("Unauthenticated") ||

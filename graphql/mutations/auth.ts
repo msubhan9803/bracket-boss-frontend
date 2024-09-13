@@ -1,6 +1,6 @@
 import { graphql } from "../generated";
 
-export const REGISTER = graphql(`
+export const REGISTER_USER = graphql(`
   mutation Register($input: RegisterInputDto!) {
     register(input: $input) {
       message
