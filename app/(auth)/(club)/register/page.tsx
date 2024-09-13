@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import useAuth from "@/hooks/useAuth";
+import AuthSideImage from "@/public/images/auth-side-image-sportsman.jpeg";
 
 export default function Register() {
   const { handleSignIn } = useAuth();
@@ -65,7 +66,7 @@ export default function Register() {
               <Input
                 id="name"
                 type="text"
-                placeholder="m@example.com"
+                placeholder="Enter your name"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -76,7 +77,7 @@ export default function Register() {
               <Input
                 id="email"
                 type="email"
-                placeholder="m@example.com"
+                placeholder="Enter your email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -92,6 +93,7 @@ export default function Register() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
               />
             </div>
             <div className="grid gap-2">
@@ -104,6 +106,7 @@ export default function Register() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your confirm password"
               />
             </div>
             <Button type="submit" className="w-full">
@@ -120,11 +123,12 @@ export default function Register() {
       </div>
       <div className="hidden bg-muted lg:block">
         <Image
-          src="/placeholder.svg"
+          src={AuthSideImage}
           alt="Image"
-          width="1920"
-          height="1080"
-          className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+          width="2048"
+          height="2048"
+          className="h-full w-full object-cover"
+          priority
         />
       </div>
     </div>

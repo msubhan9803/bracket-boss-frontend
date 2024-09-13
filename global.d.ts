@@ -14,11 +14,20 @@ type NextPageLayout = PageProps & {
 }
 
 type DynamicFormField<T extends Record<string, any> = void> = {
-  label: string
-  name: FieldPath<T>
-  type: 'text' | 'number' | 'tel' | 'color' | 'date' | 'password' | 'textarea' | 'email' | 'select' | 'switch' | 'decimal' | 'multi-select'
-  required?: true
-  placeholder?: string
-  defaultValue?: any
-  options?: { label: string; value: any }[]
+  label: string;
+  name: FieldPath<T>;
+  type: 'text' | 'number' | 'tel' | 'color' | 'date' | 'datetime' | 'password' | 'textarea' | 'email' | 'select' | 'switch' | 'decimal' | 'multi-select';
+  required?: true;
+  placeholder?: string;
+  defaultValue?: any;
+  options?: { label: string; value: any }[];
+  disabled?: boolean;
+  isVisible?: boolean;
+  className?: string;
+};
+
+interface GraphQLErrorResponse {
+  response: {
+    errors: { message: string }[]
+  }
 }
