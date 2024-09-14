@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Logo from "@/public/images/logo.svg";
 
 export const Footer = () => {
   return (
@@ -12,7 +13,7 @@ export const Footer = () => {
             href="/"
             className="font-bold text-xl flex items-center"
           >
-            <Image src='/images/logo.svg' alt="logo" width={120} height={120} />
+            <Image src={Logo} alt="logo" width={120} height={120} />
             Bracket Boss
           </a>
           <p className="opacity-60 mt-2">
