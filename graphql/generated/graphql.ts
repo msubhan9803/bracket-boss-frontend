@@ -48,7 +48,19 @@ export type MutationRegisterArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  getAllStepsByRole: Array<Step>;
+  getStepsOfUser: Array<Step>;
   getUsers: Array<User>;
+};
+
+
+export type QueryGetAllStepsByRoleArgs = {
+  input: StepsByRoleDto;
+};
+
+
+export type QueryGetStepsOfUserArgs = {
+  input: StepsOfUserDto;
 };
 
 export type RefreshTokenResponseDto = {
@@ -59,6 +71,7 @@ export type RefreshTokenResponseDto = {
 };
 
 export type RegisterInputDto = {
+  clubId?: InputMaybe<Scalars['Int']['input']>;
   email: Scalars['String']['input'];
   name: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -69,12 +82,35 @@ export type RegisterResponseDto = {
   message: Scalars['String']['output'];
 };
 
+export type Step = {
+  __typename?: 'Step';
+  id: Scalars['ID']['output'];
+  name: StepNames;
+};
+
+export enum StepNames {
+  ClubInformationInsertion = 'CLUB_INFORMATION_INSERTION',
+  ClubSelection = 'CLUB_SELECTION',
+  EmailVerification = 'EMAIL_VERIFICATION',
+  Registration = 'REGISTRATION',
+  UserTypeSelection = 'USER_TYPE_SELECTION'
+}
+
+export type StepsByRoleDto = {
+  role: Scalars['String']['input'];
+};
+
+export type StepsOfUserDto = {
+  userId: Scalars['Float']['input'];
+};
+
 export type User = {
   __typename?: 'User';
   created_at: Scalars['DateTime']['output'];
   email: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+  otpSecret: Scalars['String']['output'];
   profileImage?: Maybe<Scalars['String']['output']>;
   updated_at: Scalars['DateTime']['output'];
 };

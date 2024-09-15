@@ -15,6 +15,14 @@ enum USE_AUTH_KEY {
 export default function useAuth() {
   const { data: session } = useSession();
 
+  const handleNextAuthLogin = (email: string, password: string, callbackUrl?: string) => {
+    signIn("credentials", {
+      email,
+      password,
+      ...(callbackUrl ? { callbackUrl } : {}),
+    });
+  };
+
   const registerUserMutation = useMutation({
     mutationKey: [USE_AUTH_KEY.REGISTER_USER],
     mutationFn: (variables: RegisterInputDto) =>
@@ -23,7 +31,7 @@ export default function useAuth() {
       toast.success("Successfully registered");
     },
     onError: (error) => {
-      toast.success(error.message);
+      toast.error(error.message);
     },
   });
 
@@ -35,23 +43,19 @@ export default function useAuth() {
     }: {
       email: string;
       password: string;
-    }) =>
-      signIn("credentials", {
-        email,
-        password,
-        callbackUrl: "/dashboard",
-      }),
+    }) => handleNextAuthLogin(email, password, '/dashboard'),
     onSuccess: () => {
       toast.success("Successfully logged in");
     },
     onError: (error) => {
-      toast.success(error.message);
+      toast.error(error.message);
     },
   });
 
   return {
     session,
     loginMutation,
+    handleNextAuthLogin,
     registerUserMutation,
   };
 }
