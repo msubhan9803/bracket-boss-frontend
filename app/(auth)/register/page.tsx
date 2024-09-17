@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
@@ -20,21 +20,18 @@ export default function Register() {
           Enter your details below to create your account
         </p>
       </div>
-      <Button
-        variant="outline"
-        className="w-full flex items-center justify-center"
-      >
-        <FcGoogle className="mr-2" size={24} />
-        Register with Google
-      </Button>
 
-      <Button
-        variant="outline"
+      <SocialButton
+        icon={FcGoogle}
+        label="Register with Google"
         className="w-full flex items-center justify-center"
-      >
-        <FaFacebook className="mr-2 text-facebook dark:text-white" size={24} />
-        Register with Facebook
-      </Button>
+      />
+
+      <SocialButton
+        icon={FaFacebook}
+        label="Register with Facebook"
+        className="w-full flex items-center justify-center"
+      />
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">

@@ -29,11 +29,17 @@ export type LoginResponseDto = {
   user: User;
 };
 
+export type MessageResponseDto = {
+  __typename?: 'MessageResponseDto';
+  message: Scalars['String']['output'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   login: LoginResponseDto;
   refreshToken: RefreshTokenResponseDto;
-  register: RegisterResponseDto;
+  register: MessageResponseDto;
+  verifyEmail: MessageResponseDto;
 };
 
 
@@ -44,6 +50,11 @@ export type MutationLoginArgs = {
 
 export type MutationRegisterArgs = {
   input: RegisterInputDto;
+};
+
+
+export type MutationVerifyEmailArgs = {
+  input: VerifyEmailInputDto;
 };
 
 export type Query = {
@@ -77,11 +88,6 @@ export type RegisterInputDto = {
   password: Scalars['String']['input'];
 };
 
-export type RegisterResponseDto = {
-  __typename?: 'RegisterResponseDto';
-  message: Scalars['String']['output'];
-};
-
 export type Step = {
   __typename?: 'Step';
   id: Scalars['ID']['output'];
@@ -97,7 +103,7 @@ export enum StepNames {
 }
 
 export type StepsByRoleDto = {
-  role: Scalars['String']['input'];
+  roleId: Scalars['Float']['input'];
 };
 
 export type StepsOfUserDto = {
@@ -109,10 +115,16 @@ export type User = {
   created_at: Scalars['DateTime']['output'];
   email: Scalars['String']['output'];
   id: Scalars['ID']['output'];
+  isEmailVerified: Scalars['Boolean']['output'];
   name: Scalars['String']['output'];
   otpSecret: Scalars['String']['output'];
   profileImage?: Maybe<Scalars['String']['output']>;
   updated_at: Scalars['DateTime']['output'];
+};
+
+export type VerifyEmailInputDto = {
+  email: Scalars['String']['input'];
+  otp: Scalars['Float']['input'];
 };
 
 export type RegisterMutationVariables = Exact<{
@@ -120,7 +132,7 @@ export type RegisterMutationVariables = Exact<{
 }>;
 
 
-export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'RegisterResponseDto', message: string } };
+export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'MessageResponseDto', message: string } };
 
 export type LoginMutationVariables = Exact<{
   input: LoginInputDto;
@@ -133,6 +145,13 @@ export type RefreshTokenMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type RefreshTokenMutation = { __typename?: 'Mutation', refreshToken: { __typename?: 'RefreshTokenResponseDto', accessToken: string, expiresIn: number, refreshToken: string } };
+
+export type VerifyEmailMutationVariables = Exact<{
+  input: VerifyEmailInputDto;
+}>;
+
+
+export type VerifyEmailMutation = { __typename?: 'Mutation', verifyEmail: { __typename?: 'MessageResponseDto', message: string } };
 
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -189,6 +208,13 @@ export const RefreshTokenDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<RefreshTokenMutation, RefreshTokenMutationVariables>;
+export const VerifyEmailDocument = new TypedDocumentString(`
+    mutation VerifyEmail($input: VerifyEmailInputDto!) {
+  verifyEmail(input: $input) {
+    message
+  }
+}
+    `) as unknown as TypedDocumentString<VerifyEmailMutation, VerifyEmailMutationVariables>;
 export const GetUsersDocument = new TypedDocumentString(`
     query GetUsers {
   getUsers {

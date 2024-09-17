@@ -37,3 +37,11 @@ export const REFRESH_TOKEN = graphql(`
     }
   }
 `);
+
+export const VERIFY_EMAIL = graphql(`
+  mutation VerifyEmail($input: VerifyEmailInputDto!) {
+    verifyEmail(input: $input) {
+      message
+    }
+  }
+`);
