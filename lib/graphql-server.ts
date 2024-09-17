@@ -42,11 +42,11 @@ export const graphqlRequestHandler = async <
   } catch (err) {
     const error = err as GraphQLErrorResponse;
 
-    const errors = error.response.errors.map(
+    const errors = error?.response?.errors?.map(
       (err) => (err?.extensions?.originalError?.error as string) ?? err.message
     );
 
-    const unauthenticatedError = errors.find(
+    const unauthenticatedError = errors?.find(
       (err: string) =>
         err.includes("Unauthenticated") || err.includes("Unauthorized")
     );

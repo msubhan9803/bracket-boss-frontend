@@ -73,7 +73,12 @@ export default function InputOTPForm({ userEmail }: Props) {
           )}
         />
 
-        <Button type="submit" className="w-full mt-4" absoluteLoaderPosition>
+        <Button
+          type="submit"
+          className="w-full mt-4"
+          absoluteLoaderPosition
+          loading={verifyEmailMutation.isPending}
+        >
           Verify
         </Button>
       </form>

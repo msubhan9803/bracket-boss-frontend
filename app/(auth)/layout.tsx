@@ -36,7 +36,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <div className="w-full lg:grid lg:min-h-screen overflow-auto lg:grid-cols-2">
-              <div className="flex items-center justify-center py-12">
+              <div className="flex items-center justify-center py-12 min-h-screen">
                 {children}
               </div>
               <div className="hidden bg-muted lg:block">
