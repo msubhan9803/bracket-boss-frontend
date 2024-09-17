@@ -13,8 +13,16 @@ type NextPageLayout = PageProps & {
   children: any;
 };
 
-type DynamicFormField<T extends Record<string, any> = void> = {
+type CustomRadio = {
+  key: string;
+  id: string;
+  value: string;
   label: string;
+  icon: string;
+};
+
+type DynamicFormField<T extends Record<string, any> = void> = {
+  label: string | null;
   name: FieldPath<T>;
   type:
     | "text"
@@ -29,14 +37,16 @@ type DynamicFormField<T extends Record<string, any> = void> = {
     | "select"
     | "switch"
     | "decimal"
-    | "multi-select";
+    | "multi-select"
+    | "radio";
   required?: true;
   placeholder?: string;
   defaultValue?: any;
-  options?: { label: string; value: any }[];
+  options?: { label: string; value: any; icon?: IconType | any }[];
   disabled?: boolean;
   isVisible?: boolean;
   className?: string;
+  render?: (data: CustomRadio) => ReactNode;
 };
 
 interface GraphQLErrorResponse {

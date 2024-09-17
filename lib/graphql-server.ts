@@ -55,6 +55,6 @@ export const graphqlRequestHandler = async <
       redirect("/login?logout=1");
     }
 
-    throw Error(errors.join(", "));
+    throw Error(errors?.join(", ") ?? '');
   }
 };

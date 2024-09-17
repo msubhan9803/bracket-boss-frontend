@@ -20,6 +20,7 @@ import {
 import { Switch } from "../ui/switch";
 import { MultiSelect, MultiSelectItem } from "@tremor/react";
 import { cn } from "@/lib/utils";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 
 type Props<T extends { [key: string]: any }> = {
   dynamicField: DynamicFormFieldType<T>;
@@ -184,6 +185,46 @@ const DynamicFormField = <T extends { [key: string]: any }>({
                 className={cn(getErrorClass(dynamicField.name))}
                 {...field}
               />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    );
+  }
+
+  if (dynamicField.type === "radio") {
+    return (
+      <FormField
+        defaultValue={dynamicField.defaultValue}
+        control={form.control}
+        name={dynamicField.name}
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{dynamicField.label}</FormLabel>
+            <FormControl>
+              <RadioGroup
+                value={field.value}
+                name={field.name}
+                onValueChange={field.onChange}
+                className="flex justify-center gap-4"
+              >
+                {dynamicField.options?.map((option, index) =>
+                  dynamicField.render ? (
+                    dynamicField.render({
+                      key: `${field.name}-${index}`,
+                      id: `${field.name}-${index}`,
+                      value: option.value,
+                      label: option.label,
+                      icon: option.icon,
+                    })
+                  ) : (
+                    <RadioGroupItem key={index} value={option.value}>
+                      {option.label}
+                    </RadioGroupItem>
+                  )
+                )}
+              </RadioGroup>
             </FormControl>
             <FormMessage />
           </FormItem>

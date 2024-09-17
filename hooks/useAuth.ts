@@ -2,10 +2,11 @@
 import { useSession } from "next-auth/react";
 import { useMutation } from "@tanstack/react-query";
 import { graphqlRequestHandler } from "@/lib/graphql-server";
-import { REGISTER_USER, VERIFY_EMAIL } from "@/graphql/mutations/auth";
+import { REGISTER_USER, UPDATE_USER_ROLE, VERIFY_EMAIL } from "@/graphql/mutations/auth";
 import {
   RegisterInputDto,
   RegisterMutation,
+  UpdateUserRoleDto,
   VerifyEmailInputDto,
 } from "@/graphql/generated/graphql";
 import { signIn } from "next-auth/react";
@@ -16,6 +17,7 @@ export enum USE_AUTH_KEY {
   REGISTER_USER = "REGISTER_USER",
   LOGIN_USER = "LOGIN_USER",
   VERIFY_EMAIL = "VERIFY_EMAIL",
+  UPDATE_USER_ROLE = "UPDATE_USER_ROLE",
 }
 
 export enum ONBOARDING_STEPS {
@@ -97,11 +99,24 @@ export default function useAuth() {
     },
   });
 
+  const updateUserRoleMutation = useMutation({
+    mutationKey: [USE_AUTH_KEY.UPDATE_USER_ROLE],
+    mutationFn: (variables: UpdateUserRoleDto) =>
+      graphqlRequestHandler(UPDATE_USER_ROLE, { input: variables }),
+    onSuccess: () => {
+      router.push(ONBOARDING_STEPS.STEP_3_CLUB);
+    },
+    onError: (error) => {``
+      toast.error(error.message);
+    },
+  });
+
   return {
     session,
     loginMutation,
     handleNextAuthLogin,
     registerUserMutation,
     verifyEmailMutation,
+    updateUserRoleMutation,
   };
 }
