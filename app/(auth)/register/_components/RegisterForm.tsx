@@ -27,7 +27,7 @@ const formSchema = z
 type FormData = z.infer<typeof formSchema>;
 
 export default function RegisterForm() {
-  const { registerUserMutation, handleNextAuthLogin } = useAuth();
+  const { registerUserMutation } = useAuth();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -72,7 +72,6 @@ export default function RegisterForm() {
   const onSubmit = async (values: FormData) => {
     const { name, email, password } = values;
     await registerUserMutation.mutateAsync({ name, email, password });
-    handleNextAuthLogin(email, password, "/verify-email");
   };
 
   return (
