@@ -22,7 +22,7 @@ const SelectableCard: React.FC<SelectableCardProps> = ({
       <Label
         htmlFor={id}
         className={cn(
-          "flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-8 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary",
+          "flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-8 hover:bg-primary/50 hover:text-accent-foreground peer-data-[state=checked]:border-primary",
           "[&:has([data-state=checked])]:border-primary"
         )}
       >
