@@ -1,7 +1,32 @@
-import { createMiddleware, type MiddlewareConfig } from "@rescale/nemo";
-import { guestMiddleware } from "@/middlewares/guestMiddleware";
-import { passThroughMiddleware } from "@/middlewares/passThroughMiddleware";
-import { authenticatedMiddleware } from "@/middlewares/authenticatedMiddleware";
+import { createMiddleware, type MiddlewareConfig, MiddlewareFunctionProps } from "@rescale/nemo";
+import { getToken } from "next-auth/jwt";
+import { NextResponse } from "next/server";
+
+export const guestMiddleware = async ({ request }: MiddlewareFunctionProps) => {
+  const token = await getToken({ req: request });
+
+  if (token) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  return NextResponse.next();
+};
+
+export const authenticatedMiddleware = async ({
+  request,
+}: MiddlewareFunctionProps) => {
+  const token = await getToken({ req: request });
+
+  if (!token) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  return NextResponse.next();
+};
+
+export const passThroughMiddleware = async () => {
+  return NextResponse.next();
+};
 
 const middlewares = {
   /*
