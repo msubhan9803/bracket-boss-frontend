@@ -2,16 +2,15 @@ import { GraphQLClient } from "graphql-request";
 import { redirect } from "next/navigation";
 import { TypedDocumentNode } from "@graphql-typed-document-node/core";
 import { GraphQLErrorResponse } from "@/global";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getSession } from "next-auth/react";
 
 const graphqlClient = new GraphQLClient(
   process.env.NEXT_PUBLIC_BACKEND_URL as string
 );
 
 export async function graphqlServer(customHeaders?: Record<string, string>) {
-  const session = await getServerSession(authOptions);
-  const authToken = session?.authTokens?.accessToken;
+  const session = await getSession();
+  const authToken = session?.authTokens.accessToken;
 
   if (authToken) {
     graphqlClient.setHeader("Authorization", `Bearer ${authToken}`);
@@ -26,7 +25,7 @@ export async function graphqlServer(customHeaders?: Record<string, string>) {
   return graphqlClient;
 }
 
-export const graphqlRequestHandlerServer = async <
+export const graphqlRequestHandlerClient = async <
   T,
   V extends { [key: string]: any }
 >(
@@ -38,6 +37,7 @@ export const graphqlRequestHandlerServer = async <
 
   try {
     const data = await gql.request<T>(query, variables);
+
     return data;
   } catch (err) {
     const error = err as GraphQLErrorResponse;
@@ -55,6 +55,6 @@ export const graphqlRequestHandlerServer = async <
       redirect("/login?logout=1");
     }
 
-    throw new Error(errors?.join(", ") ?? "An unknown error occurred");
+    throw Error(errors?.join(", ") ?? '');
   }
 };

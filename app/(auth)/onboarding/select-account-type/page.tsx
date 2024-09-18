@@ -7,7 +7,8 @@ import { getUserById } from "@/lib/server-requests";
 export default async function SelectAccountType() {
   const session = await getServerSession(authOptions);
   const userId = parseInt(session?.user.id as string);
-  // const userDetails = await getUserById(userId)
+  const userDetails = await getUserById(userId);
+  const userRole = userDetails.roles ? parseInt(userDetails.roles[0].id) : null;
 
   return (
     <div className="mx-auto grid w-[350px] gap-6">
@@ -15,7 +16,7 @@ export default async function SelectAccountType() {
         <h1 className="text-3xl font-bold">Select your account type</h1>
       </div>
 
-      <SelectAccountTypeInput />
+      <SelectAccountTypeInput userRole={userRole} />
     </div>
   );
 }

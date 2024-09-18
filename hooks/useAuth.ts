@@ -1,7 +1,7 @@
 "use client";
 import { useSession } from "next-auth/react";
 import { useMutation } from "@tanstack/react-query";
-import { graphqlRequestHandler } from "@/lib/graphql-server";
+import { graphqlRequestHandlerClient } from "@/lib/graphql-client";
 import { REGISTER_USER, UPDATE_USER_ROLE, VERIFY_EMAIL } from "@/graphql/mutations/auth";
 import {
   RegisterInputDto,
@@ -71,7 +71,7 @@ export default function useAuth() {
   const registerUserMutation = useMutation({
     mutationKey: [USE_AUTH_KEY.REGISTER_USER],
     mutationFn: (variables: RegisterInputDto) =>
-      graphqlRequestHandler(REGISTER_USER, { input: variables }),
+      graphqlRequestHandlerClient(REGISTER_USER, { input: variables }),
     onSuccess: async (data: RegisterMutation, variables: RegisterInputDto) => {
       toast.success(data.register.message);
 
@@ -91,7 +91,7 @@ export default function useAuth() {
   const verifyEmailMutation = useMutation({
     mutationKey: [USE_AUTH_KEY.VERIFY_EMAIL],
     mutationFn: (variables: VerifyEmailInputDto) =>
-      graphqlRequestHandler(VERIFY_EMAIL, { input: variables }),
+      graphqlRequestHandlerClient(VERIFY_EMAIL, { input: variables }),
     onSuccess: (res) => {
       toast.success(res.verifyEmail.message);
       router.push(ONBOARDING_STEPS.STEP_2);
@@ -104,7 +104,7 @@ export default function useAuth() {
   const updateUserRoleMutation = useMutation({
     mutationKey: [USE_AUTH_KEY.UPDATE_USER_ROLE],
     mutationFn: (variables: UpdateUserRoleDto) =>
-      graphqlRequestHandler(UPDATE_USER_ROLE, { input: variables }),
+      graphqlRequestHandlerClient(UPDATE_USER_ROLE, { input: variables }),
     onSuccess: () => {
       router.push(ONBOARDING_STEPS.STEP_3_CLUB);
     },

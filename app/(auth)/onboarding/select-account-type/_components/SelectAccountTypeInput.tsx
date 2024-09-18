@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,7 +10,6 @@ import AccountRoleCard from "./AccountRoleCard";
 import { Button } from "@/components/ui/button";
 import useAuth from "@/hooks/useAuth";
 import { PredefinedRoles } from "@/lib/types.d";
-import useUser from "@/hooks/useUser";
 
 const formSchema = z.object({
   accountType: z.number(),
@@ -18,17 +17,19 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-export default function SelectAccountTypeInput() {
+type Props = {
+  userRole: number | null | undefined;
+}
+
+export default function SelectAccountTypeInput({ userRole }: Props) {
   const { updateUserRoleMutation } = useAuth();
-  const { userRole } = useUser();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      accountType: PredefinedRoles.clubOwner,
+      accountType: userRole ?? PredefinedRoles.clubOwner,
     },
   });
-  const { setValue } = form;
 
   const fields = useMemo<DynamicFormField<FormData>[]>(
     () => [
@@ -63,12 +64,6 @@ export default function SelectAccountTypeInput() {
       roleId: values.accountType,
     });
   };
-
-  useEffect(() => {
-    if (userRole) {
-      setValue("accountType", userRole);
-    }
-  }, [userRole]);
 
   return (
     <FormWrapper

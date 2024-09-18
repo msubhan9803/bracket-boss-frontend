@@ -1,12 +1,12 @@
 import { LOGIN, REFRESH_TOKEN } from "@/graphql/mutations/auth";
-import { graphqlRequestHandler } from "@/lib/graphql-server";
+import { graphqlRequestHandlerClient } from "@/lib/graphql-client";
 import { NextAuthOptions } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 async function refreshToken(token: JWT): Promise<JWT> {
-  const response = await graphqlRequestHandler(
+  const response = await graphqlRequestHandlerClient(
     REFRESH_TOKEN,
     {},
     {
@@ -42,7 +42,7 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) return null;
         const { email, password } = credentials;
 
-        const response = await graphqlRequestHandler(LOGIN, {
+        const response = await graphqlRequestHandlerClient(LOGIN, {
           input: {
             email,
             password,

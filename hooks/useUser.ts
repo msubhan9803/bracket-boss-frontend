@@ -1,8 +1,8 @@
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
-import { graphqlRequestHandler } from "@/lib/graphql-server";
 import { GET_USER_BY_ID } from "@/graphql/queries/users";
 import { useMemo } from "react";
+import { graphqlRequestHandlerClient } from "@/lib/graphql-client";
 
 export enum USE_USER_KEY {
   GET_USER_BY_ID = "GET_USER_BY_ID",
@@ -19,7 +19,7 @@ export default function useUser() {
   } = useQuery({
     queryKey: [USE_USER_KEY.GET_USER_BY_ID, userId],
     queryFn: () =>
-      graphqlRequestHandler(GET_USER_BY_ID, { userId: userId as number }),
+      graphqlRequestHandlerClient(GET_USER_BY_ID, { userId: userId as number }),
     enabled: !!userId,
   });
 
