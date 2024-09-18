@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 const RootLayout: NextPage<NextPageLayout> = ({ children }) => {
   return (
-    <html className="" lang="en">
+    <html lang="en">
       <body className={inter.className}>
         <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
           <Sidebar />
