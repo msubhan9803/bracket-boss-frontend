@@ -1,17 +1,21 @@
 "use client";
 import { useSession } from "next-auth/react";
 import { useMutation } from "@tanstack/react-query";
-import { graphqlRequestHandlerClient } from "@/lib/graphql-client";
-import { REGISTER_USER, UPDATE_USER_ROLE, VERIFY_EMAIL } from "@/graphql/mutations/auth";
+import { signIn } from "next-auth/react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { graphqlRequestHandler } from "@/lib/graphql-client";
+import {
+  REGISTER_USER,
+  UPDATE_USER_ROLE,
+  VERIFY_EMAIL,
+} from "@/graphql/mutations/auth";
 import {
   RegisterInputDto,
   RegisterMutation,
   UpdateUserRoleDto,
   VerifyEmailInputDto,
 } from "@/graphql/generated/graphql";
-import { signIn } from "next-auth/react";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 export enum USE_AUTH_KEY {
   REGISTER_USER = "REGISTER_USER",
@@ -71,7 +75,11 @@ export default function useAuth() {
   const registerUserMutation = useMutation({
     mutationKey: [USE_AUTH_KEY.REGISTER_USER],
     mutationFn: (variables: RegisterInputDto) =>
-      graphqlRequestHandlerClient(REGISTER_USER, { input: variables }),
+      graphqlRequestHandler({
+        query: REGISTER_USER,
+        variables: { input: variables },
+        options: { isServer: false },
+      }),
     onSuccess: async (data: RegisterMutation, variables: RegisterInputDto) => {
       toast.success(data.register.message);
 
@@ -91,7 +99,11 @@ export default function useAuth() {
   const verifyEmailMutation = useMutation({
     mutationKey: [USE_AUTH_KEY.VERIFY_EMAIL],
     mutationFn: (variables: VerifyEmailInputDto) =>
-      graphqlRequestHandlerClient(VERIFY_EMAIL, { input: variables }),
+      graphqlRequestHandler({
+        query: VERIFY_EMAIL,
+        variables: { input: variables },
+        options: { isServer: false },
+      }),
     onSuccess: (res) => {
       toast.success(res.verifyEmail.message);
       router.push(ONBOARDING_STEPS.STEP_2);
@@ -104,11 +116,15 @@ export default function useAuth() {
   const updateUserRoleMutation = useMutation({
     mutationKey: [USE_AUTH_KEY.UPDATE_USER_ROLE],
     mutationFn: (variables: UpdateUserRoleDto) =>
-      graphqlRequestHandlerClient(UPDATE_USER_ROLE, { input: variables }),
+      graphqlRequestHandler({
+        query: UPDATE_USER_ROLE,
+        variables: { input: variables },
+        options: { isServer: false },
+      }),
     onSuccess: () => {
       router.push(ONBOARDING_STEPS.STEP_3_CLUB);
     },
-    onError: (error) => {``
+    onError: (error) => {
       toast.error(error.message);
     },
   });
