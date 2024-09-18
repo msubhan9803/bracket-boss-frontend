@@ -20,12 +20,14 @@ export enum USE_AUTH_KEY {
   UPDATE_USER_ROLE = "UPDATE_USER_ROLE",
 }
 
+const DASHBOARD_URL = '/dashboard';
+
 export enum ONBOARDING_STEPS {
-  STEP_1 = "/verify-email",
-  STEP_2 = "/select-account-type",
-  STEP_3_CLUB = "/club-info",
-  STEP_3_PLAYER = "/select-your-club",
-  LAST_STEP = '/dashboard'
+  STEP_1 = "/onboarding/verify-email",
+  STEP_2 = "/onboarding/select-account-type",
+  STEP_3_CLUB = "/onboarding/club-info",
+  STEP_3_PLAYER = "/onboarding/select-your-club",
+  LAST_STEP = DASHBOARD_URL
 }
 
 export default function useAuth() {
@@ -59,7 +61,7 @@ export default function useAuth() {
     }) => handleNextAuthLogin(email, password),
     onSuccess: () => {
       toast.success("Successfully logged in");
-      router.push("/dashboard");
+      router.push(DASHBOARD_URL);
     },
     onError: (error) => {
       toast.error(error.message);

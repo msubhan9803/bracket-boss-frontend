@@ -9,3 +9,26 @@ export const GET_USERS = graphql(`
     }
   }
 `);
+
+export const GET_USER_BY_ID = graphql(`
+  query GetUserById($userId: Float!) {
+    getUserById(userId: $userId) {
+      created_at
+      email
+      id
+      isEmailVerified
+      name
+      otpSecret
+      profileImage
+      updated_at
+      steps {
+        id
+        name
+      }
+      roles {
+        id
+        name
+      }
+    }
+  }
+`);

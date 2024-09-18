@@ -19,6 +19,7 @@ const documents = {
     "\n  mutation VerifyEmail($input: VerifyEmailInputDto!) {\n    verifyEmail(input: $input) {\n      message\n    }\n  }\n": types.VerifyEmailDocument,
     "\n  mutation UpdateUserRole($input: UpdateUserRoleDto!) {\n    updateUserRole(input: $input) {\n      message\n    }\n  }\n": types.UpdateUserRoleDocument,
     "\n  query GetUsers {\n    getUsers {\n      id\n      email\n      name\n    }\n  }\n": types.GetUsersDocument,
+    "\n  query GetUserById($userId: Float!) {\n    getUserById(userId: $userId) {\n      created_at\n      email\n      id\n      isEmailVerified\n      name\n      otpSecret\n      profileImage\n      updated_at\n      steps {\n        id\n        name\n      }\n      roles {\n        id\n        name\n      }\n    }\n  }\n": types.GetUserByIdDocument,
 };
 
 /**
@@ -59,6 +60,10 @@ export function graphql(source: "\n  mutation UpdateUserRole($input: UpdateUserR
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query GetUsers {\n    getUsers {\n      id\n      email\n      name\n    }\n  }\n"): (typeof documents)["\n  query GetUsers {\n    getUsers {\n      id\n      email\n      name\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetUserById($userId: Float!) {\n    getUserById(userId: $userId) {\n      created_at\n      email\n      id\n      isEmailVerified\n      name\n      otpSecret\n      profileImage\n      updated_at\n      steps {\n        id\n        name\n      }\n      roles {\n        id\n        name\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetUserById($userId: Float!) {\n    getUserById(userId: $userId) {\n      created_at\n      email\n      id\n      isEmailVerified\n      name\n      otpSecret\n      profileImage\n      updated_at\n      steps {\n        id\n        name\n      }\n      roles {\n        id\n        name\n      }\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,6 +10,7 @@ import AccountRoleCard from "./AccountRoleCard";
 import { Button } from "@/components/ui/button";
 import useAuth from "@/hooks/useAuth";
 import { PredefinedRoles } from "@/lib/types.d";
+import useUser from "@/hooks/useUser";
 
 const formSchema = z.object({
   accountType: z.number(),
@@ -19,6 +20,7 @@ type FormData = z.infer<typeof formSchema>;
 
 export default function SelectAccountTypeInput() {
   const { updateUserRoleMutation } = useAuth();
+  const { userRole } = useUser();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -26,6 +28,7 @@ export default function SelectAccountTypeInput() {
       accountType: PredefinedRoles.clubOwner,
     },
   });
+  const { setValue } = form;
 
   const fields = useMemo<DynamicFormField<FormData>[]>(
     () => [
@@ -61,6 +64,12 @@ export default function SelectAccountTypeInput() {
     });
   };
 
+  useEffect(() => {
+    if (userRole) {
+      setValue("accountType", userRole);
+    }
+  }, [userRole]);
+
   return (
     <FormWrapper
       form={form}
@@ -68,7 +77,11 @@ export default function SelectAccountTypeInput() {
       onSubmit={onSubmit}
       submitButtonLabel="Next"
       submitButton={
-        <Button type="submit" className="w-fit min-w-28 mt-4 ml-auto" loading={updateUserRoleMutation.isPending}>
+        <Button
+          type="submit"
+          className="w-fit min-w-28 mt-4 ml-auto"
+          loading={updateUserRoleMutation.isPending}
+        >
           Next
         </Button>
       }
