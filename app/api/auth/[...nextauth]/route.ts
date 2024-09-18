@@ -1,18 +1,21 @@
 import { LOGIN, REFRESH_TOKEN } from "@/graphql/mutations/auth";
-import { graphqlRequestHandlerClient } from "@/lib/graphql-client";
+import { graphqlRequestHandler } from "@/lib/graphql-client";
 import { NextAuthOptions } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 async function refreshToken(token: JWT): Promise<JWT> {
-  const response = await graphqlRequestHandlerClient(
-    REFRESH_TOKEN,
-    {},
-    {
-      authorization: `Refresh ${token.authTokens.refreshToken}`,
-    }
-  );
+  const response = await graphqlRequestHandler({
+    query: REFRESH_TOKEN,
+    variables: {},
+    options: {
+      isServer: true,
+      customHeaders: {
+        authorization: `Refresh ${token.authTokens.refreshToken}`,
+      },
+    },
+  });
 
   return {
     ...token,
@@ -42,11 +45,15 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) return null;
         const { email, password } = credentials;
 
-        const response = await graphqlRequestHandlerClient(LOGIN, {
-          input: {
-            email,
-            password,
+        const response = await graphqlRequestHandler({
+          query: LOGIN,
+          variables: {
+            input: {
+              email,
+              password,
+            },
           },
+          options: { isServer: true },
         });
 
         if (response.login.user) {
@@ -67,8 +74,7 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
-    async jwt(value) {
-      const { token, user } = value;
+    async jwt({ token, user }) {
       if (user) return { ...token, ...user };
 
       if (new Date().getTime() < token.authTokens?.expiresIn) return token;
@@ -76,8 +82,7 @@ export const authOptions: NextAuthOptions = {
       return await refreshToken(token);
     },
 
-    async session(value) {
-      const { token, session } = value;
+    async session({ token, session }) {
       session.user = token.user;
       session.authTokens = token.authTokens;
 
