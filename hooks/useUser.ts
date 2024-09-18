@@ -3,10 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { GET_USER_BY_ID } from "@/graphql/queries/users";
 import { useMemo } from "react";
 import { graphqlRequestHandlerClient } from "@/lib/graphql-client";
-
-export enum USE_USER_KEY {
-  GET_USER_BY_ID = "GET_USER_BY_ID",
-}
+import { USE_USER_KEY } from "./types/useUser.types";
 
 export default function useUser() {
   const { data: session } = useSession();

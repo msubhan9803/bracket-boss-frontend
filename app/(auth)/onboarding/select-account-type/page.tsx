@@ -1,14 +1,10 @@
 import React from "react";
 import SelectAccountTypeInput from "./_components/SelectAccountTypeInput";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { getUserById } from "@/lib/server-requests";
+import { getUserRole, getUserSessionServer } from "@/services/user.service";
 
 export default async function SelectAccountType() {
-  const session = await getServerSession(authOptions);
-  const userId = parseInt(session?.user.id as string);
-  const userDetails = await getUserById(userId);
-  const userRole = userDetails.roles ? parseInt(userDetails.roles[0].id) : null;
+  const { userDetails } = await getUserSessionServer();
+  const userRole = getUserRole(userDetails);
 
   return (
     <div className="mx-auto grid w-[350px] gap-6">
