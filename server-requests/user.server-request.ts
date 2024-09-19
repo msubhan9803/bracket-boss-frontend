@@ -8,5 +8,6 @@ export const getUserById = async (userId: number) => {
     variables: { userId },
     options: { isServer: true },
   });
+
   return data.getUserById as GetUserByIdQuery["getUserById"];
 };

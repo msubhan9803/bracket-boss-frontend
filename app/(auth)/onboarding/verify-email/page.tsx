@@ -1,9 +1,9 @@
 import React from "react";
 import EmailVerificationOtpInput from "./_components/EmailVerificationOtpInput";
-import { getCookie } from "cookies-next";
+import { getUser } from "@/services/cookie-handler.service";
 
 export default async function VerifyEmail() {
-  const user = getCookie('user') as any;
+  const user = getUser({ isServer: true });
   const userEmail = user?.email || "your email";
 
   return (

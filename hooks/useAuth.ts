@@ -32,10 +32,10 @@ const DASHBOARD_URL = "/dashboard";
 const LOGIN_URL = "/login";
 
 export enum ONBOARDING_STEPS {
-  STEP_1 = "/verify-email",
-  STEP_2 = "/select-account-type",
-  STEP_3_CLUB = "/club-info",
-  STEP_3_PLAYER = "/select-your-club",
+  STEP_1 = "/onboarding/verify-email",
+  STEP_2 = "/onboarding/select-account-type",
+  STEP_3_CLUB = "/onboarding/club-info",
+  STEP_3_PLAYER = "/onboarding/select-your-club",
   LAST_STEP = DASHBOARD_URL,
 }
 

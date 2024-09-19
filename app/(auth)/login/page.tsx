@@ -1,9 +1,11 @@
+"use client";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import LoginForm from "./_components/LoginForm";
 import { Button } from "@/components/ui/button";
 import { IconType } from "react-icons/lib";
+import TokenValidator from "@/components/shared/TokenValidator";
 
 interface SocialButtonProps extends React.ComponentProps<typeof Button> {
   icon: IconType;
@@ -13,6 +15,8 @@ interface SocialButtonProps extends React.ComponentProps<typeof Button> {
 export default function Login() {
   return (
     <div className="mx-auto grid w-[350px] gap-6">
+      <TokenValidator />
+
       <div className="grid gap-2 text-center">
         <h1 className="text-3xl font-bold">Login</h1>
         <p className="text-balance text-muted-foreground">

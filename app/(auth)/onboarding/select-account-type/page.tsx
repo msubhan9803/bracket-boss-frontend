@@ -3,15 +3,23 @@ import SelectAccountTypeInput from "./_components/SelectAccountTypeInput";
 import { getUser } from "@/services/cookie-handler.service";
 import { getUserById } from "@/server-requests/user.server-request";
 
-export default async function SelectAccountType() {
+async function getUserRole() {
   const user = getUser({ isServer: true });
-  const userId = parseInt(user?.id as string);
-  const userDetails = await getUserById(userId);
-  // const userRole =
-  //   userDetails.roles && userDetails.roles?.length > 0
-  //     ? parseInt(userDetails.roles[0].id)
-  //     : null;
-  const userRole = null;
+
+  if (user?.id) {
+    const userDetails = await getUserById(parseInt(user.id));
+
+    if (!userDetails) return null;
+    if (userDetails.roles?.length === 0 || !userDetails.roles) return null;
+
+    return parseInt(userDetails?.roles[0].id);
+  }
+
+  return null;
+}
+
+export default async function SelectAccountType() {
+  const userRole = await getUserRole();
 
   return (
     <div className="mx-auto grid w-[350px] gap-6">

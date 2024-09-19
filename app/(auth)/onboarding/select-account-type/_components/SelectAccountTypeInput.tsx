@@ -6,20 +6,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import FormWrapper from "@/components/core/FormWrapper";
 import { DynamicFormField } from "@/global";
 import { FaRegBuilding, FaUser } from "react-icons/fa";
-import AccountRoleCard from "./AccountRoleCard";
 import { Button } from "@/components/ui/button";
 import useAuth from "@/hooks/useAuth";
-import { PredefinedRoles } from "@/lib/types.d";
+import AccountRoleCard from "./AccountRoleCard";
+import LoadingSpinner from "@/components/core/LoadingSpinner";
 
 const formSchema = z.object({
-  accountType: z.number(),
+  accountType: z.number().nullable(),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
 type Props = {
   userRole: number | null | undefined;
-}
+};
 
 export default function SelectAccountTypeInput({ userRole }: Props) {
   const { updateUserRoleMutation } = useAuth();
@@ -27,7 +27,7 @@ export default function SelectAccountTypeInput({ userRole }: Props) {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      accountType: userRole ?? PredefinedRoles.clubOwner,
+      accountType: userRole,
     },
   });
 
@@ -40,12 +40,12 @@ export default function SelectAccountTypeInput({ userRole }: Props) {
         options: [
           {
             label: "Club",
-            value: PredefinedRoles.clubOwner,
+            value: 2,
             icon: <FaRegBuilding className="h-6 w-6" />,
           },
           {
             label: "Player",
-            value: PredefinedRoles.player,
+            value: 3,
             icon: <FaUser className="h-6 w-6" />,
           },
         ],
@@ -61,9 +61,13 @@ export default function SelectAccountTypeInput({ userRole }: Props) {
 
   const onSubmit = async (values: FormData) => {
     await updateUserRoleMutation.mutateAsync({
-      roleId: values.accountType,
+      roleId: values.accountType as number,
     });
   };
+
+  if (updateUserRoleMutation.isPending) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <FormWrapper

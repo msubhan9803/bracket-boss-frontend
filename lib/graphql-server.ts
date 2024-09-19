@@ -22,10 +22,10 @@ interface GraphQLRequestHandlerOptions<T, V> {
 export async function graphqlServer({
   customHeaders,
 }: GraphQLServerOptions): Promise<GraphQLClient> {
-  let authToken = getAuthToken({ isServer: true });
+  let token = getAuthToken({ isServer: true });
 
-  if (authToken) {
-    graphqlClient.setHeader("Authorization", `Bearer ${authToken}`);
+  if (token?.accessToken) {
+    graphqlClient.setHeader("Authorization", `Bearer ${token.accessToken}`);
   }
 
   if (customHeaders) {
