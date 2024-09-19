@@ -1,5 +1,4 @@
-'use client';
-import { signOut } from "next-auth/react"
+"use client";
 import { CircleUser } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,8 +11,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { FaBell } from "react-icons/fa";
 import { MobileMenuButton } from "@/components/Sidebar";
+import useAuth from "@/hooks/useAuth";
 
 export default function Header() {
+  const { signOut } = useAuth();
+
   return (
     <header className="flex h-14 justify-between md:justify-end items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
       <MobileMenuButton />

@@ -1,16 +1,19 @@
-import { useSession } from "next-auth/react";
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { GET_USER_BY_ID } from "@/graphql/queries/users";
-import { useMemo } from "react";
-import { USE_USER_KEY } from "./types/useUser.types";
 import { graphqlRequestHandler } from "@/lib/graphql-client";
+import { getUser } from "@/services/cookie-handler.service";
+
+export enum USE_USER_KEY {
+  GET_USER_BY_ID = "GET_USER_BY_ID",
+}
 
 export default function useUser() {
-  const { data: session } = useSession();
-  const userId = session?.user?.id ? parseInt(session.user.id, 10) : null;
+  const user = getUser();
+  const userId = user?.id ? parseInt(user.id) : null;
 
   const {
-    data: userDetails,
+    data: fetchedUserDetails,
     isLoading,
     error,
   } = useQuery({
@@ -19,22 +22,22 @@ export default function useUser() {
       graphqlRequestHandler({
         query: GET_USER_BY_ID,
         variables: { userId: userId as number },
-        options: { isServer: false },
       }),
     enabled: !!userId,
   });
 
   const userRole = useMemo(() => {
-    if (userDetails?.getUserById.roles) {
-      const role = userDetails.getUserById.roles[0].id;
+    if (fetchedUserDetails?.getUserById.roles) {
+      const role = fetchedUserDetails.getUserById.roles[0].id;
       return parseInt(role);
     }
     return null;
-  }, [userDetails]);
+  }, [fetchedUserDetails]);
 
   return {
+    session: getUser(),
     userId,
-    userDetails,
+    fetchedUserDetails,
     isLoading,
     error,
     userRole,

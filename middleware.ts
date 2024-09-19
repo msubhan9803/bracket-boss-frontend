@@ -1,11 +1,15 @@
-import { createMiddleware, type MiddlewareConfig, MiddlewareFunctionProps } from "@rescale/nemo";
-import { getToken } from "next-auth/jwt";
+import {
+  createMiddleware,
+  type MiddlewareConfig,
+  MiddlewareFunctionProps,
+} from "@rescale/nemo";
 import { NextResponse } from "next/server";
+import { getAuthToken } from "./services/cookie-handler.service";
 
 export const guestMiddleware = async ({ request }: MiddlewareFunctionProps) => {
-  const token = await getToken({ req: request });
+  const token = getAuthToken({ isServer: true });
 
-  if (token) {
+  if (token?.accessToken) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
@@ -15,9 +19,9 @@ export const guestMiddleware = async ({ request }: MiddlewareFunctionProps) => {
 export const authenticatedMiddleware = async ({
   request,
 }: MiddlewareFunctionProps) => {
-  const token = await getToken({ req: request });
+  const token = getAuthToken({ isServer: true });
 
-  if (!token) {
+  if (!token?.accessToken) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
@@ -38,14 +42,14 @@ const middlewares = {
    * Redirect to /dashboard if user is authenticated
    */
   "/login": [guestMiddleware],
-  "/onboarding/register": [guestMiddleware],
+  "/register": [guestMiddleware],
 
   /*
    * Match all routes, but exclude the ones specified.
-   * This example excludes `/`, `/login`, `/onboarding/register`, etc..
+   * This example excludes `/`, `/login`, `/register`, etc..
    * Redirect to /login if user isn't authenticated
    */
-  "/((?!login|onboarding/register|$).*)": [authenticatedMiddleware],
+  "/((?!login|register|$).*)": [authenticatedMiddleware],
 } satisfies MiddlewareConfig;
 
 // Create middlewares helper

@@ -26,8 +26,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { signOut } from "next-auth/react";
 import useAuth from "@/hooks/useAuth";
+import useUser from "@/hooks/useUser";
 
 interface RouteProps {
   href: string;
@@ -55,6 +55,7 @@ const routeList: RouteProps[] = [
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { session } = useUser();
 
   return (
     <header className="sticky border-b-[1px] top-0 z-40 w-full bg-white dark:border-b-slate-700 dark:bg-background">
@@ -125,8 +126,7 @@ export const Navbar = () => {
           </nav>
 
           <div className="hidden md:flex gap-2">
-            <LoginButton href="/login" />
-            <UserAvatar />
+            {session ? <UserAvatar /> : <LoginButton href="/login" />}
             <ThemeSwitcherButton />
           </div>
         </NavigationMenuList>
@@ -136,9 +136,7 @@ export const Navbar = () => {
 };
 
 const UserAvatar = () => {
-  const { session } = useAuth();
-
-  if (!session) return;
+  const { signOut } = useAuth();
 
   return (
     <DropdownMenu>
@@ -179,10 +177,6 @@ const LoginButton: React.FC<LoginButtonProps> = ({
   width = "w-[110px]",
   variant = "default",
 }) => {
-  const { session } = useAuth();
-
-  if (session) return;
-
   return (
     <Link
       rel="noreferrer noopener"

@@ -8,7 +8,7 @@ import "@/styles/index.css";
 import Providers from "@/lib/providers";
 import AuthSideImage from "@/public/images/auth-side-image-sportsman.jpeg";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans", preload: true });
 
 export const metadata: Metadata = {
   title: "The Bracket Boss - Onboarding",

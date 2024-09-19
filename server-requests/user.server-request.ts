@@ -1,9 +1,9 @@
 import { GET_USER_BY_ID } from "@/graphql/queries/users";
 import { GetUserByIdQuery } from "@/graphql/generated/graphql";
-import { graphqlRequestHandler } from "@/lib/graphql-client";
+import { graphqlRequestHandlerServer } from "@/lib/graphql-server";
 
 export const getUserById = async (userId: number) => {
-  const data = await graphqlRequestHandler({
+  const data = await graphqlRequestHandlerServer({
     query: GET_USER_BY_ID,
     variables: { userId },
     options: { isServer: true },

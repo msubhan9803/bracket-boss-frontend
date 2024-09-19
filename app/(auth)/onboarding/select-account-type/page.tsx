@@ -1,10 +1,17 @@
 import React from "react";
 import SelectAccountTypeInput from "./_components/SelectAccountTypeInput";
-import { getUserRole, getUserSessionServer } from "@/services/user.service";
+import { getUser } from "@/services/cookie-handler.service";
+import { getUserById } from "@/server-requests/user.server-request";
 
 export default async function SelectAccountType() {
-  const { userDetails } = await getUserSessionServer();
-  const userRole = getUserRole(userDetails);
+  const user = getUser({ isServer: true });
+  const userId = parseInt(user?.id as string);
+  const userDetails = await getUserById(userId);
+  // const userRole =
+  //   userDetails.roles && userDetails.roles?.length > 0
+  //     ? parseInt(userDetails.roles[0].id)
+  //     : null;
+  const userRole = null;
 
   return (
     <div className="mx-auto grid w-[350px] gap-6">

@@ -9,19 +9,20 @@ const graphqlClient = new GraphQLClient(
 );
 
 interface GraphQLServerOptions {
+  isServer: boolean;
   customHeaders?: Record<string, string>;
 }
 
 interface GraphQLRequestHandlerOptions<T, V> {
   query: TypedDocumentNode<T, V>;
   variables?: V;
-  options?: GraphQLServerOptions;
+  options: GraphQLServerOptions;
 }
 
 export async function graphqlServer({
   customHeaders,
 }: GraphQLServerOptions): Promise<GraphQLClient> {
-  let authToken = getAuthToken();
+  let authToken = getAuthToken({ isServer: true });
 
   if (authToken) {
     graphqlClient.setHeader("Authorization", `Bearer ${authToken}`);
@@ -36,7 +37,7 @@ export async function graphqlServer({
   return graphqlClient;
 }
 
-export const graphqlRequestHandler = async <
+export const graphqlRequestHandlerServer = async <
   T,
   V extends { [key: string]: any }
 >({
@@ -44,7 +45,7 @@ export const graphqlRequestHandler = async <
   variables,
   options,
 }: GraphQLRequestHandlerOptions<T, V>): Promise<T> => {
-  const gql = await graphqlServer(options ?? {});
+  const gql = await graphqlServer(options);
 
   try {
     const data = await gql.request<T>(query, variables);

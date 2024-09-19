@@ -4,7 +4,7 @@ import { NextPageLayout } from "@/global";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans", preload: true });
 
 export const metadata: Metadata = {
   title: "The Bracket Boss Dashboard",

@@ -6,7 +6,7 @@ import "@/styles/globals.css";
 import "@/styles/index.css";
 import Providers from "@/lib/providers";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans", preload: true });
 
 export const metadata: Metadata = {
   title: "The Bracket Boss",
