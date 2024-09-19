@@ -27,7 +27,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import useAuth from "@/hooks/useAuth";
-import useUser from "@/hooks/useUser";
+import { getUser } from "@/services/cookie-handler.service";
 
 interface RouteProps {
   href: string;
@@ -55,7 +55,8 @@ const routeList: RouteProps[] = [
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const { session } = useUser();
+  const user = getUser({ isServer: true });
+  const session = user?.id;
 
   return (
     <header className="sticky border-b-[1px] top-0 z-40 w-full bg-white dark:border-b-slate-700 dark:bg-background">
@@ -67,7 +68,7 @@ export const Navbar = () => {
               href="/"
               className="ml-2 font-bold text-xl flex items-center"
             >
-              <Image src={Logo} alt="logo" width={70} height={70} />
+              <Image src={Logo} alt="logo" width={70} height={70} priority />
               The Bracket Boss
             </a>
           </NavigationMenuItem>
@@ -76,7 +77,7 @@ export const Navbar = () => {
           <span className="flex md:hidden">
             <ThemeSwitcherButton />
 
-            <UserAvatar />
+            {session ? <UserAvatar /> : <LoginButton href="/login" />}
 
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger className="px-2">

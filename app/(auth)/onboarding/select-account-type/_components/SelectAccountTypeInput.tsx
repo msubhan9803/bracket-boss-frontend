@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import useAuth from "@/hooks/useAuth";
 import AccountRoleCard from "./AccountRoleCard";
 import LoadingSpinner from "@/components/core/LoadingSpinner";
+import { PredefinedSystemRoles } from "@/lib/app-types";
 
 const formSchema = z.object({
   accountType: z.number().nullable(),
@@ -40,12 +41,12 @@ export default function SelectAccountTypeInput({ userRole }: Props) {
         options: [
           {
             label: "Club",
-            value: 2,
+            value: PredefinedSystemRoles.clubOwner,
             icon: <FaRegBuilding className="h-6 w-6" />,
           },
           {
             label: "Player",
-            value: 3,
+            value: PredefinedSystemRoles.player,
             icon: <FaUser className="h-6 w-6" />,
           },
         ],
