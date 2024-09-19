@@ -1,16 +1,16 @@
 import { useMemo } from "react";
-import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import { GET_USER_BY_ID } from "@/graphql/queries/users";
 import { graphqlRequestHandler } from "@/lib/graphql-client";
+import { getCookie } from "cookies-next";
 
 export enum USE_USER_KEY {
   GET_USER_BY_ID = "GET_USER_BY_ID",
 }
 
 export default function useUser() {
-  const { data: session } = useSession();
-  const userId = session?.user?.id ? parseInt(session.user.id, 10) : null;
+  const user = getCookie('user') as any;
+  const userId = user?.id ? parseInt(user.id, 10) : null;
 
   const {
     data: userDetails,

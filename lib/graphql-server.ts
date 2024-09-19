@@ -1,6 +1,6 @@
 import { GraphQLClient } from "graphql-request";
 import { redirect } from "next/navigation";
-import { getCookie } from 'cookies-next';
+import { cookies } from "next/headers";
 import { TypedDocumentNode } from "@graphql-typed-document-node/core";
 import { GraphQLErrorResponse } from "@/global";
 
@@ -20,10 +20,9 @@ interface GraphQLRequestHandlerOptions<T, V> {
 }
 
 export async function graphqlServer({
-  isServer,
   customHeaders,
 }: GraphQLServerOptions): Promise<GraphQLClient> {
-  let authToken = getCookie('auth-token') as any
+  let authToken = cookies().get("auth-token")?.value as any;
 
   if (authToken) {
     graphqlClient.setHeader("Authorization", `Bearer ${authToken}`);
@@ -38,9 +37,14 @@ export async function graphqlServer({
   return graphqlClient;
 }
 
-export const graphqlRequestHandler = async <T, V extends { [key: string]: any }>(
-  { query, variables, options }: GraphQLRequestHandlerOptions<T, V>
-): Promise<T> => {
+export const graphqlRequestHandler = async <
+  T,
+  V extends { [key: string]: any }
+>({
+  query,
+  variables,
+  options,
+}: GraphQLRequestHandlerOptions<T, V>): Promise<T> => {
   const gql = await graphqlServer(options);
 
   try {

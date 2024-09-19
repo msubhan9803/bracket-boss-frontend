@@ -1,10 +1,10 @@
 "use client";
-import { useSession } from "next-auth/react";
 import { useMutation } from "@tanstack/react-query";
-import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { setCookie } from "cookies-next";
 import {
+  LOGIN,
   REGISTER_USER,
   UPDATE_USER_ROLE,
   VERIFY_EMAIL,
@@ -24,46 +24,32 @@ export enum USE_AUTH_KEY {
   UPDATE_USER_ROLE = "UPDATE_USER_ROLE",
 }
 
-const DASHBOARD_URL = '/dashboard';
+const DASHBOARD_URL = "/dashboard";
 
 export enum ONBOARDING_STEPS {
   STEP_1 = "/verify-email",
   STEP_2 = "/select-account-type",
   STEP_3_CLUB = "/club-info",
   STEP_3_PLAYER = "/select-your-club",
-  LAST_STEP = DASHBOARD_URL
+  LAST_STEP = DASHBOARD_URL,
 }
 
 export default function useAuth() {
-  const { data: session } = useSession();
   const router = useRouter();
-
-  const handleNextAuthLogin = async (email: string, password: string) => {
-    try {
-      const res = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      });
-
-      if (res?.error) {
-        throw new Error(res.error);
-      }
-    } catch (error) {
-      throw error;
-    }
-  };
 
   const loginMutation = useMutation({
     mutationKey: [USE_AUTH_KEY.LOGIN_USER],
-    mutationFn: async ({
-      email,
-      password,
-    }: {
-      email: string;
-      password: string;
-    }) => handleNextAuthLogin(email, password),
-    onSuccess: () => {
+    mutationFn: async (variables: { email: string; password: string }) =>
+      graphqlRequestHandler({
+        query: LOGIN,
+        variables: { input: variables },
+        options: { isServer: false },
+      }),
+    onSuccess: (res) => {
+      setCookie("auth-token", res.login.authTokens.accessToken);
+      setCookie("user", res.login.user);
+
+
       toast.success("Successfully logged in");
       router.push(DASHBOARD_URL);
     },
@@ -80,11 +66,14 @@ export default function useAuth() {
         variables: { input: variables },
         options: { isServer: false },
       }),
-    onSuccess: async (data: RegisterMutation, variables: RegisterInputDto) => {
+    onSuccess: async (
+      data: RegisterMutation,
+      { email, password }: RegisterInputDto
+    ) => {
       toast.success(data.register.message);
 
       try {
-        await handleNextAuthLogin(variables.email, variables.password);
+        loginMutation.mutate({ email, password });
         router.push(ONBOARDING_STEPS.STEP_1);
       } catch (error) {
         const err = error as Error;
@@ -130,9 +119,7 @@ export default function useAuth() {
   });
 
   return {
-    session,
     loginMutation,
-    handleNextAuthLogin,
     registerUserMutation,
     verifyEmailMutation,
     updateUserRoleMutation,

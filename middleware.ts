@@ -1,9 +1,9 @@
 import { createMiddleware, type MiddlewareConfig, MiddlewareFunctionProps } from "@rescale/nemo";
-import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
+import { cookies } from 'next/headers';
 
 export const guestMiddleware = async ({ request }: MiddlewareFunctionProps) => {
-  const token = await getToken({ req: request });
+  const token = cookies().get('auth-token')?.value;
 
   if (token) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
@@ -15,7 +15,7 @@ export const guestMiddleware = async ({ request }: MiddlewareFunctionProps) => {
 export const authenticatedMiddleware = async ({
   request,
 }: MiddlewareFunctionProps) => {
-  const token = await getToken({ req: request });
+  const token = cookies().get('auth-token')?.value;
 
   if (!token) {
     return NextResponse.redirect(new URL("/login", request.url));

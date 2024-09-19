@@ -26,8 +26,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { signOut } from "next-auth/react";
-import useAuth from "@/hooks/useAuth";
 
 interface RouteProps {
   href: string;
@@ -136,9 +134,9 @@ export const Navbar = () => {
 };
 
 const UserAvatar = () => {
-  const { session } = useAuth();
+  // const { session } = useAuth();
 
-  if (!session) return;
+  // if (!session) return;
 
   return (
     <DropdownMenu>
@@ -154,7 +152,7 @@ const UserAvatar = () => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => signOut()}>Logout</DropdownMenuItem>
+        {/* <DropdownMenuItem onClick={() => signOut()}>Logout</DropdownMenuItem> */}
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -179,9 +177,9 @@ const LoginButton: React.FC<LoginButtonProps> = ({
   width = "w-[110px]",
   variant = "default",
 }) => {
-  const { session } = useAuth();
+  // const { session } = useAuth();
 
-  if (session) return;
+  // if (session) return;
 
   return (
     <Link

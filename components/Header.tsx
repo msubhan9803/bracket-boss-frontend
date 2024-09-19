@@ -1,5 +1,4 @@
 "use client";
-import { signOut } from "next-auth/react";
 import { CircleUser } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -36,7 +35,7 @@ export default function Header() {
           <DropdownMenuItem>Settings</DropdownMenuItem>
           <DropdownMenuItem>Support</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => signOut()}>Logout</DropdownMenuItem>
+          {/* <DropdownMenuItem onClick={() => signOut()}>Logout</DropdownMenuItem> */}
         </DropdownMenuContent>
       </DropdownMenu>
     </header>

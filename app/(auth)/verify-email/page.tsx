@@ -1,11 +1,10 @@
 import React from "react";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import EmailVerificationOtpInput from "./_components/EmailVerificationOtpInput";
+import { getCookie } from "cookies-next";
 
 export default async function VerifyEmail() {
-  const session = await getServerSession(authOptions);
-  const userEmail = session?.user?.email || "your email";
+  const user = getCookie('user') as any;
+  const userEmail = user?.email || "your email";
 
   return (
     <div className="mx-auto grid w-[350px] gap-6">
