@@ -1,17 +1,14 @@
 import Link from "next/link";
-import {
-  FaHome,
-  FaBox,
-  FaUsers,
-  FaChartLine,
-  FaComments,
-  FaCog,
-} from "react-icons/fa";
-import { MdSportsScore } from "react-icons/md";
-import { PiCourtBasketballFill } from "react-icons/pi";
-import { FaUsersRectangle } from "react-icons/fa6";
-import { MdSportsTennis } from "react-icons/md";
-import { MdScoreboard } from "react-icons/md";
+import { FaHome } from "@react-icons/all-files/fa/FaHome";
+import { FaBox } from "@react-icons/all-files/fa/FaBox";
+import { FaUsers } from "@react-icons/all-files/fa/FaUsers";
+import { FaChartLine } from "@react-icons/all-files/fa/FaChartLine";
+import { FaComments } from "@react-icons/all-files/fa/FaComments";
+import { FaCog } from "@react-icons/all-files/fa/FaCog";
+import { FaFlagCheckered } from "@react-icons/all-files/fa/FaFlagCheckered";
+import { GiTennisCourt } from "@react-icons/all-files/gi/GiTennisCourt";
+import { RiUserSettingsFill } from "@react-icons/all-files/ri/RiUserSettingsFill";
+import { GiTennisRacket } from "@react-icons/all-files/gi/GiTennisRacket";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,19 +26,19 @@ const menuItems = [
   {
     href: "/league-management",
     label: "League Management",
-    icon: MdSportsTennis,
+    icon: GiTennisRacket,
     isActive: false,
   },
   {
     href: "/tournament-management",
     label: "Tournament Management",
-    icon: MdSportsScore,
+    icon: FaFlagCheckered,
     isActive: false,
   },
   {
     href: "/club-management",
     label: "Club Management",
-    icon: FaUsersRectangle,
+    icon: RiUserSettingsFill,
     isActive: false,
   },
   {
@@ -53,7 +50,7 @@ const menuItems = [
   {
     href: "/court-management",
     label: "Court Management",
-    icon: PiCourtBasketballFill,
+    icon: GiTennisCourt,
     isActive: false,
   },
   {
@@ -65,7 +62,7 @@ const menuItems = [
   {
     href: "/score-standings",
     label: "Score & Standings",
-    icon: MdScoreboard,
+    icon: GiTennisRacket,
     isActive: false,
   },
   {

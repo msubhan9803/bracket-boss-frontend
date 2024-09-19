@@ -1,12 +1,11 @@
 import Link from "next/link";
-import { FcGoogle } from "react-icons/fc";
-import { FaFacebook } from "react-icons/fa";
+import { FcGoogle } from "@react-icons/all-files/fc/FcGoogle";
+import { FaFacebook } from "@react-icons/all-files/fa/FaFacebook";
 import LoginForm from "./_components/LoginForm";
 import { Button } from "@/components/ui/button";
-import { IconType } from "react-icons/lib";
 
 interface SocialButtonProps extends React.ComponentProps<typeof Button> {
-  icon: IconType;
+  icon: any;
   label: string;
 }
 

@@ -1,5 +1,5 @@
-'use client';
-import { signOut } from "next-auth/react"
+"use client";
+import { signOut } from "next-auth/react";
 import { CircleUser } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { FaBell } from "react-icons/fa";
+import { FaBell } from "@react-icons/all-files/fa/FaBell";
 import { MobileMenuButton } from "@/components/Sidebar";
 
 export default function Header() {

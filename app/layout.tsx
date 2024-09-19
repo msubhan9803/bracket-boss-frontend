@@ -27,12 +27,7 @@ export default function RootLayout({
         )}
       >
         <Providers>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             {children}
           </ThemeProvider>
         </Providers>

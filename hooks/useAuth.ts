@@ -122,7 +122,7 @@ export default function useAuth() {
         options: { isServer: false },
       }),
     onSuccess: () => {
-      router.push(ONBOARDING_STEPS.STEP_3_CLUB);
+      router.push(ONBOARDING_STEPS.LAST_STEP);
     },
     onError: (error) => {
       toast.error(error.message);
