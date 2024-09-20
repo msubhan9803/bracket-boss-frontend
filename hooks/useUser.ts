@@ -28,7 +28,7 @@ export default function useUser() {
 
   const userRole = useMemo(() => {
     if (userDetails?.getUserById.roles) {
-      const role = userDetails.getUserById.roles[0].id;
+      const role = userDetails.getUserById?.roles[0]?.id;
       return parseInt(role);
     }
     return null;

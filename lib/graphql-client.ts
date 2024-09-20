@@ -1,5 +1,4 @@
 import { GraphQLClient } from "graphql-request";
-import { redirect } from "next/navigation";
 import { TypedDocumentNode } from "@graphql-typed-document-node/core";
 import { GraphQLErrorResponse } from "@/global";
 import { getAuthToken } from "@/services/cookie-handler.service";
@@ -45,7 +44,7 @@ export const graphqlRequestHandler = async <
   options,
 }: GraphQLRequestHandlerOptions<T, V>): Promise<T> => {
   const gql = await graphqlServer(options ?? {});
-
+  
   try {
     const data = await gql.request<T>(query, variables);
     return data;
@@ -56,13 +55,13 @@ export const graphqlRequestHandler = async <
       (err) => (err?.extensions?.originalError?.error as string) ?? err.message
     );
 
-    const unauthenticatedError = errors?.find(
+    const unauthenticatedError = errors?.some(
       (err: string) =>
         err.includes("Unauthenticated") || err.includes("Unauthorized")
     );
 
     if (unauthenticatedError) {
-      redirect("/login?logout=1");
+      window.location.href = "/login?logout=1";
     }
 
     throw new Error(errors?.join(", ") ?? "An unknown error occurred");

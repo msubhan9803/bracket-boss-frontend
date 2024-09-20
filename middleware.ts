@@ -8,6 +8,11 @@ import { getAuthToken } from "./services/cookie-handler.service";
 
 export const guestMiddleware = async ({ request }: MiddlewareFunctionProps) => {
   const token = getAuthToken({ isServer: true });
+  const url = new URL(request.url);
+
+  if (url.searchParams.get('logout') === '1') {
+    return NextResponse.next();
+  }
 
   if (token?.accessToken) {
     return NextResponse.redirect(new URL("/dashboard", request.url));

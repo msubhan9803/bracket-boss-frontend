@@ -1,13 +1,15 @@
+"use client"
 import PageTitle from "@/components/PageTitle";
+import useUser from "@/hooks/useUser";
 
 export default function Dashboard() {
+  const { userDetails } = useUser();
+
   return (
     <>
-       <PageTitle
+      <PageTitle
         title="Dashboard"
-        breadcrumbs={[
-          { label: "Dashboard", href: "/dashboard" },
-        ]}
+        breadcrumbs={[{ label: "Dashboard", href: "/dashboard" }]}
       />
 
       <div
@@ -18,6 +20,7 @@ export default function Dashboard() {
           <h3 className="text-2xl font-bold tracking-tight">
             Analytics of The Bracket Boss
           </h3>
+          <h2 className="text-primary">{userDetails?.getUserById.name}</h2>
         </div>
       </div>
     </>
