@@ -44,7 +44,7 @@ export default function InputOTPForm({ userEmail }: Props) {
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const variables: VerifyEmailInputDto = {
       email: userEmail,
-      otp: parseInt(data.pin),
+      otp: data.pin,
     };
 
     await verifyEmailMutation.mutateAsync(variables);

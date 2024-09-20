@@ -158,7 +158,7 @@ export type User = {
 
 export type VerifyEmailInputDto = {
   email: Scalars['String']['input'];
-  otp: Scalars['Float']['input'];
+  otp: Scalars['String']['input'];
 };
 
 export type RegisterMutationVariables = Exact<{
