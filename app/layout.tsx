@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
-import { ThemeProvider } from "@/components/theme-provider";
+import Providers from "@/lib/providers";
 import "@/styles/globals.css";
 import "@/styles/index.css";
-import Providers from "@/lib/providers";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans", preload: true });
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  preload: true,
+});
 
 export const metadata: Metadata = {
   title: "The Bracket Boss",
@@ -26,16 +29,7 @@ export default function RootLayout({
           inter.variable
         )}
       >
-        <Providers>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-          </ThemeProvider>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
