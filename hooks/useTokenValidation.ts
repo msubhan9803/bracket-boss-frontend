@@ -1,27 +1,36 @@
-import { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { deleteCookie } from 'cookies-next'
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+  clearAllCookies,
+  getAuthToken,
+} from "@/services/cookie-handler.service";
+
+const isTokenExpired = (expiresIn: number) => {
+  return Date.now() > expiresIn;
+};
 
 export default function useTokenValidation() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const logout = searchParams.get('logout')
-  const [error, setError] = useState<string | null>(null)
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const logout = searchParams.get("logout");
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     try {
-      if (logout === '1') {
-        deleteCookie('auth-token')
-        router.replace('/login')
+      const authToken = getAuthToken();
+      if (!authToken || isTokenExpired(authToken.expiresIn) || logout === "1") {
+        clearAllCookies();
+        router.replace("/login");
+        return;
       }
     } catch (err) {
       if (err instanceof Error) {
-        setError(err.message)
+        setError(err.message);
       } else {
-        setError('An unknown error occurred')
+        setError("An unknown error occurred");
       }
     }
-  }, [logout, router])
+  }, [logout, router]);
 
-  return { error }
+  return { error };
 }
