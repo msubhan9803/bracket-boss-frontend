@@ -3,10 +3,12 @@ import React from "react";
 import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useAuth from "@/hooks/useAuth";
 import { DynamicFormField } from "@/global";
 import FormWrapper from "@/components/core/FormWrapper";
+import { ONBOARDING_STEPS } from "@/lib/app-types";
 
 const formSchema = z
   .object({
@@ -28,6 +30,7 @@ type FormData = z.infer<typeof formSchema>;
 
 export default function RegisterForm() {
   const { registerUserMutation } = useAuth();
+  const router = useRouter();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -72,6 +75,7 @@ export default function RegisterForm() {
   const onSubmit = async (values: FormData) => {
     const { name, email, password } = values;
     await registerUserMutation.mutateAsync({ name, email, password });
+    router.push(ONBOARDING_STEPS.STEP_1);
   };
 
   return (

@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 import {
   Form,
   FormControl,
@@ -18,6 +19,7 @@ import {
 } from "@/components/ui/input-otp";
 import useAuth from "@/hooks/useAuth";
 import { VerifyEmailInputDto } from "@/graphql/generated/graphql";
+import { ONBOARDING_STEPS } from "@/lib/app-types";
 
 type Props = {
   userEmail: string;
@@ -39,13 +41,13 @@ export default function InputOTPForm({ userEmail }: Props) {
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
     const variables: VerifyEmailInputDto = {
       email: userEmail,
       otp: parseInt(data.pin),
     };
 
-    verifyEmailMutation.mutate(variables);
+    await verifyEmailMutation.mutateAsync(variables);
   }
 
   return (

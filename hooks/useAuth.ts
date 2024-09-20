@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import {
   LOGIN,
+  REFRESH_TOKEN,
   REGISTER_USER,
   UPDATE_USER_ROLE,
   VERIFY_EMAIL,
@@ -20,23 +21,14 @@ import {
   setAuthToken,
   setUser,
 } from "@/services/cookie-handler.service";
+import { LOGIN_URL, ONBOARDING_STEPS } from "@/lib/app-types";
 
 export enum USE_AUTH_KEY {
   REGISTER_USER = "REGISTER_USER",
   LOGIN_USER = "LOGIN_USER",
+  REFRESH_TOKEN = "REFRESH_TOKEN",
   VERIFY_EMAIL = "VERIFY_EMAIL",
   UPDATE_USER_ROLE = "UPDATE_USER_ROLE",
-}
-
-const DASHBOARD_URL = "/dashboard";
-const LOGIN_URL = "/login";
-
-export enum ONBOARDING_STEPS {
-  STEP_1 = "/onboarding/verify-email",
-  STEP_2 = "/onboarding/select-account-type",
-  STEP_3_CLUB = "/onboarding/club-info",
-  STEP_3_PLAYER = "/onboarding/select-your-club",
-  LAST_STEP = DASHBOARD_URL,
 }
 
 export default function useAuth() {
@@ -52,9 +44,20 @@ export default function useAuth() {
     onSuccess: (res) => {
       setAuthToken(res.login.authTokens);
       setUser(res.login.user);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
 
-      toast.success("Successfully logged in");
-      router.push(DASHBOARD_URL);
+  const refreshTokenMutation = useMutation({
+    mutationKey: [USE_AUTH_KEY.REFRESH_TOKEN],
+    mutationFn: async () =>
+      graphqlRequestHandler({
+        query: REFRESH_TOKEN,
+      }),
+    onSuccess: () => {
+      console.log('token refreshed!')
     },
     onError: (error) => {
       toast.error(error.message);
@@ -75,8 +78,7 @@ export default function useAuth() {
       toast.success(data.register.message);
 
       try {
-        loginMutation.mutate({ email, password });
-        router.push(ONBOARDING_STEPS.STEP_1);
+        await loginMutation.mutateAsync({ email, password });
       } catch (error) {
         const err = error as Error;
         toast.error(err.message);
@@ -126,6 +128,7 @@ export default function useAuth() {
 
   return {
     loginMutation,
+    refreshTokenMutation,
     registerUserMutation,
     verifyEmailMutation,
     updateUserRoleMutation,

@@ -50,6 +50,7 @@ export const getSession = (
   if (config.isServer && serverCookies) {
     try {
       const serverCookie = serverCookies().get("user")?.value;
+
       if (!serverCookie) return null;
       return JSON.parse(serverCookie as string) as UserCookie;
     } catch (e) {
@@ -58,6 +59,7 @@ export const getSession = (
     }
   } else {
     const clientCookie = getCookie("user");
+
     if (!clientCookie) return null;
     try {
       return JSON.parse(clientCookie as string) as UserCookie;

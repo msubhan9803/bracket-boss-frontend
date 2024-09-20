@@ -2,10 +2,13 @@
 import React, { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useAuth from "@/hooks/useAuth";
 import { DynamicFormField } from "@/global";
 import FormWrapper from "@/components/core/FormWrapper";
+import { DASHBOARD_URL } from "@/lib/app-types";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -23,6 +26,7 @@ type SubmitValuesType = {
 
 export default function LoginForm() {
   const { loginMutation } = useAuth();
+  const router = useRouter();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -53,6 +57,8 @@ export default function LoginForm() {
   const onSubmit = async (values: SubmitValuesType) => {
     const { email, password } = values;
     await loginMutation.mutateAsync({ email, password });
+    toast.success("Successfully logged in");
+    router.push(DASHBOARD_URL);
   };
 
   return (
