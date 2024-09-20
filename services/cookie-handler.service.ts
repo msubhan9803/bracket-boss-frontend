@@ -44,7 +44,7 @@ export const getAuthToken = (
   }
 };
 
-export const getUser = (
+export const getSession = (
   config: CookieHandlerConfig = {}
 ): UserCookie | null => {
   if (config.isServer && serverCookies) {

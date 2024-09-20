@@ -16,6 +16,8 @@ export const metadata: Metadata = {
   description: "Created by The Bracket Boss",
 };
 
+export const dynamic = 'force-dynamic'
+
 export default function RootLayout({
   children,
 }: Readonly<{

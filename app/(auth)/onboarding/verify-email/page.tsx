@@ -1,10 +1,10 @@
 import React from "react";
 import EmailVerificationOtpInput from "./_components/EmailVerificationOtpInput";
-import { getUser } from "@/services/cookie-handler.service";
+import { getSession } from "@/services/cookie-handler.service";
 
 export default async function VerifyEmail() {
-  const user = getUser({ isServer: true });
-  const userEmail = user?.email || "your email";
+  const session = getSession({ isServer: true });
+  const userEmail = session?.email || "your email";
 
   return (
     <div className="mx-auto grid w-[350px] gap-6">

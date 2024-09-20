@@ -1,13 +1,13 @@
 import React from "react";
 import SelectAccountTypeInput from "./_components/SelectAccountTypeInput";
-import { getUser } from "@/services/cookie-handler.service";
+import { getSession } from "@/services/cookie-handler.service";
 import { getUserById } from "@/server-requests/user.server-request";
 
 async function getUserRole() {
-  const user = getUser({ isServer: true });
+  const session = getSession({ isServer: true });
 
-  if (user?.id) {
-    const userDetails = await getUserById(parseInt(user.id));
+  if (session) {
+    const userDetails = await getUserById(parseInt(session.id));
 
     if (!userDetails) return null;
     if (userDetails.roles?.length === 0 || !userDetails.roles) return null;

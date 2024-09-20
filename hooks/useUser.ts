@@ -2,18 +2,18 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { GET_USER_BY_ID } from "@/graphql/queries/users";
 import { graphqlRequestHandler } from "@/lib/graphql-client";
-import { getUser } from "@/services/cookie-handler.service";
+import { getSession } from "@/services/cookie-handler.service";
 
 export enum USE_USER_KEY {
   GET_USER_BY_ID = "GET_USER_BY_ID",
 }
 
 export default function useUser() {
-  const user = getUser();
-  const userId = user?.id ? parseInt(user.id) : null;
+  const session = getSession();
+  const userId = session?.id ? parseInt(session.id) : null;
 
   const {
-    data: fetchedUserDetails,
+    data: userDetails,
     isLoading,
     error,
   } = useQuery({
@@ -27,17 +27,16 @@ export default function useUser() {
   });
 
   const userRole = useMemo(() => {
-    if (fetchedUserDetails?.getUserById.roles) {
-      const role = fetchedUserDetails.getUserById.roles[0].id;
+    if (userDetails?.getUserById.roles) {
+      const role = userDetails.getUserById.roles[0].id;
       return parseInt(role);
     }
     return null;
-  }, [fetchedUserDetails]);
+  }, [userDetails]);
 
   return {
-    session: getUser(),
-    userId,
-    fetchedUserDetails,
+    session: getSession(),
+    userDetails,
     isLoading,
     error,
     userRole,

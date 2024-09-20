@@ -27,7 +27,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import useAuth from "@/hooks/useAuth";
-import { getUser } from "@/services/cookie-handler.service";
+import { getSession } from "@/services/cookie-handler.service";
 
 interface RouteProps {
   href: string;
@@ -55,8 +55,7 @@ const routeList: RouteProps[] = [
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const user = getUser({ isServer: true });
-  const session = user?.id;
+  const session = getSession({ isServer: true });
 
   return (
     <header className="sticky border-b-[1px] top-0 z-40 w-full bg-white dark:border-b-slate-700 dark:bg-background">
