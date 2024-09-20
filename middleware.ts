@@ -6,14 +6,10 @@ import {
 import { NextResponse } from "next/server";
 import { getAuthToken } from "./services/cookie-handler.service";
 
-const isTokenExpired = (expiresIn: number) => {
-  return Date.now() > expiresIn;
-};
-
 export const guestMiddleware = async ({ request }: MiddlewareFunctionProps) => {
   const token = getAuthToken({ isServer: true });
 
-  if (token?.accessToken && !isTokenExpired(token.expiresIn)) {
+  if (token?.accessToken) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
@@ -25,8 +21,8 @@ export const authenticatedMiddleware = async ({
 }: MiddlewareFunctionProps) => {
   const token = getAuthToken({ isServer: true });
 
-  if (!token?.accessToken || isTokenExpired(token.expiresIn)) {
-    return NextResponse.redirect(new URL("/login?logout=1", request.url));
+  if (!token?.accessToken) {
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   return NextResponse.next();
