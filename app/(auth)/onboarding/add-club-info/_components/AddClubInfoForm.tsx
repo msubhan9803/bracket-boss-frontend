@@ -9,6 +9,8 @@ import { DynamicFormField } from "@/global";
 import FormWrapper from "@/components/core/FormWrapper";
 import { ONBOARDING_STEPS } from "@/lib/app-types";
 import useFileUpload from "@/hooks/useFileUpload";
+import useClub from "@/hooks/useClub";
+import { toSlug } from "@/lib/utils";
 
 const formSchema = z.object({
   clubName: z.string().min(1, { message: "Club name is required" }),
@@ -21,6 +23,7 @@ type FormData = z.infer<typeof formSchema>;
 export default function AddClubInfoForm() {
   const router = useRouter();
   const { uploadFileMutation } = useFileUpload();
+  const { createClubMutation } = useClub();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -58,9 +61,17 @@ export default function AddClubInfoForm() {
   const onSubmit = async (values: FormData) => {
     const { clubName, description, file } = values;
 
-    const fileUrl = await uploadFileMutation.mutateAsync({ file: file as File });
+    const uploadFileRes = await uploadFileMutation.mutateAsync({
+      file: file as File,
+    });
+    const { url } = uploadFileRes.uploadFile;
 
-    console.log('🌺 file url: ', fileUrl)
+    await createClubMutation.mutateAsync({
+      name: clubName,
+      description,
+      logo: url,
+      slug: toSlug(clubName),
+    });
 
     router.push(ONBOARDING_STEPS.LAST_STEP);
   };
