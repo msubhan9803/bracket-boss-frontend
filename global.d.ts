@@ -38,6 +38,7 @@ type DynamicFormField<T extends Record<string, any> = void> = {
     | "switch"
     | "decimal"
     | "multi-select"
+    | "file"
     | "radio";
   required?: true;
   placeholder?: string;

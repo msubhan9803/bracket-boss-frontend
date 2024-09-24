@@ -21,6 +21,7 @@ import { Switch } from "../ui/switch";
 import { MultiSelect, MultiSelectItem } from "@tremor/react";
 import { cn } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import FileUploadInput from "@/components/core/FileUploadInput";
 
 type Props<T extends { [key: string]: any }> = {
   dynamicField: DynamicFormFieldType<T>;
@@ -225,6 +226,28 @@ const DynamicFormField = <T extends { [key: string]: any }>({
                   )
                 )}
               </RadioGroup>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    );
+  }
+
+  if (dynamicField.type === "file") {
+    return (
+      <FormField
+        defaultValue={dynamicField.defaultValue}
+        control={form.control}
+        name={dynamicField.name}
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{dynamicField.label}</FormLabel>
+            <FormControl>
+              <FileUploadInput
+                onChange={(file) => field.onChange(file)}
+                defaultPhotoUrl={dynamicField.defaultValue}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>

@@ -22,6 +22,8 @@ export async function graphqlServer({
 }: GraphQLServerOptions): Promise<GraphQLClient> {
   let token = getAuthToken();
 
+  graphqlClient.setHeader("x-apollo-operation-name", "custom-operation");
+
   if (token?.accessToken) {
     graphqlClient.setHeader("Authorization", `Bearer ${token.accessToken}`);
   }
