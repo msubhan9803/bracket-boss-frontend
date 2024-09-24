@@ -21,7 +21,12 @@ import {
   setAuthToken,
   setUser,
 } from "@/services/cookie-handler.service";
-import { LOGIN_URL, ONBOARDING_STEPS } from "@/lib/app-types";
+import {
+  LOGIN_URL,
+  ONBOARDING_STEPS,
+  PredefinedSystemRoles,
+} from "@/lib/app-types";
+import { selectFirstRole } from "@/services/user.service";
 
 export enum USE_AUTH_KEY {
   REGISTER_USER = "REGISTER_USER",
@@ -57,7 +62,7 @@ export default function useAuth() {
         query: REFRESH_TOKEN,
       }),
     onSuccess: () => {
-      console.log('token refreshed!')
+      console.log("token refreshed!");
     },
     onError: (error) => {
       toast.error(error.message);
@@ -112,8 +117,17 @@ export default function useAuth() {
         query: UPDATE_USER_ROLE,
         variables: { input: variables },
       }),
-    onSuccess: () => {
-      router.push(ONBOARDING_STEPS.LAST_STEP);
+    onSuccess: (res) => {
+      const selectedRole = selectFirstRole(res.updateUserRole.user.roles ?? []);
+
+      if (selectedRole?.id === PredefinedSystemRoles.clubOwner) {
+        router.push(ONBOARDING_STEPS.STEP_3_CLUB);
+        return;
+      } else if (selectedRole?.id === PredefinedSystemRoles.player) {
+        router.push(ONBOARDING_STEPS.STEP_3_PLAYER);
+      } else {
+        toast.error('Invalid role selection');
+      }
     },
     onError: (error) => {
       toast.error(error.message);

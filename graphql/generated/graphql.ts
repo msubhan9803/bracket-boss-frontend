@@ -14,17 +14,31 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  /** A custom scalar to handle numeric IDs as integers */
+  CustomID: { input: any; output: any; }
   /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: { input: any; output: any; }
 };
 
+export type Action = {
+  __typename?: 'Action';
+  createdDate: Scalars['DateTime']['output'];
+  id: Scalars['CustomID']['output'];
+  name: Scalars['String']['output'];
+  policies?: Maybe<Array<Policy>>;
+  updatedDate: Scalars['DateTime']['output'];
+};
+
 export type Club = {
   __typename?: 'Club';
+  createdDate: Scalars['DateTime']['output'];
   description: Scalars['String']['output'];
-  id: Scalars['ID']['output'];
+  id: Scalars['CustomID']['output'];
   logo: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  updatedDate: Scalars['DateTime']['output'];
   url: Scalars['String']['output'];
+  users?: Maybe<Array<User>>;
 };
 
 export type LoginInputDto = {
@@ -43,12 +57,31 @@ export type MessageResponseDto = {
   message: Scalars['String']['output'];
 };
 
+export type Module = {
+  __typename?: 'Module';
+  created_at: Scalars['DateTime']['output'];
+  id: Scalars['CustomID']['output'];
+  name: Scalars['String']['output'];
+  rolePolicyModule?: Maybe<Array<ModulePolicyRole>>;
+  updated_at: Scalars['DateTime']['output'];
+};
+
+export type ModulePolicyRole = {
+  __typename?: 'ModulePolicyRole';
+  created_at: Scalars['DateTime']['output'];
+  id: Scalars['CustomID']['output'];
+  module: Module;
+  policy: Policy;
+  role: Role;
+  updated_at: Scalars['DateTime']['output'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   login: LoginResponseDto;
   refreshToken: RefreshTokenResponseDto;
   register: MessageResponseDto;
-  updateUserRole: MessageResponseDto;
+  updateUserRole: UpdateUserResponseDto;
   verifyEmail: MessageResponseDto;
 };
 
@@ -70,6 +103,16 @@ export type MutationUpdateUserRoleArgs = {
 
 export type MutationVerifyEmailArgs = {
   input: VerifyEmailInputDto;
+};
+
+export type Policy = {
+  __typename?: 'Policy';
+  actions?: Maybe<Array<Action>>;
+  createdDate: Scalars['DateTime']['output'];
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  rolePolicyModule?: Maybe<Array<ModulePolicyRole>>;
+  updatedDate: Scalars['DateTime']['output'];
 };
 
 export type Query = {
@@ -111,14 +154,23 @@ export type RegisterInputDto = {
 
 export type Role = {
   __typename?: 'Role';
-  id: Scalars['ID']['output'];
+  createdDate: Scalars['DateTime']['output'];
+  id: Scalars['CustomID']['output'];
   name: Scalars['String']['output'];
+  rolePolicyModule?: Maybe<Array<ModulePolicyRole>>;
+  steps?: Maybe<Array<Step>>;
+  updatedDate: Scalars['DateTime']['output'];
+  users?: Maybe<Array<User>>;
 };
 
 export type Step = {
   __typename?: 'Step';
+  createdDate: Scalars['DateTime']['output'];
   id: Scalars['ID']['output'];
   name: StepNames;
+  roles?: Maybe<Array<Role>>;
+  updatedDate: Scalars['DateTime']['output'];
+  users?: Maybe<Array<User>>;
 };
 
 export enum StepNames {
@@ -137,6 +189,12 @@ export type StepsOfUserDto = {
   userId: Scalars['Float']['input'];
 };
 
+export type UpdateUserResponseDto = {
+  __typename?: 'UpdateUserResponseDto';
+  message: Scalars['String']['output'];
+  user: User;
+};
+
 export type UpdateUserRoleDto = {
   roleId: Scalars['Float']['input'];
 };
@@ -146,7 +204,7 @@ export type User = {
   clubs?: Maybe<Array<Club>>;
   created_at: Scalars['DateTime']['output'];
   email: Scalars['String']['output'];
-  id: Scalars['ID']['output'];
+  id: Scalars['CustomID']['output'];
   isEmailVerified: Scalars['Boolean']['output'];
   name: Scalars['String']['output'];
   otpSecret: Scalars['String']['output'];
@@ -173,7 +231,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponseDto', authTokens: { __typename?: 'RefreshTokenResponseDto', accessToken: string, expiresIn: number, refreshToken: string }, user: { __typename?: 'User', id: string, email: string, name: string, created_at: any, profileImage?: string | null, updated_at: any } } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponseDto', authTokens: { __typename?: 'RefreshTokenResponseDto', accessToken: string, expiresIn: number, refreshToken: string }, user: { __typename?: 'User', id: any, email: string, name: string, created_at: any, profileImage?: string | null, updated_at: any } } };
 
 export type RefreshTokenMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -192,25 +250,25 @@ export type UpdateUserRoleMutationVariables = Exact<{
 }>;
 
 
-export type UpdateUserRoleMutation = { __typename?: 'Mutation', updateUserRole: { __typename?: 'MessageResponseDto', message: string } };
+export type UpdateUserRoleMutation = { __typename?: 'Mutation', updateUserRole: { __typename?: 'UpdateUserResponseDto', message: string, user: { __typename?: 'User', id: any, roles?: Array<{ __typename?: 'Role', id: any, name: string }> | null } } };
 
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'User', id: string, email: string, name: string }> };
+export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'User', id: any, email: string, name: string }> };
 
 export type GetUserByIdQueryVariables = Exact<{
   userId: Scalars['Float']['input'];
 }>;
 
 
-export type GetUserByIdQuery = { __typename?: 'Query', getUserById: { __typename?: 'User', created_at: any, email: string, id: string, isEmailVerified: boolean, name: string, otpSecret: string, profileImage?: string | null, updated_at: any, steps?: Array<{ __typename?: 'Step', id: string, name: StepNames }> | null, roles?: Array<{ __typename?: 'Role', id: string, name: string }> | null } };
+export type GetUserByIdQuery = { __typename?: 'Query', getUserById: { __typename?: 'User', created_at: any, email: string, id: any, isEmailVerified: boolean, name: string, otpSecret: string, profileImage?: string | null, updated_at: any, steps?: Array<{ __typename?: 'Step', id: string, name: StepNames }> | null, roles?: Array<{ __typename?: 'Role', id: any, name: string }> | null } };
 
 
 export const RegisterDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Register"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RegisterInputDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"register"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]} as unknown as DocumentNode<RegisterMutation, RegisterMutationVariables>;
 export const LoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginInputDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"authTokens"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accessToken"}},{"kind":"Field","name":{"kind":"Name","value":"expiresIn"}},{"kind":"Field","name":{"kind":"Name","value":"refreshToken"}}]}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"profileImage"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]}}]}}]} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
 export const RefreshTokenDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RefreshToken"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"refreshToken"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accessToken"}},{"kind":"Field","name":{"kind":"Name","value":"expiresIn"}},{"kind":"Field","name":{"kind":"Name","value":"refreshToken"}}]}}]}}]} as unknown as DocumentNode<RefreshTokenMutation, RefreshTokenMutationVariables>;
 export const VerifyEmailDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"VerifyEmail"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"VerifyEmailInputDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"verifyEmail"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]} as unknown as DocumentNode<VerifyEmailMutation, VerifyEmailMutationVariables>;
-export const UpdateUserRoleDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateUserRole"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateUserRoleDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateUserRole"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]} as unknown as DocumentNode<UpdateUserRoleMutation, UpdateUserRoleMutationVariables>;
+export const UpdateUserRoleDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateUserRole"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateUserRoleDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateUserRole"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"roles"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]}}]} as unknown as DocumentNode<UpdateUserRoleMutation, UpdateUserRoleMutationVariables>;
 export const GetUsersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUsers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getUsers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<GetUsersQuery, GetUsersQueryVariables>;
 export const GetUserByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetUserById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getUserById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"isEmailVerified"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"otpSecret"}},{"kind":"Field","name":{"kind":"Name","value":"profileImage"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}},{"kind":"Field","name":{"kind":"Name","value":"steps"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"roles"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<GetUserByIdQuery, GetUserByIdQueryVariables>;

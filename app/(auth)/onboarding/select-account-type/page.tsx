@@ -1,9 +1,9 @@
 import React from "react";
 import SelectAccountTypeInput from "./_components/SelectAccountTypeInput";
-import { getUsersFirstRole } from "@/services/user.service";
+import { getUserRole } from "@/services/user.service";
 
 export default async function SelectAccountType() {
-  const userRole = await getUsersFirstRole();
+  const userRole = await getUserRole();
 
   return (
     <div className="mx-auto grid w-[350px] gap-6">
