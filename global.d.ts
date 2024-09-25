@@ -48,6 +48,7 @@ type DynamicFormField<T extends Record<string, any> = void> = {
   isVisible?: boolean;
   className?: string;
   render?: (data: CustomRadio) => ReactNode;
+  prefixRender?: ReactNode;
 };
 
 interface GraphQLErrorResponse {

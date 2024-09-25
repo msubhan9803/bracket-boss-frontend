@@ -1,12 +1,8 @@
 import { GraphQLClient } from "graphql-request";
-import { redirect } from "next/navigation";
 import { TypedDocumentNode } from "@graphql-typed-document-node/core";
-import { GraphQLErrorResponse } from "@/global";
-import { getAuthToken } from "@/services/cookie-handler.service";
+import { handleGraphQLErrors, initializeGraphQLClient, setHeaders } from "./graphql-utils";
 
-const graphqlClient = new GraphQLClient(
-  process.env.NEXT_PUBLIC_BACKEND_URL as string
-);
+const graphqlClient = initializeGraphQLClient();
 
 interface GraphQLServerOptions {
   isServer: boolean;
@@ -22,20 +18,7 @@ interface GraphQLRequestHandlerOptions<T, V> {
 export async function graphqlServer({
   customHeaders,
 }: GraphQLServerOptions): Promise<GraphQLClient> {
-  let token = getAuthToken({ isServer: true });
-
-  graphqlClient.setHeader("x-apollo-operation-name", "custom-operation");
-
-  if (token?.accessToken) {
-    graphqlClient.setHeader("Authorization", `Bearer ${token.accessToken}`);
-  }
-
-  if (customHeaders) {
-    for (const [header, value] of Object.entries(customHeaders)) {
-      graphqlClient.setHeader(header, value);
-    }
-  }
-
+  setHeaders(graphqlClient, customHeaders, true);
   return graphqlClient;
 }
 
@@ -53,21 +36,6 @@ export const graphqlRequestHandlerServer = async <
     const data = await gql.request<T>(query, variables);
     return data;
   } catch (err) {
-    const error = err as GraphQLErrorResponse;
-
-    const errors = error?.response?.errors?.map(
-      (err) => (err?.extensions?.originalError?.error as string) ?? err.message
-    );
-
-    const unauthenticatedError = errors?.find(
-      (err: string) =>
-        err.includes("Unauthenticated") || err.includes("Unauthorized")
-    );
-
-    if (unauthenticatedError) {
-      redirect("/login?logout=1");
-    }
-
-    throw new Error(errors?.join(", ") ?? "An unknown error occurred");
+    handleGraphQLErrors(err);
   }
 };

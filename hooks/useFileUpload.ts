@@ -47,9 +47,6 @@ export default function useFileUpload() {
         }
       );
     },
-    onSuccess: () => {
-      toast.success("File uploaded successfully");
-    },
     onError: (error) => {
       toast.error(error.message);
     },

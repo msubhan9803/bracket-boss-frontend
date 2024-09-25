@@ -101,6 +101,48 @@ const DynamicFormField = <T extends { [key: string]: any }>({
     );
   }
 
+  if (dynamicField.type === "text") {
+    return (
+      <FormField
+        defaultValue={dynamicField.defaultValue}
+        control={form.control}
+        name={dynamicField.name}
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{dynamicField.label}</FormLabel>
+            <FormControl>
+              <div className="flex">
+                {dynamicField.prefixRender && (
+                  <span
+                  className={cn(
+                    "inline-flex items-center px-3 text-sm",
+                    "text-primary/5 bg-primary/40 border border-gray-300",
+                    "rounded-e-0 border-e-0 rounded-s-md",
+                    "dark:bg-primary/40 dark:text-primary dark:border-gray-600"
+                  )}
+                  >
+                  {dynamicField.prefixRender}
+                  </span>
+                )}
+                <Input
+                  className={cn(
+                    dynamicField.prefixRender ? "rounded-none rounded-e-lg" : "",
+                    getErrorClass(dynamicField.name)
+                  )}
+                  type={dynamicField.type}
+                  required={dynamicField.required}
+                  placeholder={dynamicField.placeholder}
+                  {...field}
+                />
+              </div>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    );
+  }
+
   if (dynamicField.type === "textarea") {
     return (
       <FormField
@@ -114,6 +156,7 @@ const DynamicFormField = <T extends { [key: string]: any }>({
               <Textarea
                 className={cn(getErrorClass(dynamicField.name))}
                 required={dynamicField.required}
+                placeholder={dynamicField.placeholder}
                 {...field}
               />
             </FormControl>

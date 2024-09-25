@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -14,6 +14,7 @@ import { toSlug } from "@/lib/utils";
 
 const formSchema = z.object({
   clubName: z.string().min(1, { message: "Club name is required" }),
+  slug: z.string().min(1, { message: "Club name is required" }),
   description: z.string().min(1, { message: "Description is required" }),
   file: z.instanceof(File).nullable(),
 });
@@ -29,10 +30,13 @@ export default function AddClubInfoForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       clubName: "",
+      slug: "",
       description: "",
       file: null,
     },
   });
+
+  const clubName = form.watch("clubName");
 
   const fields = useMemo<DynamicFormField<FormData>[]>(
     () => [
@@ -41,6 +45,13 @@ export default function AddClubInfoForm() {
         name: "clubName",
         type: "text",
         placeholder: "Enter your club name",
+      },
+      {
+        label: "Public Profile Url",
+        name: "slug",
+        type: "text",
+        placeholder: "your-custom-club-url",
+        prefixRender: <p>{process.env.NEXT_PUBLIC_FRONTEND_URL}/club/</p>,
       },
       {
         label: "Description",
@@ -53,13 +64,14 @@ export default function AddClubInfoForm() {
         name: "file",
         type: "file",
         placeholder: "Upload a file",
+        className: "w-[240px]",
       },
     ],
     []
   );
 
   const onSubmit = async (values: FormData) => {
-    const { clubName, description, file } = values;
+    const { clubName, description, file, slug } = values;
 
     const uploadFileRes = await uploadFileMutation.mutateAsync({
       file: file as File,
@@ -70,11 +82,15 @@ export default function AddClubInfoForm() {
       name: clubName,
       description,
       logo: url,
-      slug: toSlug(clubName),
+      slug,
     });
 
     router.push(ONBOARDING_STEPS.LAST_STEP);
   };
+
+  useEffect(() => {
+    form.setValue("slug", toSlug(form.getValues("clubName")));
+  }, [clubName]);
 
   return (
     <FormWrapper
