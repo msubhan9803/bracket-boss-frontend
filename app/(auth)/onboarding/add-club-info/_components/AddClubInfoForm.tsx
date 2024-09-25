@@ -14,7 +14,7 @@ import { toSlug } from "@/lib/utils";
 
 const formSchema = z.object({
   clubName: z.string().min(1, { message: "Club name is required" }),
-  slug: z.string().min(1, { message: "Club name is required" }),
+  slug: z.string().min(1, { message: "Profile Url is required" }),
   description: z.string().min(1, { message: "Description is required" }),
   file: z.instanceof(File).nullable(),
 });
