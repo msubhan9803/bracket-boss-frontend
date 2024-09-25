@@ -45,18 +45,3 @@ export const VERIFY_EMAIL = graphql(`
     }
   }
 `);
-
-export const UPDATE_USER_ROLE = graphql(`
-  mutation UpdateUserRole($input: UpdateUserRoleDto!) {
-    updateUserRole(input: $input) {
-      message
-      user {
-        id
-        roles {
-          id
-          name
-        }
-      }
-    }
-  }
-`);

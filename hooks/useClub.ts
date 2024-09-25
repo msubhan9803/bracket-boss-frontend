@@ -4,13 +4,13 @@ import { toast } from "sonner";
 import { graphqlRequestHandler } from "@/lib/graphql-client";
 import { CREATE_CLUB } from "@/graphql/mutations/club";
 
-export enum USE_Club_KEY {
+export enum USE_CLUB_KEY {
   CREATE_CLUB = "CREATE_CLUB",
 }
 
 export default function useClub() {
   const createClubMutation = useMutation({
-    mutationKey: [USE_Club_KEY.CREATE_CLUB],
+    mutationKey: [USE_CLUB_KEY.CREATE_CLUB],
     mutationFn: async (variables: {
       name: string;
       description: string;

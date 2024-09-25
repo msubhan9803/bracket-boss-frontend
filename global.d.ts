@@ -43,7 +43,7 @@ type DynamicFormField<T extends Record<string, any> = void> = {
   required?: true;
   placeholder?: string;
   defaultValue?: any;
-  options?: { label: string; value: any; icon?: IconType | any }[];
+  options?: { label: string | ReactNode; value: any; icon?: IconType | any }[];
   disabled?: boolean;
   isVisible?: boolean;
   className?: string;

@@ -6,12 +6,13 @@ import {
   LOGIN,
   REFRESH_TOKEN,
   REGISTER_USER,
-  UPDATE_USER_ROLE,
   VERIFY_EMAIL,
 } from "@/graphql/mutations/auth";
+import { UPDATE_USER_CLUB, UPDATE_USER_ROLE } from "@/graphql/mutations/user";
 import {
   RegisterInputDto,
   RegisterMutation,
+  UpdateUserClubDto,
   UpdateUserRoleDto,
   VerifyEmailInputDto,
 } from "@/graphql/generated/graphql";
@@ -34,6 +35,7 @@ export enum USE_AUTH_KEY {
   REFRESH_TOKEN = "REFRESH_TOKEN",
   VERIFY_EMAIL = "VERIFY_EMAIL",
   UPDATE_USER_ROLE = "UPDATE_USER_ROLE",
+  UPDATE_USER_CLUB = "UPDATE_USER_CLUB",
 }
 
 export default function useAuth() {
@@ -126,8 +128,23 @@ export default function useAuth() {
       } else if (selectedRole?.id === PredefinedSystemRoles.player) {
         router.push(ONBOARDING_STEPS.STEP_3_PLAYER);
       } else {
-        toast.error('Invalid role selection');
+        toast.error("Invalid role selection");
       }
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const updateUserClubMutation = useMutation({
+    mutationKey: [USE_AUTH_KEY.UPDATE_USER_CLUB],
+    mutationFn: (variables: UpdateUserClubDto) =>
+      graphqlRequestHandler({
+        query: UPDATE_USER_CLUB,
+        variables: { input: variables },
+      }),
+    onSuccess: () => {
+      router.push(ONBOARDING_STEPS.LAST_STEP);
     },
     onError: (error) => {
       toast.error(error.message);
@@ -145,7 +162,8 @@ export default function useAuth() {
     refreshTokenMutation,
     registerUserMutation,
     verifyEmailMutation,
-    updateUserRoleMutation,
     signOut,
+    updateUserRoleMutation,
+    updateUserClubMutation,
   };
 }

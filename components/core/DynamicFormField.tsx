@@ -1,5 +1,5 @@
 import { DynamicFormField as DynamicFormFieldType } from "@/global";
-import React, { useState } from "react";
+import React from "react";
 import { useFormContext } from "react-hook-form";
 import {
   FormControl,
@@ -39,32 +39,27 @@ const DynamicFormField = <T extends { [key: string]: any }>({
   if (dynamicField.type === "select") {
     return (
       <FormField
-        defaultValue={dynamicField.defaultValue}
         control={form.control}
         name={dynamicField.name}
         render={({ field }) => (
           <FormItem>
             <FormLabel>{dynamicField.label}</FormLabel>
-            <FormControl>
-              <Select
-                value={field.value}
-                name={field.name}
-                onValueChange={field.onChange}
-              >
+            <Select onValueChange={field.onChange} value={field.value ?? ''}>
+              <FormControl>
                 <SelectTrigger
                   className={cn("w-full", getErrorClass(dynamicField.name))}
                 >
                   <SelectValue placeholder={dynamicField.placeholder} />
                 </SelectTrigger>
-                <SelectContent>
-                  {dynamicField.options?.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FormControl>
+              </FormControl>
+              <SelectContent>
+                {dynamicField.options?.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )}
