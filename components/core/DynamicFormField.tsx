@@ -114,19 +114,21 @@ const DynamicFormField = <T extends { [key: string]: any }>({
               <div className="flex">
                 {dynamicField.prefixRender && (
                   <span
-                  className={cn(
-                    "inline-flex items-center px-3 text-sm",
-                    "text-primary/5 bg-primary/40 border border-gray-300",
-                    "rounded-e-0 border-e-0 rounded-s-md",
-                    "dark:bg-primary/40 dark:text-primary dark:border-gray-600"
-                  )}
+                    className={cn(
+                      "inline-flex items-center px-3 text-sm",
+                      "text-primary-foreground font-bold bg-primary",
+                      "rounded-e-0 border-e-0 rounded-s-md",
+                      "dark:bg-primary/80 dark:text-primary-foreground"
+                    )}
                   >
-                  {dynamicField.prefixRender}
+                    {dynamicField.prefixRender}
                   </span>
                 )}
                 <Input
                   className={cn(
-                    dynamicField.prefixRender ? "rounded-none rounded-e-lg" : "",
+                    dynamicField.prefixRender
+                      ? "rounded-none rounded-e-lg"
+                      : "",
                     getErrorClass(dynamicField.name)
                   )}
                   type={dynamicField.type}
