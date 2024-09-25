@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -31,6 +31,7 @@ type FormData = z.infer<typeof formSchema>;
 export default function RegisterForm() {
   const { registerUserMutation } = useAuth();
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -61,15 +62,18 @@ export default function RegisterForm() {
         name: "password",
         type: "password",
         placeholder: "Enter your password",
+        showPassword,
+        toggleShowPassword: () => setShowPassword(!showPassword),
       },
       {
         label: "Confirm Password",
         name: "confirmPassword",
         type: "password",
         placeholder: "Confirm your password",
+        showPassword,
       },
     ],
-    []
+    [showPassword]
   );
 
   const onSubmit = async (values: FormData) => {

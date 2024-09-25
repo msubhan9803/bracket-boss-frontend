@@ -1,5 +1,5 @@
 import { DynamicFormField as DynamicFormFieldType } from "@/global";
-import React from "react";
+import React, { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import {
   FormControl,
@@ -22,6 +22,7 @@ import { MultiSelect, MultiSelectItem } from "@tremor/react";
 import { cn } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import FileUploadInput from "@/components/core/FileUploadInput";
+import { FaEyeSlash, FaEye } from "react-icons/fa";
 
 type Props<T extends { [key: string]: any }> = {
   dynamicField: DynamicFormFieldType<T>;
@@ -293,6 +294,45 @@ const DynamicFormField = <T extends { [key: string]: any }>({
                 onChange={(file) => field.onChange(file)}
                 defaultPhotoUrl={dynamicField.defaultValue}
               />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    );
+  }
+
+  if (dynamicField.type === "password") {
+    return (
+      <FormField
+        defaultValue={dynamicField.defaultValue}
+        control={form.control}
+        name={dynamicField.name}
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{dynamicField.label}</FormLabel>
+            <FormControl>
+              <div className="relative">
+                <Input
+                  type={dynamicField.showPassword ? "text" : "password"}
+                  required={dynamicField.required}
+                  className={cn(getErrorClass(dynamicField.name))}
+                  {...field}
+                />
+                {dynamicField.toggleShowPassword && (
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                    onClick={dynamicField.toggleShowPassword}
+                  >
+                    {dynamicField.showPassword ? (
+                      <FaEyeSlash className="h-5 w-5 text-gray-500" />
+                    ) : (
+                      <FaEye className="h-5 w-5 text-gray-500" />
+                    )}
+                  </button>
+                )}
+              </div>
             </FormControl>
             <FormMessage />
           </FormItem>

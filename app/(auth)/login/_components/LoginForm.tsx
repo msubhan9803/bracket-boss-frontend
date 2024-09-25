@@ -1,5 +1,5 @@
 "use client"
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -27,6 +27,7 @@ type SubmitValuesType = {
 export default function LoginForm() {
   const { loginMutation } = useAuth();
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -49,9 +50,11 @@ export default function LoginForm() {
         name: "password",
         type: "password",
         placeholder: "Enter your password",
+        showPassword,
+        toggleShowPassword: () => setShowPassword(!showPassword),
       },
     ],
-    []
+    [showPassword]
   );
 
   const onSubmit = async (values: SubmitValuesType) => {

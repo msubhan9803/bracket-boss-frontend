@@ -51,7 +51,7 @@ export default function AddClubInfoForm() {
         name: "slug",
         type: "text",
         placeholder: "your-custom-club-url",
-        prefixRender: <p>{process.env.NEXT_PUBLIC_FRONTEND_URL}/club/</p>,
+        prefixRender: <p>{process.env.NEXT_PUBLIC_FRONTEND_URL}/club/</p>
       },
       {
         label: "Description",
