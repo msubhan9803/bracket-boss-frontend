@@ -27,12 +27,12 @@ export enum PageUrls {
 }
 
 export enum ONBOARDING_STEPS {
+  REGISTRATION = PageUrls.REGISTRATION,
   STEP_1 = PageUrls.VERIFY_EMAIL,
   STEP_2 = PageUrls.SELECT_ACCOUNT_TYPE,
   STEP_3_CLUB = PageUrls.ADD_CLUB_INFO,
   STEP_3_PLAYER = PageUrls.SELECT_YOUR_CLUB,
   LAST_STEP = PageUrls.DASHBOARD,
-  REGISTRATION = PageUrls.REGISTRATION,
 }
 
 export type AuthToken = {

@@ -6,7 +6,7 @@ import {
 import { NextResponse } from "next/server";
 import { getAuthToken } from "./services/cookie-handler.service";
 import { getOnboardingNextStep } from "./server-requests/user.server-request";
-import { PageNames } from "@/lib/app-types";
+import { PageNames, PageUrls } from "@/lib/app-types";
 
 export const guestMiddleware = async ({ request }: MiddlewareFunctionProps) => {
   const token = getAuthToken({ isServer: true });
@@ -39,8 +39,11 @@ export const authenticatedMiddleware = async ({
   }
 
   if (page === PageNames.DASHBOARD) {
-    const redirectUrl = await getOnboardingNextStep();
-    return NextResponse.redirect(new URL(redirectUrl, request.url));
+    const redirectUrl = await getOnboardingNextStep() as string;
+
+    if (redirectUrl !== PageUrls.DASHBOARD) {
+      return NextResponse.redirect(new URL(redirectUrl, request.url));
+    }
   }
 
   return NextResponse.next();
