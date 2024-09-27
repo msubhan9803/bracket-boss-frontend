@@ -6,17 +6,33 @@ export enum PredefinedSystemRoles {
   leagueOrganizer = 5,
 }
 
-export const REGISTRATION_URL = "/registration";
-export const DASHBOARD_URL = "/dashboard";
-export const LOGIN_URL = "/login";
+export enum PageNames {
+  VERIFY_EMAIL = "verify-email",
+  SELECT_ACCOUNT_TYPE = "select-account-type",
+  ADD_CLUB_INFO = "add-club-info",
+  SELECT_YOUR_CLUB = "select-your-club",
+  REGISTRATION = "registration",
+  DASHBOARD = "dashboard",
+  LOGIN = "login",
+}
+
+export enum PageUrls {
+  VERIFY_EMAIL = `/onboarding/${PageNames.VERIFY_EMAIL}`,
+  SELECT_ACCOUNT_TYPE = `/onboarding/${PageNames.SELECT_ACCOUNT_TYPE}`,
+  ADD_CLUB_INFO = `/onboarding/${PageNames.ADD_CLUB_INFO}`,
+  SELECT_YOUR_CLUB = `/onboarding/${PageNames.SELECT_YOUR_CLUB}`,
+  REGISTRATION = `/${PageNames.REGISTRATION}`,
+  DASHBOARD = `/${PageNames.DASHBOARD}`,
+  LOGIN = `/${PageNames.LOGIN}`,
+}
 
 export enum ONBOARDING_STEPS {
-  STEP_1 = "/onboarding/verify-email",
-  STEP_2 = "/onboarding/select-account-type",
-  STEP_3_CLUB = "/onboarding/add-club-info",
-  STEP_3_PLAYER = "/onboarding/select-your-club",
-  LAST_STEP = DASHBOARD_URL,
-  REGISTRATION = REGISTRATION_URL,
+  STEP_1 = PageUrls.VERIFY_EMAIL,
+  STEP_2 = PageUrls.SELECT_ACCOUNT_TYPE,
+  STEP_3_CLUB = PageUrls.ADD_CLUB_INFO,
+  STEP_3_PLAYER = PageUrls.SELECT_YOUR_CLUB,
+  LAST_STEP = PageUrls.DASHBOARD,
+  REGISTRATION = PageUrls.REGISTRATION,
 }
 
 export type AuthToken = {

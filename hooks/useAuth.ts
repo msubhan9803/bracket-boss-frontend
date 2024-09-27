@@ -23,8 +23,8 @@ import {
   setUser,
 } from "@/services/cookie-handler.service";
 import {
-  LOGIN_URL,
   ONBOARDING_STEPS,
+  PageUrls,
   PredefinedSystemRoles,
   UserCookie,
 } from "@/lib/app-types";
@@ -165,7 +165,7 @@ export default function useAuth() {
   const signOut = () => {
     clearAllCookies();
     toast.success("Successfully signed out");
-    router.push(LOGIN_URL);
+    router.push(PageUrls.LOGIN);
   };
 
   return {

@@ -8,7 +8,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import useAuth from "@/hooks/useAuth";
 import { DynamicFormField } from "@/global";
 import FormWrapper from "@/components/core/FormWrapper";
-import { DASHBOARD_URL } from "@/lib/app-types";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),

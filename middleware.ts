@@ -6,6 +6,7 @@ import {
 import { NextResponse } from "next/server";
 import { getAuthToken } from "./services/cookie-handler.service";
 import { getOnboardingNextStep } from "./server-requests/user.server-request";
+import { PageNames } from "@/lib/app-types";
 
 export const guestMiddleware = async ({ request }: MiddlewareFunctionProps) => {
   const token = getAuthToken({ isServer: true });
@@ -27,10 +28,19 @@ export const guestMiddleware = async ({ request }: MiddlewareFunctionProps) => {
 export const authenticatedMiddleware = async ({
   request,
 }: MiddlewareFunctionProps) => {
+  const url = new URL(request.url);
+  const pathSegments = url.pathname.split("/").filter((segment) => segment);
+  const page = pathSegments.length > 0 ? pathSegments[0] : "home";
+
   const token = getAuthToken({ isServer: true });
 
   if (!token?.accessToken) {
     return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  if (page === PageNames.DASHBOARD) {
+    const redirectUrl = await getOnboardingNextStep();
+    return NextResponse.redirect(new URL(redirectUrl, request.url));
   }
 
   return NextResponse.next();
