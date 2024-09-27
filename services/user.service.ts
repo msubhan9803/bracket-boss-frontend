@@ -1,11 +1,9 @@
 import { getUserById } from "@/server-requests/user.server-request";
 import { getSession } from "./cookie-handler.service";
+import { Role } from "@/lib/app-types";
 
 export function selectFirstRole(
-  roles: {
-    id: number;
-    name: string;
-  }[]
+  roles: Role[]
 ) {
   if (roles?.length === 0 || !roles) return null;
 

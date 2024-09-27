@@ -112,9 +112,9 @@ const DynamicFormField = <T extends { [key: string]: any }>({
                   <span
                     className={cn(
                       "inline-flex items-center px-3 text-sm",
-                      "text-primary-foreground font-bold bg-primary",
+                      "font-bold text-gray-900 bg-gray-200",
                       "rounded-e-0 border-e-0 rounded-s-md",
-                      "dark:bg-primary/80 dark:text-primary-foreground"
+                      "dark:text-gray-400 dark:bg-gray-700"
                     )}
                   >
                     {dynamicField.prefixRender}

@@ -1,10 +1,7 @@
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
 import { IncomingMessage, ServerResponse } from "http";
-import {
-  AuthToken,
-  CookieHandlerConfig,
-  UserCookie,
-} from "./types/cookie-handler.types";
+import { CookieHandlerConfig } from "./types/cookie-handler.types";
+import { AuthToken, UserCookie } from "@/lib/app-types";
 
 let serverCookies: any = null;
 if (typeof window === "undefined") {
@@ -22,7 +19,6 @@ export const setUser = (user: UserCookie) => {
 export const getAuthToken = (
   config: CookieHandlerConfig = {}
 ): AuthToken | null => {
-
   if (config.isServer && serverCookies) {
     try {
       const serverCookie = serverCookies().get("auth-token")?.value;

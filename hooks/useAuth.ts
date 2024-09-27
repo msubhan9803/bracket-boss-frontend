@@ -26,6 +26,7 @@ import {
   LOGIN_URL,
   ONBOARDING_STEPS,
   PredefinedSystemRoles,
+  UserCookie,
 } from "@/lib/app-types";
 import { selectFirstRole } from "@/services/user.service";
 
@@ -50,7 +51,7 @@ export default function useAuth() {
       }),
     onSuccess: (res) => {
       setAuthToken(res.login.authTokens);
-      setUser(res.login.user);
+      setUser(res.login.user as UserCookie);
     },
     onError: (error) => {
       toast.error(error.message);

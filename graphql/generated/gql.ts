@@ -14,7 +14,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "\n  mutation Register($input: RegisterInputDto!) {\n    register(input: $input) {\n      message\n    }\n  }\n": types.RegisterDocument,
-    "\n  mutation Login($input: LoginInputDto!) {\n    login(input: $input) {\n      authTokens {\n        accessToken\n        expiresIn\n        refreshToken\n      }\n      user {\n        id\n        email\n        name\n        created_at\n        profileImage\n        updated_at\n      }\n    }\n  }\n": types.LoginDocument,
+    "\n  mutation Login($input: LoginInputDto!) {\n    login(input: $input) {\n      authTokens {\n        accessToken\n        expiresIn\n        refreshToken\n      }\n      user {\n        id\n        email\n        name\n        roles {\n          id\n          name\n        }\n        created_at\n        profileImage\n        updated_at\n      }\n    }\n  }\n": types.LoginDocument,
     "\n  mutation RefreshToken {\n    refreshToken {\n      accessToken\n      expiresIn\n      refreshToken\n    }\n  }\n": types.RefreshTokenDocument,
     "\n  mutation VerifyEmail($input: VerifyEmailInputDto!) {\n    verifyEmail(input: $input) {\n      message\n    }\n  }\n": types.VerifyEmailDocument,
     "\n  mutation CreateClub($input: CreateClubInputDto!) {\n    createClub(input: $input) {\n      club {\n        id\n        logo\n        name\n        description\n        createdDate\n        updatedDate\n        users {\n          id\n          name\n          email\n        }\n      }\n      message\n    }\n  }\n": types.CreateClubDocument,
@@ -24,6 +24,7 @@ const documents = {
     "\n  query GetAllClubs {\n    getAllClubs {\n      id\n      name\n      logo\n    }\n  }\n": types.GetAllClubsDocument,
     "\n  query GetUsers {\n    getUsers {\n      id\n      email\n      name\n    }\n  }\n": types.GetUsersDocument,
     "\n  query GetUserById($userId: Float!) {\n    getUserById(userId: $userId) {\n      created_at\n      email\n      id\n      isEmailVerified\n      name\n      otpSecret\n      profileImage\n      updated_at\n      steps {\n        id\n        name\n      }\n      roles {\n        id\n        name\n      }\n    }\n  }\n": types.GetUserByIdDocument,
+    "\n  query GetStepsOfUser {\n    getStepsOfUser {\n      id\n      name\n    }\n  }\n": types.GetStepsOfUserDocument,
 };
 
 /**
@@ -47,7 +48,7 @@ export function graphql(source: "\n  mutation Register($input: RegisterInputDto!
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation Login($input: LoginInputDto!) {\n    login(input: $input) {\n      authTokens {\n        accessToken\n        expiresIn\n        refreshToken\n      }\n      user {\n        id\n        email\n        name\n        created_at\n        profileImage\n        updated_at\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation Login($input: LoginInputDto!) {\n    login(input: $input) {\n      authTokens {\n        accessToken\n        expiresIn\n        refreshToken\n      }\n      user {\n        id\n        email\n        name\n        created_at\n        profileImage\n        updated_at\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  mutation Login($input: LoginInputDto!) {\n    login(input: $input) {\n      authTokens {\n        accessToken\n        expiresIn\n        refreshToken\n      }\n      user {\n        id\n        email\n        name\n        roles {\n          id\n          name\n        }\n        created_at\n        profileImage\n        updated_at\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation Login($input: LoginInputDto!) {\n    login(input: $input) {\n      authTokens {\n        accessToken\n        expiresIn\n        refreshToken\n      }\n      user {\n        id\n        email\n        name\n        roles {\n          id\n          name\n        }\n        created_at\n        profileImage\n        updated_at\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -84,6 +85,10 @@ export function graphql(source: "\n  query GetUsers {\n    getUsers {\n      id\
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query GetUserById($userId: Float!) {\n    getUserById(userId: $userId) {\n      created_at\n      email\n      id\n      isEmailVerified\n      name\n      otpSecret\n      profileImage\n      updated_at\n      steps {\n        id\n        name\n      }\n      roles {\n        id\n        name\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetUserById($userId: Float!) {\n    getUserById(userId: $userId) {\n      created_at\n      email\n      id\n      isEmailVerified\n      name\n      otpSecret\n      profileImage\n      updated_at\n      steps {\n        id\n        name\n      }\n      roles {\n        id\n        name\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetStepsOfUser {\n    getStepsOfUser {\n      id\n      name\n    }\n  }\n"): (typeof documents)["\n  query GetStepsOfUser {\n    getStepsOfUser {\n      id\n      name\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

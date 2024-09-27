@@ -32,3 +32,12 @@ export const GET_USER_BY_ID = graphql(`
     }
   }
 `);
+
+export const GET_STEPS_OF_USER = graphql(`
+  query GetStepsOfUser {
+    getStepsOfUser {
+      id
+      name
+    }
+  }
+`);

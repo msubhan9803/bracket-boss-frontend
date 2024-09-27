@@ -41,7 +41,8 @@ export function handleGraphQLErrors(err: any, isServer: boolean = false): never 
   );
 
   if (unauthenticatedError) {
-    if (isServer) {
+    if (isServer || typeof window === "undefined") {
+      console.log('here ❌❌❌❌❌❌❌❌❌')
       redirect("/login?logout=1");
     } else {
       window.location.href = "/login?logout=1";
