@@ -4,61 +4,8 @@ import {
   MiddlewareFunctionProps,
 } from "@rescale/nemo";
 import { NextResponse } from "next/server";
-import { getAuthToken, getSession } from "./services/cookie-handler.service";
-import { getUserNextStepRedirection } from "./server-requests/user.server-request";
-import { ONBOARDING_STEPS, PredefinedSystemRoles } from "./lib/app-types";
-import { selectFirstRole } from "./services/user.service";
-
-export enum StepNames {
-  registration = "registration",
-  email_verification = "email_verification",
-  user_type_selection = "user_type_selection",
-  club_information_insertion = "club_information_insertion",
-  club_selection = "club_selection",
-}
-
-const nextStep = async () => {
-  const steps = await getUserNextStepRedirection();
-  const completedSteps = steps.map((step) => step.name.toString());
-
-  const stepMapping = {
-    [StepNames.registration]: ONBOARDING_STEPS.REGISTRATION,
-    [StepNames.email_verification]: ONBOARDING_STEPS.STEP_1,
-    [StepNames.user_type_selection]: ONBOARDING_STEPS.STEP_2,
-    [StepNames.club_information_insertion]: ONBOARDING_STEPS.STEP_3_CLUB,
-    [StepNames.club_selection]: ONBOARDING_STEPS.STEP_3_PLAYER,
-    last_step: ONBOARDING_STEPS.LAST_STEP,
-  };
-
-  for (const step in stepMapping) {
-    if (!completedSteps.includes(step)) {
-      return stepMapping[step as keyof typeof stepMapping];
-    } else {
-      if (
-        step === StepNames.user_type_selection &&
-        completedSteps.includes(StepNames.user_type_selection) &&
-        completedSteps.findIndex((s) => s === StepNames.user_type_selection) ===
-          completedSteps.length - 1
-      ) {
-        const session = getSession({ isServer: true });
-
-        if (session && session.id && session.roles) {
-          const userRole = selectFirstRole(session.roles);
-
-          if (userRole) {
-            if (userRole.id === PredefinedSystemRoles.clubOwner) {
-              return stepMapping.club_information_insertion;
-            } else {
-              return stepMapping.club_selection;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  return stepMapping.last_step;
-};
+import { getAuthToken } from "./services/cookie-handler.service";
+import { getOnboardingNextStep } from "./server-requests/user.server-request";
 
 export const guestMiddleware = async ({ request }: MiddlewareFunctionProps) => {
   const token = getAuthToken({ isServer: true });
@@ -69,8 +16,7 @@ export const guestMiddleware = async ({ request }: MiddlewareFunctionProps) => {
   }
 
   if (token?.accessToken) {
-    const redirectUrl = await nextStep();
-    console.log("🌺🌺🌺 Next Redirect Url: ", redirectUrl);
+    const redirectUrl = await getOnboardingNextStep();
 
     return NextResponse.redirect(new URL(redirectUrl, request.url));
   }

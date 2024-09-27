@@ -25,7 +25,7 @@ type SubmitValuesType = {
 };
 
 export default function LoginForm() {
-  const { loginMutation } = useAuth();
+  const { loginMutation, getOnboardingNextStepQuery, signOut } = useAuth();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -61,7 +61,15 @@ export default function LoginForm() {
     const { email, password } = values;
     await loginMutation.mutateAsync({ email, password });
     toast.success("Successfully logged in");
-    router.push(DASHBOARD_URL);
+
+    try {
+      const nextStep = await getOnboardingNextStepQuery.refetch();
+      router.push(nextStep.data);
+    } catch (error) {
+      toast.error("Failed to get onboarding next step");
+      console.error("Error fetching onboarding next step:", error);
+      signOut()
+    }
   };
 
   return (

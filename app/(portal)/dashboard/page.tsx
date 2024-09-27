@@ -21,6 +21,7 @@ export default function Dashboard() {
             Analytics of The Bracket Boss
           </h3>
           <h2 className="text-primary">{userDetails?.getUserById.name}</h2>
+          <h2 className="text-primary">{userDetails?.getUserById.email}</h2>
         </div>
       </div>
     </>

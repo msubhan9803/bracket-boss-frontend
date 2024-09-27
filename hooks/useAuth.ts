@@ -1,5 +1,5 @@
 "use client";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import {
@@ -152,6 +152,16 @@ export default function useAuth() {
     },
   });
 
+  const getOnboardingNextStepQuery = useQuery({
+    queryKey: ["getOnboardingNextStep"],
+    queryFn: async () => {
+      const response = await fetch("/api/get-onboarding-mext-step");
+      const data = await response.json();
+      return data.nextStep;
+    },
+    enabled: false,
+  });
+
   const signOut = () => {
     clearAllCookies();
     toast.success("Successfully signed out");
@@ -166,5 +176,6 @@ export default function useAuth() {
     signOut,
     updateUserRoleMutation,
     updateUserClubMutation,
+    getOnboardingNextStepQuery,
   };
 }
