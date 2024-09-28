@@ -4,12 +4,13 @@ export const UPDATE_USER_ROLE = graphql(`
   mutation UpdateUserRole($input: UpdateUserRoleDto!) {
     updateUserRole(input: $input) {
       message
-      user {
+      userRoleClub {
+        created_at
         id
-        roles {
+        role {
           id
-          name
         }
+        updated_at
       }
     }
   }

@@ -20,10 +20,6 @@ export const LOGIN = graphql(`
         id
         email
         name
-        roles {
-          id
-          name
-        }
         created_at
         profileImage
         updated_at

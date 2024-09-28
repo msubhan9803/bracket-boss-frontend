@@ -121,7 +121,7 @@ export default function useAuth() {
         variables: { input: variables },
       }),
     onSuccess: (res) => {
-      const selectedRole = selectFirstRole(res.updateUserRole.user.roles ?? []);
+      const selectedRole = res.updateUserRole.userRoleClub.role;
 
       if (selectedRole?.id === PredefinedSystemRoles.clubOwner) {
         router.push(ONBOARDING_STEPS.STEP_3_CLUB);

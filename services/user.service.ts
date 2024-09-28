@@ -23,12 +23,8 @@ export async function getUserRole() {
     const userDetails = await getUserById(parseInt(session.id));
 
     if (!userDetails) return null;
-    if (userDetails.roles?.length === 0 || !userDetails.roles) return null;
 
-    const selectedRole = selectFirstRole(userDetails.roles);
-
-    // Returning first role of the user
-    return selectedRole?.id;
+    return userDetails.userRoleClub?.role?.id;
   }
 
   return null;

@@ -21,8 +21,8 @@ export default async function Dashboard() {
           <h3 className="text-2xl font-bold tracking-tight">
             Analytics of The Bracket Boss
           </h3>
-          <h2 className="text-primary">{userDetails.name}</h2>
-          <h2 className="text-primary">{userDetails.email}</h2>
+          <h2 className="text-primary">{userDetails.user.name}</h2>
+          <h2 className="text-primary">{userDetails.user.email}</h2>
         </div>
       </div>
     </>
