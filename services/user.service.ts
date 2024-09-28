@@ -1,10 +1,16 @@
-import { getUserById } from "@/server-requests/user.server-request";
-import { getSession } from "./cookie-handler.service";
+import {
+  getStepsOfUser,
+  getUserById,
+} from "@/server-requests/user.server-request";
 import { Role } from "@/lib/app-types";
+import {
+  ONBOARDING_STEPS,
+  PredefinedSystemRoles,
+  StepNames,
+} from "@/lib/app-types";
+import { getSession } from "@/services/cookie-handler.service";
 
-export function selectFirstRole(
-  roles: Role[]
-) {
+export function selectFirstRole(roles: Role[]) {
   if (roles?.length === 0 || !roles) return null;
 
   return roles[0];
@@ -20,10 +26,79 @@ export async function getUserRole() {
     if (userDetails.roles?.length === 0 || !userDetails.roles) return null;
 
     const selectedRole = selectFirstRole(userDetails.roles);
-    
+
     // Returning first role of the user
     return selectedRole?.id;
   }
 
   return null;
 }
+
+export const getUserNextStepRedirection = async () => {
+  const steps = await getStepsOfUser();
+  return steps;
+};
+
+export const getOnboardingNextStep = async () => {
+  const steps = await getUserNextStepRedirection();
+
+  if (!steps) return ONBOARDING_STEPS.REGISTRATION;
+
+  const completedSteps = steps.map((step) => step.name.toString());
+
+  const stepMapping = {
+    [StepNames.registration]: ONBOARDING_STEPS.REGISTRATION,
+    [StepNames.email_verification]: ONBOARDING_STEPS.STEP_1,
+    [StepNames.user_type_selection]: ONBOARDING_STEPS.STEP_2,
+  };
+
+  const lastStep = {
+    last_step: ONBOARDING_STEPS.LAST_STEP,
+  };
+
+  const clubOwnerStepMappingAfterUserTypeSelection = {
+    [StepNames.club_information_insertion]: ONBOARDING_STEPS.STEP_3_CLUB,
+    ...lastStep,
+  };
+
+  const playerStepMappingAfterUserTypeSelection = {
+    [StepNames.club_selection]: ONBOARDING_STEPS.STEP_3_PLAYER,
+    ...lastStep,
+  };
+
+  for (const step in stepMapping) {
+    if (!completedSteps.includes(step)) {
+      return stepMapping[step as keyof typeof stepMapping];
+    } else {
+      if (
+        step === StepNames.user_type_selection &&
+        completedSteps.includes(StepNames.user_type_selection)
+      ) {
+        if (
+          completedSteps.findIndex(
+            (s) => s === StepNames.user_type_selection
+          ) ===
+          completedSteps.length - 1
+        ) {
+          const session = getSession({ isServer: true });
+
+          if (session && session.id && session.roles) {
+            const userRole = await getUserRole();
+
+            if (userRole) {
+              if (userRole === PredefinedSystemRoles.clubOwner) {
+                return clubOwnerStepMappingAfterUserTypeSelection.club_information_insertion;
+              } else {
+                return playerStepMappingAfterUserTypeSelection.club_selection;
+              }
+            }
+          }
+        } else {
+          return lastStep.last_step;
+        }
+      }
+    }
+  }
+
+  return lastStep.last_step;
+};

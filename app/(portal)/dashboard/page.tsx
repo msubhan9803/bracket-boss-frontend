@@ -1,9 +1,10 @@
-"use client"
 import PageTitle from "@/components/PageTitle";
-import useUser from "@/hooks/useUser";
+import { getUserById } from "@/server-requests/user.server-request";
+import { getSession } from "@/services/cookie-handler.service";
 
-export default function Dashboard() {
-  const { userDetails } = useUser();
+export default async function Dashboard() {
+  const session = getSession({ isServer: true });
+  const userDetails = await getUserById(parseInt(session?.id as string));
 
   return (
     <>
@@ -20,8 +21,8 @@ export default function Dashboard() {
           <h3 className="text-2xl font-bold tracking-tight">
             Analytics of The Bracket Boss
           </h3>
-          <h2 className="text-primary">{userDetails?.getUserById.name}</h2>
-          <h2 className="text-primary">{userDetails?.getUserById.email}</h2>
+          <h2 className="text-primary">{userDetails.name}</h2>
+          <h2 className="text-primary">{userDetails.email}</h2>
         </div>
       </div>
     </>

@@ -5,8 +5,8 @@ import {
 } from "@rescale/nemo";
 import { NextResponse } from "next/server";
 import { getAuthToken } from "./services/cookie-handler.service";
-import { getOnboardingNextStep } from "./server-requests/user.server-request";
 import { PageNames, PageUrls } from "@/lib/app-types";
+import { getOnboardingNextStep } from "./services/user.service";
 
 export const guestMiddleware = async ({ request }: MiddlewareFunctionProps) => {
   const token = getAuthToken({ isServer: true });
@@ -63,7 +63,7 @@ const middlewares = {
    * Redirect to /dashboard if user is authenticated
    */
   "/login": [guestMiddleware],
-  "/onboarding/register": [guestMiddleware],
+  "/onboarding/register": [passThroughMiddleware],
 
   /*
    * Match all routes, but exclude the ones specified.

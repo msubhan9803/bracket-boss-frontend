@@ -1,4 +1,4 @@
-import { getOnboardingNextStep } from "@/server-requests/user.server-request";
+import { getOnboardingNextStep } from "@/services/user.service";
 
 export async function GET() {
   try {

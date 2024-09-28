@@ -11,7 +11,7 @@ export enum PageNames {
   SELECT_ACCOUNT_TYPE = "select-account-type",
   ADD_CLUB_INFO = "add-club-info",
   SELECT_YOUR_CLUB = "select-your-club",
-  REGISTRATION = "registration",
+  REGISTRATION = "register",
   DASHBOARD = "dashboard",
   LOGIN = "login",
 }
@@ -21,7 +21,7 @@ export enum PageUrls {
   SELECT_ACCOUNT_TYPE = `/onboarding/${PageNames.SELECT_ACCOUNT_TYPE}`,
   ADD_CLUB_INFO = `/onboarding/${PageNames.ADD_CLUB_INFO}`,
   SELECT_YOUR_CLUB = `/onboarding/${PageNames.SELECT_YOUR_CLUB}`,
-  REGISTRATION = `/${PageNames.REGISTRATION}`,
+  REGISTRATION = `/onboarding/${PageNames.REGISTRATION}`,
   DASHBOARD = `/${PageNames.DASHBOARD}`,
   LOGIN = `/${PageNames.LOGIN}`,
 }
