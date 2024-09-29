@@ -25,6 +25,7 @@ export enum PageUrls {
   DASHBOARD = `/${PageNames.DASHBOARD}`,
   LOGIN = `/${PageNames.LOGIN}`,
   LOGOUT = `/${PageNames.LOGIN}?logout=1`,
+  FORGOT_PASSWORD = `/forgot-password`,
 }
 
 export enum ONBOARDING_STEPS {
@@ -88,5 +89,5 @@ export enum ModuleNames {
   SCORE_AND_STANDINGS = "score_&_standings",
   CHAT = "chat",
   ACCOUNT_SETTINGS = "account_settings",
-  ACTIVITY_LOGS = "activity_logs"
+  ACTIVITY_LOGS = "activity_logs",
 }

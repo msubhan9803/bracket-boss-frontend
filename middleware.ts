@@ -86,6 +86,7 @@ const middlewares = {
    */
   "/login": [authRoutesMiddleware],
   "/onboarding/register": [passThroughMiddleware],
+  "/forgot-password": [passThroughMiddleware],
 
   "/onboarding/add-club-info": [onboardingRoutesMiddleware],
   "/onboarding/select-account-type": [onboardingRoutesMiddleware],
@@ -97,7 +98,7 @@ const middlewares = {
    * This example excludes `/`, `/login`, onboarding routes like `/onboarding/register`, etc..
    * Redirect to /login if user isn't authenticated
    */
-  "/((?!login|onboarding/register|onboarding/add-club-info|onboarding/select-account-type|onboarding/select-your-club|onboarding/verify-email|$).*)":
+  "/((?!login|forgot-password|onboarding/register|onboarding/add-club-info|onboarding/select-account-type|onboarding/select-your-club|onboarding/verify-email|$).*)":
     [portalRoutesMiddleware],
 } satisfies MiddlewareConfig;
 

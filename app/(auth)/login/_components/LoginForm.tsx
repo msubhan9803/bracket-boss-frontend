@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import useAuth from "@/hooks/useAuth";
 import { DynamicFormField } from "@/global";
 import FormWrapper from "@/components/core/FormWrapper";
+import { PageUrls } from "@/lib/app-types";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -27,6 +28,7 @@ export default function LoginForm() {
   const { loginMutation, getOnboardingNextStepQuery, signOut } = useAuth();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [failedAttempts, setFailedAttempts] = useState(0);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -58,16 +60,20 @@ export default function LoginForm() {
 
   const onSubmit = async (values: SubmitValuesType) => {
     const { email, password } = values;
-    await loginMutation.mutateAsync({ email, password });
-    toast.success("Successfully logged in");
-
     try {
+      await loginMutation.mutateAsync({ email, password });
+      toast.success("Successfully logged in");
+
       const nextStep = await getOnboardingNextStepQuery.refetch();
       router.push(nextStep.data);
+
     } catch (error) {
-      toast.error("Failed to get onboarding next step");
-      console.error("Error fetching onboarding next step:", error);
-      signOut()
+      setFailedAttempts(prev => prev + 1);
+
+      if (failedAttempts + 1 >= 3) {
+        toast.error("Too many failed attempts. Redirecting to forgot password.");
+        router.push(PageUrls.FORGOT_PASSWORD);
+      }
     }
   };
 

@@ -1,7 +1,6 @@
 import { GraphQLClient } from "graphql-request";
 import { getAuthToken } from "@/services/cookie-handler.service";
 import { GraphQLErrorResponse } from "@/global";
-import { redirect } from "next/navigation";
 
 export function initializeGraphQLClient(): GraphQLClient {
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL as string;
@@ -51,6 +50,8 @@ export function handleGraphQLErrors(err: any, isServer: boolean = false) {
     //   window.location.href = "/login?logout=1";
     // }
   } else {
-    throw new Error(errors?.join(", ") ?? "An unknown error occurred");
+    if (errors) {
+      throw new Error(errors?.join(", ") ?? "An unknown error occurred");
+    }
   }
 }
