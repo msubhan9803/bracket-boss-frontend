@@ -1,4 +1,4 @@
-import { GET_STEPS_OF_USER, GET_USER_BY_ID } from "@/graphql/queries/users";
+import { GET_PERMISSIONS_BY_ROLEID, GET_STEPS_OF_USER, GET_USER_BY_ID } from "@/graphql/queries/users";
 import { GetUserByIdQuery } from "@/graphql/generated/graphql";
 import { graphqlRequestHandlerServer } from "@/lib/graphql-server";
 
@@ -19,4 +19,14 @@ export const getStepsOfUser = async () => {
   });
 
   return data?.getStepsOfUser;
+};
+
+export const getPermissionsByRoleId = async (roleId: number) => {
+  const data = await graphqlRequestHandlerServer({
+    query: GET_PERMISSIONS_BY_ROLEID,
+    variables: { roleId },
+    options: { isServer: window === undefined },
+  });
+
+  return data?.getPermissionsByRoleId;
 };

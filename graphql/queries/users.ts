@@ -48,3 +48,16 @@ export const GET_STEPS_OF_USER = graphql(`
     }
   }
 `);
+
+export const GET_PERMISSIONS_BY_ROLEID = graphql(`
+  query GetPermissionsByRoleId($roleId: Float!) {
+    getPermissionsByRoleId(roleId: $roleId) {
+      id
+      roleId
+      moduleId
+      moduleName
+      policyId
+      policyName
+    }
+  }
+`);

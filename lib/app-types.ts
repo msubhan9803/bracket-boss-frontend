@@ -64,3 +64,29 @@ export enum StepNames {
   club_information_insertion = "club_information_insertion",
   club_selection = "club_selection",
 }
+
+export enum ModuleNames {
+  DASHBOARD = "dashboard",
+  LEAGUE_MANAGEMENT = "league_management",
+  TOURNAMENT_MANAGEMENT = "tournament_management",
+  LEAGUES = "leagues",
+  TOURNAMENTS = "tournaments",
+  CLUB_MANAGEMENT = "club_management",
+  INVITATIONS = "invitations",
+  MEMBERS = "members",
+  CUSTOMIZATION = "customization",
+  MY_CLUB = "my_club",
+  MY_TEAM = "my_team",
+  MY_MATCHES = "my_matches",
+  TEAM_MANAGEMENT = "team_management",
+  COURT_MANAGEMENT = "court_management",
+  REFERRAL_MANAGEMENT = "referral_management",
+  USER_MANAGEMENT = "user_management",
+  PAYMENT_MANAGEMENT = "payment_management",
+  SYSTEM_SETTINGS = "system_settings",
+  REPORTING_AND_ANALYTICS = "reporting_&_analytics",
+  SCORE_AND_STANDINGS = "score_&_standings",
+  CHAT = "chat",
+  ACCOUNT_SETTINGS = "account_settings",
+  ACTIVITY_LOGS = "activity_logs"
+}

@@ -1,3 +1,5 @@
+"use client";
+import { useMemo, useEffect } from "react";
 import Link from "next/link";
 import {
   FaHome,
@@ -6,6 +8,17 @@ import {
   FaChartLine,
   FaComments,
   FaCog,
+  FaBuilding,
+  FaCalendarCheck,
+  FaClipboardList,
+  FaCogs,
+  FaEnvelopeOpenText,
+  FaMedal,
+  FaMoneyCheckAlt,
+  FaPaintBrush,
+  FaShareAlt,
+  FaTrophy,
+  FaUserFriends,
 } from "react-icons/fa";
 import { MdSportsScore } from "react-icons/md";
 import { PiCourtBasketballFill } from "react-icons/pi";
@@ -23,56 +36,72 @@ import {
 } from "@/components/ui/card";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import useUserPermissions from "@/hooks/useUserPermissions";
+import { ModuleNames } from "@/lib/app-types";
 
 const menuItems = [
-  { href: "/dashboard", label: "Dashboard", icon: FaHome, isActive: true },
+  {
+    href: "/dashboard",
+    label: "Dashboard",
+    icon: FaHome,
+    isActive: true,
+    name: ModuleNames.DASHBOARD,
+  },
   {
     href: "/league-management",
     label: "League Management",
     icon: MdSportsTennis,
     isActive: false,
+    name: ModuleNames.LEAGUE_MANAGEMENT,
   },
   {
     href: "/tournament-management",
     label: "Tournament Management",
     icon: MdSportsScore,
     isActive: false,
+    name: ModuleNames.TOURNAMENT_MANAGEMENT,
   },
   {
     href: "/club-management",
     label: "Club Management",
     icon: FaUsersRectangle,
     isActive: false,
+    name: ModuleNames.CLUB_MANAGEMENT,
   },
   {
     href: "/team-management",
     label: "Team Management",
     icon: FaUsers,
     isActive: false,
+    name: ModuleNames.TEAM_MANAGEMENT,
   },
   {
     href: "/court-management",
     label: "Court Management",
     icon: PiCourtBasketballFill,
     isActive: false,
+    name: ModuleNames.COURT_MANAGEMENT,
   },
   {
     href: "/user-management",
     label: "User Management",
     icon: FaUsers,
     isActive: false,
+    name: ModuleNames.USER_MANAGEMENT,
   },
   {
     href: "/score-standings",
     label: "Score & Standings",
     icon: MdScoreboard,
     isActive: false,
+    name: ModuleNames.SCORE_AND_STANDINGS,
   },
   {
-    href: "/reports",
+    href: "/reporting-analytics",
     label: "Reporting & Analytics",
     icon: FaChartLine,
     isActive: false,
+    name: ModuleNames.REPORTING_AND_ANALYTICS,
   },
   {
     href: "/chat",
@@ -80,16 +109,114 @@ const menuItems = [
     icon: FaComments,
     isActive: false,
     badge: 6,
+    name: ModuleNames.CHAT,
   },
   {
-    href: "/settings",
+    href: "/account-settings",
     label: "Account Settings",
     icon: FaCog,
     isActive: false,
+    name: ModuleNames.ACCOUNT_SETTINGS,
+  },
+  {
+    href: "/leagues",
+    label: "Leagues",
+    icon: FaTrophy,
+    isActive: false,
+    name: ModuleNames.LEAGUES,
+  },
+  {
+    href: "/tournaments",
+    label: "Tournaments",
+    icon: FaMedal,
+    isActive: false,
+    name: ModuleNames.TOURNAMENTS,
+  },
+  {
+    href: "/invitations",
+    label: "Invitations",
+    icon: FaEnvelopeOpenText,
+    isActive: false,
+    name: ModuleNames.INVITATIONS,
+  },
+  {
+    href: "/members",
+    label: "Members",
+    icon: FaUserFriends,
+    isActive: false,
+    name: ModuleNames.MEMBERS,
+  },
+  {
+    href: "/customization",
+    label: "Customization",
+    icon: FaPaintBrush,
+    isActive: false,
+    name: ModuleNames.CUSTOMIZATION,
+  },
+  {
+    href: "/my-club",
+    label: "My Club",
+    icon: FaBuilding,
+    isActive: false,
+    name: ModuleNames.MY_CLUB,
+  },
+  {
+    href: "/my-team",
+    label: "My Team",
+    icon: FaUsers,
+    isActive: false,
+    name: ModuleNames.MY_TEAM,
+  },
+  {
+    href: "/my-matches",
+    label: "My Matches",
+    icon: FaCalendarCheck,
+    isActive: false,
+    name: ModuleNames.MY_MATCHES,
+  },
+  {
+    href: "/referral-management",
+    label: "Referral Management",
+    icon: FaShareAlt,
+    isActive: false,
+    name: ModuleNames.REFERRAL_MANAGEMENT,
+  },
+  {
+    href: "/payment-management",
+    label: "Payment Management",
+    icon: FaMoneyCheckAlt,
+    isActive: false,
+    name: ModuleNames.PAYMENT_MANAGEMENT,
+  },
+  {
+    href: "/system-settings",
+    label: "System Settings",
+    icon: FaCogs,
+    isActive: false,
+    name: ModuleNames.SYSTEM_SETTINGS,
+  },
+  {
+    href: "/activity-logs",
+    label: "Activity Logs",
+    icon: FaClipboardList,
+    isActive: false,
+    name: ModuleNames.ACTIVITY_LOGS,
   },
 ];
 
 export default function Sidebar() {
+  const { permissions } = useUserPermissions();
+
+  useEffect(() => {
+    console.log("✅✅✅✅ permissions: ", permissions);
+  }, [permissions]);
+
+  const filteredMenuItems = useMemo(() => {
+    return menuItems.filter((item) =>
+      permissions?.find((p) => p.moduleName === item.name)
+    );
+  }, [permissions]);
+
   return (
     <div className="hidden border-r bg-muted/40 md:block">
       <div className="flex h-full max-h-screen flex-col gap-2">
@@ -100,9 +227,9 @@ export default function Sidebar() {
           </Link>
         </div>
 
-        <div className="flex-1">
-          <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-            {menuItems.map((item) => (
+        <div className="flex-1 overflow-y-scroll">
+          <nav className="grid items-start px-2 text-sm font-medium lg:px-4 py-4">
+            {filteredMenuItems.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
@@ -146,6 +273,14 @@ export default function Sidebar() {
 }
 
 export const MobileMenuButton = () => {
+  const { permissions } = useUserPermissions();
+
+  const filteredMenuItems = useMemo(() => {
+    return menuItems.filter((item) =>
+      permissions?.find((p) => p.moduleName === item.name)
+    );
+  }, [permissions]);
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -157,7 +292,7 @@ export const MobileMenuButton = () => {
 
       <SheetContent side="left" className="flex flex-col">
         <nav className="flex-1 grid gap-2 text-lg font-medium overflow-y-auto">
-          {menuItems.map((item) => (
+          {filteredMenuItems.map((item) => (
             <Link
               key={item.label}
               href={item.href}
