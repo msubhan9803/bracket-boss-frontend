@@ -6,6 +6,7 @@ import LoginForm from "./_components/LoginForm";
 import { Button } from "@/components/ui/button";
 import { IconType } from "react-icons/lib";
 import TokenValidator from "@/components/shared/TokenValidator";
+import { PageUrls } from "@/lib/app-types";
 
 interface SocialButtonProps extends React.ComponentProps<typeof Button> {
   icon: IconType;
@@ -46,9 +47,16 @@ export default function Login() {
       <LoginForm />
 
       <div className="mt-4 text-center text-sm">
-        Don&apos;t have an account?{" "}
-        <Link href="/onboarding/register" className="underline">
+        Don&apos;t have an account?&nbsp;
+        <Link href={PageUrls.REGISTRATION} className="underline">
           Register
+        </Link>
+      </div>
+
+      <div className="text-center text-sm">
+        Forgot your password?&nbsp;
+        <Link href={PageUrls.FORGOT_PASSWORD} className="underline">
+          Click here to reset
         </Link>
       </div>
     </div>

@@ -44,7 +44,7 @@ const DynamicFormField = <T extends { [key: string]: any }>({
         render={({ field }) => (
           <FormItem>
             <FormLabel>{dynamicField.label}</FormLabel>
-            <Select onValueChange={field.onChange} value={field.value ?? ''}>
+            <Select onValueChange={field.onChange} value={field.value ?? ""}>
               <FormControl>
                 <SelectTrigger
                   className={cn("w-full", getErrorClass(dynamicField.name))}
@@ -225,6 +225,7 @@ const DynamicFormField = <T extends { [key: string]: any }>({
                 type="datetime-local"
                 required={dynamicField.required}
                 className={cn(getErrorClass(dynamicField.name))}
+                placeholder={dynamicField.placeholder}
                 {...field}
               />
             </FormControl>
@@ -350,6 +351,7 @@ const DynamicFormField = <T extends { [key: string]: any }>({
               required={dynamicField.required}
               disabled={!!dynamicField.disabled}
               className={cn(getErrorClass(dynamicField.name))}
+              placeholder={dynamicField.placeholder}
               {...field}
             />
           </FormControl>
