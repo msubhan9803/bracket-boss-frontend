@@ -78,7 +78,7 @@ export const getOnboardingNextStep = async () => {
         ) {
           const session = getSession({ isServer: true });
 
-          if (session && session.id && session.roles) {
+          if (session && session.id) {
             const userRole = await getUserRole();
 
             if (userRole) {
@@ -97,4 +97,21 @@ export const getOnboardingNextStep = async () => {
   }
 
   return lastStep.last_step;
+};
+
+export const checkIfAllOnboardingStepsCompleted = async () => {
+  const steps = await getUserNextStepRedirection();
+
+  if (!steps) return { isAllStepsCompleted: false, steps: [] };
+
+  const completedSteps = steps.map((step) => step.name.toString());
+
+  if (
+    completedSteps.includes(StepNames.club_information_insertion) ||
+    completedSteps.includes(StepNames.club_selection)
+  ) {
+    return { isAllStepsCompleted: true, steps };
+  }
+
+  return { isAllStepsCompleted: false, steps };
 };

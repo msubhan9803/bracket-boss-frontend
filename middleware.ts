@@ -5,10 +5,15 @@ import {
 } from "@rescale/nemo";
 import { NextResponse } from "next/server";
 import { getAuthToken } from "./services/cookie-handler.service";
-import { PageNames, PageUrls } from "@/lib/app-types";
-import { getOnboardingNextStep } from "./services/user.service";
+import { PageUrls } from "@/lib/app-types";
+import {
+  checkIfAllOnboardingStepsCompleted,
+  getOnboardingNextStep,
+} from "./services/user.service";
 
-export const guestMiddleware = async ({ request }: MiddlewareFunctionProps) => {
+export const authRoutesMiddleware = async ({
+  request,
+}: MiddlewareFunctionProps) => {
   const token = getAuthToken({ isServer: true });
   const url = new URL(request.url);
 
@@ -17,15 +22,30 @@ export const guestMiddleware = async ({ request }: MiddlewareFunctionProps) => {
   }
 
   if (token?.accessToken) {
-    const redirectUrl = await getOnboardingNextStep();
-
-    return NextResponse.redirect(new URL(redirectUrl, request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   return NextResponse.next();
 };
 
-export const authenticatedMiddleware = async ({
+export const onboardingRoutesMiddleware = async ({
+  request,
+}: MiddlewareFunctionProps) => {
+  const token = getAuthToken({ isServer: true });
+
+  if (!token?.accessToken) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  const { isAllStepsCompleted } = await checkIfAllOnboardingStepsCompleted();
+  if (isAllStepsCompleted) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  return NextResponse.next();
+};
+
+export const portalRoutesMiddleware = async ({
   request,
 }: MiddlewareFunctionProps) => {
   const url = new URL(request.url);
@@ -38,8 +58,9 @@ export const authenticatedMiddleware = async ({
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (page === PageNames.DASHBOARD) {
-    const redirectUrl = await getOnboardingNextStep() as string;
+  const { isAllStepsCompleted } = await checkIfAllOnboardingStepsCompleted();
+  if (!isAllStepsCompleted) {
+    const redirectUrl = (await getOnboardingNextStep()) as string;
 
     if (redirectUrl !== PageUrls.DASHBOARD) {
       return NextResponse.redirect(new URL(redirectUrl, request.url));
@@ -62,15 +83,21 @@ const middlewares = {
   /*
    * Redirect to /dashboard if user is authenticated
    */
-  "/login": [guestMiddleware],
-  "/onboarding/register": [passThroughMiddleware],
+  "/login": [authRoutesMiddleware],
+  "/onboarding/register": [authRoutesMiddleware],
+
+  "/onboarding/add-club-info": [onboardingRoutesMiddleware],
+  "/onboarding/select-account-type": [onboardingRoutesMiddleware],
+  "/onboarding/select-your-club": [onboardingRoutesMiddleware],
+  "/onboarding/verify-email": [onboardingRoutesMiddleware],
 
   /*
    * Match all routes, but exclude the ones specified.
-   * This example excludes `/`, `/login`, `/onboarding/register`, etc..
+   * This example excludes `/`, `/login`, onboarding routes like `/onboarding/register`, etc..
    * Redirect to /login if user isn't authenticated
    */
-  "/((?!login|onboarding/register|$).*)": [authenticatedMiddleware],
+  "/((?!login|onboarding/register|onboarding/add-club-info|onboarding/select-account-type|onboarding/select-your-club|onboarding/verify-email|$).*)":
+    [portalRoutesMiddleware],
 } satisfies MiddlewareConfig;
 
 // Create middlewares helper

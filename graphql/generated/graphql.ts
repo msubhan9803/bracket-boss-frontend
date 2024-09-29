@@ -146,6 +146,7 @@ export type PermissionByRoleIdResponse = {
   moduleName: Scalars['String']['output'];
   policyId: Scalars['String']['output'];
   policyName: Scalars['String']['output'];
+  roleId: Scalars['String']['output'];
 };
 
 export type Policy = {
@@ -177,6 +178,11 @@ export type QueryGetAllStepsByRoleArgs = {
 
 export type QueryGetClubByIdArgs = {
   clubId: Scalars['Float']['input'];
+};
+
+
+export type QueryGetPermissionsByRoleIdArgs = {
+  roleId: Scalars['Float']['input'];
 };
 
 
@@ -285,7 +291,7 @@ export type UserRoleClub = {
 export type UserWithRoleClub = {
   __typename?: 'UserWithRoleClub';
   user: User;
-  userRoleClub: UserRoleClub;
+  userRoleClub?: Maybe<UserRoleClub>;
 };
 
 export type VerifyEmailInputDto = {
@@ -362,7 +368,7 @@ export type GetUserByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetUserByIdQuery = { __typename?: 'Query', getUserById: { __typename?: 'UserWithRoleClub', user: { __typename?: 'User', created_at: any, email: string, id: any, isEmailVerified: boolean, name: string, otpSecret: string, profileImage?: string | null, updated_at: any, steps?: Array<{ __typename?: 'Step', id: string, name: StepNames }> | null }, userRoleClub: { __typename?: 'UserRoleClub', id: any, role?: { __typename?: 'Role', id: any } | null } } };
+export type GetUserByIdQuery = { __typename?: 'Query', getUserById: { __typename?: 'UserWithRoleClub', user: { __typename?: 'User', created_at: any, email: string, id: any, isEmailVerified: boolean, name: string, otpSecret: string, profileImage?: string | null, updated_at: any, steps?: Array<{ __typename?: 'Step', id: string, name: StepNames }> | null }, userRoleClub?: { __typename?: 'UserRoleClub', id: any, role?: { __typename?: 'Role', id: any } | null } | null } };
 
 export type GetStepsOfUserQueryVariables = Exact<{ [key: string]: never; }>;
 
