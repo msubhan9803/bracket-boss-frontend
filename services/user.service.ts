@@ -35,9 +35,13 @@ export const getUserNextStepRedirection = async () => {
   return steps;
 };
 
-export const getOnboardingNextStep = async () => {
-  const steps = await getUserNextStepRedirection();
-
+export const getOnboardingNextStep = async (
+  steps: {
+    __typename?: "Step";
+    id: string;
+    name: StepNames;
+  }[]
+) => {
   if (!steps) return ONBOARDING_STEPS.REGISTRATION;
 
   const completedSteps = steps.map((step) => step.name.toString());

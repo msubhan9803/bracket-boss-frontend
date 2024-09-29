@@ -48,19 +48,19 @@ export const onboardingRoutesMiddleware = async ({
 export const portalRoutesMiddleware = async ({
   request,
 }: MiddlewareFunctionProps) => {
-  const url = new URL(request.url);
-  const pathSegments = url.pathname.split("/").filter((segment) => segment);
-  const page = pathSegments.length > 0 ? pathSegments[0] : "home";
-
   const token = getAuthToken({ isServer: true });
 
   if (!token?.accessToken) {
     return NextResponse.redirect(new URL("/login", request.url));
+  } else {
+    if (token.expiresIn < Date.now()) {
+      return NextResponse.redirect(new URL("/login?logout=1", request.url));
+    }
   }
 
-  const { isAllStepsCompleted } = await checkIfAllOnboardingStepsCompleted();
+  const { isAllStepsCompleted, steps } = await checkIfAllOnboardingStepsCompleted();
   if (!isAllStepsCompleted) {
-    const redirectUrl = (await getOnboardingNextStep()) as string;
+    const redirectUrl = (await getOnboardingNextStep(steps as any)) as string;
 
     if (redirectUrl !== PageUrls.DASHBOARD) {
       return NextResponse.redirect(new URL(redirectUrl, request.url));
