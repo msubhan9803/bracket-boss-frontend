@@ -56,7 +56,7 @@ const FormWrapper = <T extends { [key: string]: any }>({
                   loading={form.formState.isSubmitting}
                   disabled={form.formState.isSubmitting}
                   type='submit'
-                  className='w-full mt-4'
+                  className='w-full mt-4 font-bold'
                 >
                   {submitButtonLabel || 'Submit'}
                 </Button>
