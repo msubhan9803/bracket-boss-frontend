@@ -26,6 +26,9 @@ export const GET_USER_BY_ID = graphql(`
           id
           name
         }
+        clubs {
+          id
+        }
       }
       userRoleClub {
         id

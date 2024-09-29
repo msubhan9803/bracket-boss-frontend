@@ -1,27 +1,32 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface UserState {
-  tenantId: string | null;
-  roleId: string | null;
+  clubId: number | null;
+  roleId: number | null;
+  userId: number | null;
 }
 
 const initialState: UserState = {
-  tenantId: null,
+  clubId: null,
   roleId: null,
+  userId: null,
 };
 
 const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
-    setTenantId(state, action: PayloadAction<string>) {
-      state.tenantId = action.payload;
+    setClubId(state, action: PayloadAction<number>) {
+      state.clubId = action.payload;
     },
-    setRoleId(state, action: PayloadAction<string>) {
+    setRoleId(state, action: PayloadAction<number>) {
       state.roleId = action.payload;
+    },
+    setUserId(state, action: PayloadAction<number>) {
+      state.userId = action.payload;
     },
   },
 });
 
-export const { setTenantId, setRoleId } = userSlice.actions;
+export const { setClubId, setRoleId, setUserId } = userSlice.actions;
 export default userSlice.reducer;

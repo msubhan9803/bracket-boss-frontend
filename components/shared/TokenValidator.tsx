@@ -1,3 +1,4 @@
+'use client'
 import { toast } from 'sonner'
 import useTokenValidation from '@/hooks/useTokenValidation'
 import { useEffect } from 'react'

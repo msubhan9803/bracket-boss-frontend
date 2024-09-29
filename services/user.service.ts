@@ -2,7 +2,7 @@ import {
   getStepsOfUser,
   getUserById,
 } from "@/server-requests/user.server-request";
-import { Role } from "@/lib/app-types";
+import { PageUrls, Role } from "@/lib/app-types";
 import {
   ONBOARDING_STEPS,
   PredefinedSystemRoles,
@@ -42,7 +42,7 @@ export const getOnboardingNextStep = async (
     name: StepNames;
   }[]
 ) => {
-  if (!steps) return ONBOARDING_STEPS.REGISTRATION;
+  if (!steps || steps.length === 0) return PageUrls.LOGOUT;
 
   const completedSteps = steps.map((step) => step.name.toString());
 

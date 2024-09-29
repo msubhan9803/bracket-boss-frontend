@@ -53,12 +53,13 @@ export const portalRoutesMiddleware = async ({
   if (!token?.accessToken) {
     return NextResponse.redirect(new URL("/login", request.url));
   } else {
-    if (token.expiresIn < Date.now()) {
+    if (token.expiresIn < Math.floor(Date.now() / 1000)) {
       return NextResponse.redirect(new URL("/login?logout=1", request.url));
     }
   }
 
-  const { isAllStepsCompleted, steps } = await checkIfAllOnboardingStepsCompleted();
+  const { isAllStepsCompleted, steps } =
+    await checkIfAllOnboardingStepsCompleted();
   if (!isAllStepsCompleted) {
     const redirectUrl = (await getOnboardingNextStep(steps as any)) as string;
 
@@ -84,7 +85,7 @@ const middlewares = {
    * Redirect to /dashboard if user is authenticated
    */
   "/login": [authRoutesMiddleware],
-  "/onboarding/register": [authRoutesMiddleware],
+  "/onboarding/register": [passThroughMiddleware],
 
   "/onboarding/add-club-info": [onboardingRoutesMiddleware],
   "/onboarding/select-account-type": [onboardingRoutesMiddleware],

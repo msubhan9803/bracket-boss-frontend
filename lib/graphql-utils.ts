@@ -28,7 +28,7 @@ export function setHeaders(
   }
 }
 
-export function handleGraphQLErrors(err: any, isServer: boolean = false): never {
+export function handleGraphQLErrors(err: any, isServer: boolean = false) {
   const error = err as GraphQLErrorResponse;
 
   const errors = error?.response?.errors?.map(
@@ -41,12 +41,16 @@ export function handleGraphQLErrors(err: any, isServer: boolean = false): never 
   );
 
   if (unauthenticatedError) {
-    if (isServer || typeof window === "undefined") {
-      redirect("/login?logout=1");
-    } else {
-      window.location.href = "/login?logout=1";
-    }
+    /**
+     * Doing nothing as there's error on next js end so leaving this as it is
+     * And doing logout scenario on client side using useTokenValidation & TokenValidator
+     */
+    // if (isServer || typeof window === "undefined") {
+    //   redirect("/login?logout=1");
+    // } else {
+    //   window.location.href = "/login?logout=1";
+    // }
+  } else {
+    throw new Error(errors?.join(", ") ?? "An unknown error occurred");
   }
-
-  throw new Error(errors?.join(", ") ?? "An unknown error occurred");
 }

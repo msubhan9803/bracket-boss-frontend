@@ -24,6 +24,7 @@ export enum PageUrls {
   REGISTRATION = `/onboarding/${PageNames.REGISTRATION}`,
   DASHBOARD = `/${PageNames.DASHBOARD}`,
   LOGIN = `/${PageNames.LOGIN}`,
+  LOGOUT = `/${PageNames.LOGIN}?logout=1`,
 }
 
 export enum ONBOARDING_STEPS {

@@ -74,7 +74,38 @@ export const removeUser = (req?: IncomingMessage, res?: ServerResponse) => {
   deleteCookie("user");
 };
 
+export const removeSelectedClub = (req?: IncomingMessage, res?: ServerResponse) => {
+  deleteCookie("selected-club");
+};
+
 export const clearAllCookies = () => {
   removeAuthToken();
   removeUser();
+  removeSelectedClub();
+};
+
+export const setCustomCookie = async (
+  cookieName: string,
+  cookieValue: string
+) => {
+  try {
+    const response = await fetch("/api/set-cookie", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        cookieName,
+        cookieValue,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to set cookie ${cookieName}: ${response.statusText}`
+      );
+    }
+  } catch (error) {
+    console.error(`Error setting cookie ${cookieName}:`, error);
+  }
 };

@@ -6,7 +6,7 @@ import {
 } from "@/services/cookie-handler.service";
 
 const isTokenExpired = (expiresIn: number) => {
-  return Date.now() > expiresIn;
+  return expiresIn < Math.floor(Date.now() / 1000);
 };
 
 export default function useTokenValidation() {

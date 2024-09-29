@@ -9,7 +9,7 @@ export const getUserById = async (userId: number, clubId?: number) => {
     options: { isServer: true },
   });
 
-  return data.getUserById as GetUserByIdQuery["getUserById"];
+  return data?.getUserById as GetUserByIdQuery["getUserById"];
 };
 
 export const getStepsOfUser = async () => {
@@ -18,5 +18,5 @@ export const getStepsOfUser = async () => {
     options: { isServer: true },
   });
 
-  return data.getStepsOfUser;
+  return data?.getStepsOfUser;
 };
