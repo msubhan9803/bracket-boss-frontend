@@ -1,15 +1,21 @@
+import ClubCard from "@/components/clubs/ClubCard";
 import { Navbar } from "@/components/landing-page/Navbar";
 import { getAllClubs } from "@/services/club.service";
 
 export default async function Clubs() {
   const clubs = await getAllClubs();
-  console.log("🌺🌺🌺🌺 clubs: ", clubs);
+  const selectedClub = clubs[0];
 
   return (
     <>
       <Navbar />
-
-      <h1 className="text-3xl font-bold p-20">Clubs</h1>
+      <ClubCard
+        clubDetails={{
+          ...selectedClub,
+          description:
+            "Bracket Boss is your all-in-one Pickleball management platform. From organizing tournaments to managing player registrations and tracking match results, we make it easy to streamline every aspect of your Pickleball club.",
+        }}
+      />
     </>
   );
 }
