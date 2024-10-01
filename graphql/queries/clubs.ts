@@ -3,9 +3,13 @@ import { graphql } from "../generated";
 export const GET_ALL_CLUBS = graphql(`
   query GetAllClubs {
     getAllClubs {
+      createdDate
+      description
       id
-      name
       logo
+      name
+      slug
+      updatedDate
     }
   }
 `);
