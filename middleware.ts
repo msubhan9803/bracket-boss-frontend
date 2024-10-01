@@ -80,6 +80,7 @@ const middlewares = {
    * Render homepage even if user is authenticated
    */
   "/": [passThroughMiddleware],
+  "/clubs": [passThroughMiddleware],
 
   /*
    * Redirect to /dashboard if user is authenticated
@@ -98,7 +99,7 @@ const middlewares = {
    * This example excludes `/`, `/login`, onboarding routes like `/onboarding/register`, etc..
    * Redirect to /login if user isn't authenticated
    */
-  "/((?!login|forgot-password|onboarding/register|onboarding/add-club-info|onboarding/select-account-type|onboarding/select-your-club|onboarding/verify-email|$).*)":
+  "/((?!login|forgot-password|onboarding/register|onboarding/add-club-info|onboarding/select-account-type|onboarding/select-your-club|onboarding/verify-email|clubs|$).*)":
     [portalRoutesMiddleware],
 } satisfies MiddlewareConfig;
 
