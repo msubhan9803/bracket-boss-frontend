@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -65,13 +65,15 @@ export default function LoginForm() {
       toast.success("Successfully logged in");
 
       const nextStep = await getOnboardingNextStepQuery.refetch();
-      router.push(nextStep.data);
-
+      // router.push(nextStep.data);
+      window.location.href = nextStep.data;
     } catch (error) {
-      setFailedAttempts(prev => prev + 1);
+      setFailedAttempts((prev) => prev + 1);
 
       if (failedAttempts + 1 >= 3) {
-        toast.error("Too many failed attempts. Redirecting to forgot password.");
+        toast.error(
+          "Too many failed attempts. Redirecting to forgot password."
+        );
         router.push(PageUrls.FORGOT_PASSWORD);
       }
     }
