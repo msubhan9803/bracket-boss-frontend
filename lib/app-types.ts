@@ -26,6 +26,8 @@ export enum PageUrls {
   LOGIN = `/${PageNames.LOGIN}`,
   LOGOUT = `/${PageNames.LOGIN}?logout=1`,
   FORGOT_PASSWORD = `/forgot-password`,
+  FORGOT_PASSWORD_VERIFY = `/forgot-password/verify`,
+  FORGOT_PASSWORD_RESET = `/forgot-password/reset`,
 }
 
 export enum ONBOARDING_STEPS {
@@ -35,6 +37,12 @@ export enum ONBOARDING_STEPS {
   STEP_3_CLUB = PageUrls.ADD_CLUB_INFO,
   STEP_3_PLAYER = PageUrls.SELECT_YOUR_CLUB,
   LAST_STEP = PageUrls.DASHBOARD,
+}
+
+export enum FORGOT_PASSWORD_STEPS {
+  STEP_1 = PageUrls.FORGOT_PASSWORD,
+  STEP_2 = PageUrls.FORGOT_PASSWORD_VERIFY,
+  STEP_3 = PageUrls.FORGOT_PASSWORD_RESET,
 }
 
 export type AuthToken = {

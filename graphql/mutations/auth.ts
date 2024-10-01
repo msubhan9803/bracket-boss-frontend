@@ -45,3 +45,19 @@ export const VERIFY_EMAIL = graphql(`
     }
   }
 `);
+
+export const SEND_FORGOT_PASSWORD_EMAIL = graphql(`
+  mutation SendForgotPasswordEmail($email: String!) {
+    sendForgotPasswordEmail(email: $email) {
+      message
+    }
+  }
+`);
+
+export const VERIFY_OTP = graphql(`
+  mutation VerifyOtp($email: String!, $otp: String!) {
+    verifyOtp(email: $email, otp: $otp) {
+      message
+    }
+  }
+`);

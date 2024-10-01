@@ -1,14 +1,11 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useAuth from "@/hooks/useAuth";
 import { DynamicFormField } from "@/global";
 import FormWrapper from "@/components/core/FormWrapper";
-import { PageUrls } from "@/lib/app-types";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -21,12 +18,12 @@ type SubmitValuesType = {
 };
 
 export default function ResetPasswordForm() {
-  const { loginMutation, getOnboardingNextStepQuery, signOut } = useAuth();
+  const { sendForgotPasswordEmailMutation } = useAuth();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: '',
+      email: "",
     },
   });
 
@@ -36,7 +33,7 @@ export default function ResetPasswordForm() {
         label: "Email",
         name: "email",
         type: "email",
-        placeholder: "m@example.com",
+        placeholder: "Enter your email",
       },
     ],
     []
@@ -44,6 +41,7 @@ export default function ResetPasswordForm() {
 
   const onSubmit = async (values: SubmitValuesType) => {
     const { email } = values;
+    await sendForgotPasswordEmailMutation.mutateAsync(email);
   };
 
   return (

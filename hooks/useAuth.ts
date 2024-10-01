@@ -7,6 +7,8 @@ import {
   REFRESH_TOKEN,
   REGISTER_USER,
   VERIFY_EMAIL,
+  SEND_FORGOT_PASSWORD_EMAIL,
+  VERIFY_OTP,
 } from "@/graphql/mutations/auth";
 import { UPDATE_USER_CLUB, UPDATE_USER_ROLE } from "@/graphql/mutations/user";
 import {
@@ -23,12 +25,12 @@ import {
   setUser,
 } from "@/services/cookie-handler.service";
 import {
+  FORGOT_PASSWORD_STEPS,
   ONBOARDING_STEPS,
   PageUrls,
   PredefinedSystemRoles,
   UserCookie,
 } from "@/lib/app-types";
-import { selectFirstRole } from "@/services/user.service";
 
 export enum USE_AUTH_KEY {
   REGISTER_USER = "REGISTER_USER",
@@ -37,6 +39,8 @@ export enum USE_AUTH_KEY {
   VERIFY_EMAIL = "VERIFY_EMAIL",
   UPDATE_USER_ROLE = "UPDATE_USER_ROLE",
   UPDATE_USER_CLUB = "UPDATE_USER_CLUB",
+  SEND_FORGOT_PASSWORD_EMAIL = "SEND_FORGOT_PASSWORD_EMAIL",
+  VERIFY_OTP = "VERIFY_OTP",
 }
 
 export default function useAuth() {
@@ -152,6 +156,38 @@ export default function useAuth() {
     },
   });
 
+  const sendForgotPasswordEmailMutation = useMutation({
+    mutationKey: [USE_AUTH_KEY.SEND_FORGOT_PASSWORD_EMAIL],
+    mutationFn: (email: string) =>
+      graphqlRequestHandler({
+        query: SEND_FORGOT_PASSWORD_EMAIL,
+        variables: { email },
+      }),
+    onSuccess: (res) => {
+      toast.success(res.sendForgotPasswordEmail.message);
+      router.push(FORGOT_PASSWORD_STEPS.STEP_2);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const verifyOtpMutation = useMutation({
+    mutationKey: [USE_AUTH_KEY.VERIFY_OTP],
+    mutationFn: (variables: { email: string; otp: string }) =>
+      graphqlRequestHandler({
+        query: VERIFY_OTP,
+        variables,
+      }),
+    onSuccess: (res, variables) => {
+      toast.success(res.verifyOtp.message);
+      router.push(`${FORGOT_PASSWORD_STEPS.STEP_2}?email=${variables.email}`);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
   const getOnboardingNextStepQuery = useQuery({
     queryKey: ["getOnboardingNextStep"],
     queryFn: async () => {
@@ -173,9 +209,11 @@ export default function useAuth() {
     refreshTokenMutation,
     registerUserMutation,
     verifyEmailMutation,
-    signOut,
     updateUserRoleMutation,
     updateUserClubMutation,
+    sendForgotPasswordEmailMutation,
+    verifyOtpMutation,
     getOnboardingNextStepQuery,
+    signOut,
   };
 }

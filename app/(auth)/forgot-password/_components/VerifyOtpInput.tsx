@@ -30,7 +30,7 @@ const FormSchema = z.object({
 });
 
 export default function VerifyOtpInput({ userEmail }: Props) {
-  const { verifyEmailMutation } = useAuth();
+  const { verifyOtpMutation } = useAuth();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -45,7 +45,7 @@ export default function VerifyOtpInput({ userEmail }: Props) {
       otp: data.pin,
     };
 
-    await verifyEmailMutation.mutateAsync(variables);
+    await verifyOtpMutation.mutateAsync(variables);
   }
 
   return (
@@ -77,7 +77,7 @@ export default function VerifyOtpInput({ userEmail }: Props) {
           type="submit"
           className="w-full mt-4"
           absoluteLoaderPosition
-          loading={verifyEmailMutation.isPending}
+          loading={verifyOtpMutation.isPending}
         >
           Verify
         </Button>
