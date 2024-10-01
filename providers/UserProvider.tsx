@@ -6,6 +6,7 @@ import { GetUserByIdQuery } from "@/graphql/generated/graphql";
 import { setClubId, setRoleId, setUserId } from "@/redux/slices/user.slice";
 import { setCustomCookie } from "@/services/cookie-handler.service";
 import { getUserById } from "@/server-requests/user.server-request";
+import { CustomCookies } from "@/lib/app-types";
 
 const UserProvider: React.FC<{
   userDetails: GetUserByIdQuery["getUserById"];
@@ -23,7 +24,7 @@ const UserProvider: React.FC<{
         if (userDetails?.user?.clubs) {
           selectedClub = userDetails.user.clubs[0].id as number;
 
-          setCustomCookie("selected-club", selectedClub.toString()).catch(
+          setCustomCookie(CustomCookies.SELECTED_CLUB, selectedClub.toString()).catch(
             (error) => {
               console.error("Error setting selected club cookie:", error);
             }

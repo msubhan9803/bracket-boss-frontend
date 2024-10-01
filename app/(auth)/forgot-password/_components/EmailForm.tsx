@@ -41,7 +41,7 @@ export default function ResetPasswordForm() {
 
   const onSubmit = async (values: SubmitValuesType) => {
     const { email } = values;
-    await sendForgotPasswordEmailMutation.mutateAsync(email);
+    await sendForgotPasswordEmailMutation.mutateAsync({ email });
   };
 
   return (

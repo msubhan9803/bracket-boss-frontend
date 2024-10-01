@@ -18,7 +18,8 @@ const documents = {
     "\n  mutation RefreshToken {\n    refreshToken {\n      accessToken\n      expiresIn\n      refreshToken\n    }\n  }\n": types.RefreshTokenDocument,
     "\n  mutation VerifyEmail($input: VerifyEmailInputDto!) {\n    verifyEmail(input: $input) {\n      message\n    }\n  }\n": types.VerifyEmailDocument,
     "\n  mutation SendForgotPasswordEmail($email: String!) {\n    sendForgotPasswordEmail(email: $email) {\n      message\n    }\n  }\n": types.SendForgotPasswordEmailDocument,
-    "\n  mutation VerifyOtp($email: String!, $otp: String!) {\n    verifyOtp(email: $email, otp: $otp) {\n      message\n    }\n  }\n": types.VerifyOtpDocument,
+    "\n  mutation VerifyOtp($email: String!, $otp: String!) {\n    verifyOtp(email: $email, otp: $otp) {\n      message\n      token\n    }\n  }\n": types.VerifyOtpDocument,
+    "\n  mutation ResetPassword($newPassword: String!) {\n    resetPassword(newPassword: $newPassword) {\n      message\n    }\n  }\n": types.ResetPasswordDocument,
     "\n  mutation CreateClub($input: CreateClubInputDto!) {\n    createClub(input: $input) {\n      club {\n        id\n        logo\n        name\n        description\n        createdDate\n        updatedDate\n        users {\n          id\n          name\n          email\n        }\n      }\n      message\n    }\n  }\n": types.CreateClubDocument,
     "\n  mutation UploadFile($file: Upload!) {\n    uploadFile(file: $file) {\n      url\n    }\n  }\n": types.UploadFileDocument,
     "\n  mutation UpdateUserRole($input: UpdateUserRoleDto!) {\n    updateUserRole(input: $input) {\n      message\n      userRoleClub {\n        created_at\n        id\n        role {\n          id\n        }\n        updated_at\n      }\n    }\n  }\n": types.UpdateUserRoleDocument,
@@ -67,7 +68,11 @@ export function graphql(source: "\n  mutation SendForgotPasswordEmail($email: St
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  mutation VerifyOtp($email: String!, $otp: String!) {\n    verifyOtp(email: $email, otp: $otp) {\n      message\n    }\n  }\n"): (typeof documents)["\n  mutation VerifyOtp($email: String!, $otp: String!) {\n    verifyOtp(email: $email, otp: $otp) {\n      message\n    }\n  }\n"];
+export function graphql(source: "\n  mutation VerifyOtp($email: String!, $otp: String!) {\n    verifyOtp(email: $email, otp: $otp) {\n      message\n      token\n    }\n  }\n"): (typeof documents)["\n  mutation VerifyOtp($email: String!, $otp: String!) {\n    verifyOtp(email: $email, otp: $otp) {\n      message\n      token\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation ResetPassword($newPassword: String!) {\n    resetPassword(newPassword: $newPassword) {\n      message\n    }\n  }\n"): (typeof documents)["\n  mutation ResetPassword($newPassword: String!) {\n    resetPassword(newPassword: $newPassword) {\n      message\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

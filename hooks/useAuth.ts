@@ -9,6 +9,7 @@ import {
   VERIFY_EMAIL,
   SEND_FORGOT_PASSWORD_EMAIL,
   VERIFY_OTP,
+  RESET_PASSWORD,
 } from "@/graphql/mutations/auth";
 import { UPDATE_USER_CLUB, UPDATE_USER_ROLE } from "@/graphql/mutations/user";
 import {
@@ -22,9 +23,11 @@ import { graphqlRequestHandler } from "@/lib/graphql-client";
 import {
   clearAllCookies,
   setAuthToken,
+  setCustomCookie,
   setUser,
 } from "@/services/cookie-handler.service";
 import {
+  CustomCookies,
   FORGOT_PASSWORD_STEPS,
   ONBOARDING_STEPS,
   PageUrls,
@@ -41,6 +44,7 @@ export enum USE_AUTH_KEY {
   UPDATE_USER_CLUB = "UPDATE_USER_CLUB",
   SEND_FORGOT_PASSWORD_EMAIL = "SEND_FORGOT_PASSWORD_EMAIL",
   VERIFY_OTP = "VERIFY_OTP",
+  RESET_PASSWORD = "RESET_PASSWORD",
 }
 
 export default function useAuth() {
@@ -158,14 +162,14 @@ export default function useAuth() {
 
   const sendForgotPasswordEmailMutation = useMutation({
     mutationKey: [USE_AUTH_KEY.SEND_FORGOT_PASSWORD_EMAIL],
-    mutationFn: (email: string) =>
+    mutationFn: (variables: { email: string }) =>
       graphqlRequestHandler({
         query: SEND_FORGOT_PASSWORD_EMAIL,
-        variables: { email },
+        variables,
       }),
-    onSuccess: (res) => {
+    onSuccess: (res, variables) => {
       toast.success(res.sendForgotPasswordEmail.message);
-      router.push(FORGOT_PASSWORD_STEPS.STEP_2);
+      router.push(`${FORGOT_PASSWORD_STEPS.STEP_2}?email=${variables.email}`);
     },
     onError: (error) => {
       toast.error(error.message);
@@ -179,9 +183,32 @@ export default function useAuth() {
         query: VERIFY_OTP,
         variables,
       }),
-    onSuccess: (res, variables) => {
+    onSuccess: (res) => {
       toast.success(res.verifyOtp.message);
-      router.push(`${FORGOT_PASSWORD_STEPS.STEP_2}?email=${variables.email}`);
+      // setCustomCookie(CustomCookies.RESET_PASSWWORD_TOKEN, res.verifyOtp.token);
+      setAuthToken({
+        accessToken: res.verifyOtp.token,
+        refreshToken: "",
+        expiresIn: 0,
+      });
+      router.push(FORGOT_PASSWORD_STEPS.STEP_3);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const resetPasswordMutation = useMutation({
+    mutationKey: [USE_AUTH_KEY.RESET_PASSWORD],
+    mutationFn: (variables: { newPassword: string }) =>
+      graphqlRequestHandler({
+        query: RESET_PASSWORD,
+        variables,
+      }),
+    onSuccess: (res) => {
+      toast.success(res.resetPassword.message);
+      clearAllCookies();
+      router.push(PageUrls.LOGIN);
     },
     onError: (error) => {
       toast.error(error.message);
@@ -212,6 +239,7 @@ export default function useAuth() {
     updateUserRoleMutation,
     updateUserClubMutation,
     sendForgotPasswordEmailMutation,
+    resetPasswordMutation,
     verifyOtpMutation,
     getOnboardingNextStepQuery,
     signOut,

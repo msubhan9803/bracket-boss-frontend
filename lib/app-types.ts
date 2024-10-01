@@ -99,3 +99,8 @@ export enum ModuleNames {
   ACCOUNT_SETTINGS = "account_settings",
   ACTIVITY_LOGS = "activity_logs",
 }
+
+export enum CustomCookies {
+  SELECTED_CLUB = "selected-club",
+  RESET_PASSWWORD_TOKEN = "reset-password-token",
+}

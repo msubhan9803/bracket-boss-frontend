@@ -58,6 +58,15 @@ export const VERIFY_OTP = graphql(`
   mutation VerifyOtp($email: String!, $otp: String!) {
     verifyOtp(email: $email, otp: $otp) {
       message
+      token
+    }
+  }
+`);
+
+export const RESET_PASSWORD = graphql(`
+  mutation ResetPassword($newPassword: String!) {
+    resetPassword(newPassword: $newPassword) {
+      message
     }
   }
 `);

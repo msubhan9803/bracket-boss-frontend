@@ -5,6 +5,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DynamicFormField } from "@/global";
 import FormWrapper from "@/components/core/FormWrapper";
+import useAuth from "@/hooks/useAuth";
 
 const formSchema = z
   .object({
@@ -28,6 +29,7 @@ type SubmitValuesType = {
 };
 
 export default function ResetPasswordForm() {
+  const { resetPasswordMutation } = useAuth();
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -57,7 +59,9 @@ export default function ResetPasswordForm() {
   );
 
   const onSubmit = async (values: SubmitValuesType) => {
-    const { password, confirmPassword } = values;
+    const { password } = values;
+
+    await resetPasswordMutation.mutateAsync({ newPassword: password });
   };
 
   return (
