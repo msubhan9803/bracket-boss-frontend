@@ -48,6 +48,13 @@ const menuItems = [
     name: ModuleNames.DASHBOARD,
   },
   {
+    href: "/club-management",
+    label: "Club Management",
+    icon: FaUsersRectangle,
+    isActive: false,
+    name: ModuleNames.CLUB_MANAGEMENT,
+  },
+  {
     href: "/league-management",
     label: "League Management",
     icon: MdSportsTennis,
@@ -62,11 +69,11 @@ const menuItems = [
     name: ModuleNames.TOURNAMENT_MANAGEMENT,
   },
   {
-    href: "/club-management",
-    label: "Club Management",
-    icon: FaUsersRectangle,
+    href: "/score-standings",
+    label: "Score & Standings",
+    icon: MdScoreboard,
     isActive: false,
-    name: ModuleNames.CLUB_MANAGEMENT,
+    name: ModuleNames.SCORE_AND_STANDINGS,
   },
   {
     href: "/team-management",
@@ -88,13 +95,6 @@ const menuItems = [
     icon: FaUsers,
     isActive: false,
     name: ModuleNames.USER_MANAGEMENT,
-  },
-  {
-    href: "/score-standings",
-    label: "Score & Standings",
-    icon: MdScoreboard,
-    isActive: false,
-    name: ModuleNames.SCORE_AND_STANDINGS,
   },
   {
     href: "/reporting-analytics",

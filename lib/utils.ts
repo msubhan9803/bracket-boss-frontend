@@ -22,3 +22,17 @@ export function getSearchParam(paramName: string): string | null {
   const url = new URL(referer);
   return url.searchParams.get(paramName);
 }
+
+export function formatNumber(value: number): string {
+  return new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value);
+}
+
+export function toTitleCase(text: string): string {
+  return text
+    .replace(/_/g, " ")
+    .toLowerCase()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
