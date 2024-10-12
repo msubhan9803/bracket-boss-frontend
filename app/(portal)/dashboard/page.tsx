@@ -1,4 +1,5 @@
 import PageTitle from "@/components/PageTitle";
+import { PageUrls } from "@/lib/app-types";
 import { getUserById } from "@/server-requests/user.server-request";
 import { getSession } from "@/services/cookie-handler.service";
 
@@ -10,7 +11,7 @@ export default async function Dashboard() {
     <>
       <PageTitle
         title="Dashboard"
-        breadcrumbs={[{ label: "Dashboard", href: "/dashboard" }]}
+        breadcrumbs={[{ label: "Dashboard", href: PageUrls.DASHBOARD }]}
       />
 
       <div

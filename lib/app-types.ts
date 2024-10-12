@@ -14,6 +14,8 @@ export enum PageNames {
   REGISTRATION = "register",
   DASHBOARD = "dashboard",
   LOGIN = "login",
+  TOURNAMENT_MANAGEMENT = 'tournament-management',
+  COURT_MANAGEMENT = 'court-management',
 }
 
 export enum PageUrls {
@@ -28,6 +30,8 @@ export enum PageUrls {
   FORGOT_PASSWORD = `/forgot-password`,
   FORGOT_PASSWORD_VERIFY = `/forgot-password/verify`,
   FORGOT_PASSWORD_RESET = `/forgot-password/reset`,
+  TOURNAMENT_MANAGEMENT = `/${PageNames.TOURNAMENT_MANAGEMENT}`,
+  COURT_MANAGEMENT = `/${PageNames.COURT_MANAGEMENT}`,
 }
 
 export enum ONBOARDING_STEPS {
