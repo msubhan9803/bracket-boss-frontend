@@ -14,9 +14,9 @@ export function useTable(
   >
 ) {
   const handleSort = (field: string) => {
-    let direction: 'asc' | 'desc' = 'asc'
-    if (sort.field === field && sort.direction === 'asc') {
-      direction = 'desc'
+    let direction: 'ASC' | 'DESC' = 'ASC'
+    if (sort.field === field && sort.direction === 'ASC') {
+      direction = 'DESC'
     }
     setSort({ field, direction })
   }

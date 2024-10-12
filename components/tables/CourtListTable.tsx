@@ -16,17 +16,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import moment from "moment";
-import { Tournament } from "@/graphql/generated/graphql";
+import { Court } from "@/graphql/generated/graphql";
 import SkeletonLoader from "@/components/ui/skeleton";
 import Pagination from "@/components/ui/pagination";
 import { useTable } from "@/hooks/shared/useTable";
-import useTournaments from "@/hooks/tournament/useTournaments";
+import useCourts from "@/hooks/court/useCourts";
 import FilterComponent from "@/components/core/FilterComponent";
-import { toTitleCase } from "@/lib/utils";
-import AddTournamentButton from "@/components/mutation-buttons/AddTournamentButton";
+import AddCourtButton from "../mutation-buttons/AddCourtButton";
 
-const TournamentListTable = () => {
+const CourtListTable = () => {
   const [page, setPage] = useState(1);
   const pageSizes = [5, 10, 25];
   const [pageSize, setPageSize] = useState(pageSizes[0]);
@@ -40,19 +38,15 @@ const TournamentListTable = () => {
     setSort
   );
 
-  const {
-    tournamentListFetched,
-    totalRecords,
-    loadingOrder,
-    refetchTournamentList,
-  } = useTournaments(page, pageSize, filterBy, filter, sort);
+  const { courtListFetched, totalRecords, loadingOrder, refetchCourtList } =
+    useCourts(page, pageSize, filterBy, filter, sort);
 
-  const tournamentList = useMemo<Partial<Tournament>[]>(
-    () => [...tournamentListFetched],
-    [tournamentListFetched]
+  const courtList = useMemo<Partial<Court>[]>(
+    () => [...courtListFetched],
+    [courtListFetched]
   );
 
-  const columns: ColumnDef<Partial<Tournament>, any>[] = [
+  const columns: ColumnDef<Partial<Court>, any>[] = [
     {
       accessorKey: "id",
       header: "ID",
@@ -62,40 +56,19 @@ const TournamentListTable = () => {
       header: "Name",
     },
     {
-      accessorKey: "bracket.name",
-      header: "Bracket",
-      cell: ({ getValue }) => <div>{toTitleCase(getValue())}</div>,
-    },
-    {
-      accessorKey: "club.name",
-      header: "Club Name",
-    },
-    {
-      accessorKey: "start_date",
-      header: "Start Date",
-      cell: ({ getValue }) => <div>{moment(getValue()).format("ll")}</div>,
-    },
-    {
-      accessorKey: "end_date",
-      header: "End Date",
-      cell: ({ getValue }) => <div>{moment(getValue()).format("ll")}</div>,
-    },
-
-    {
-      accessorKey: "isPrivate",
-      header: "Private",
-      cell: ({ getValue }) => <div>{getValue() ? "Yes" : "No"}</div>,
+      accessorKey: "location",
+      header: "Location",
     },
   ];
 
   const table = useReactTable({
-    data: tournamentList,
+    data: courtList,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
   useEffect(() => {
-    refetchTournamentList();
+    refetchCourtList();
   }, [sort, filterBy, filter, page]);
 
   return (
@@ -120,9 +93,7 @@ const TournamentListTable = () => {
                   setFilter={setFilter}
                 />
 
-                <AddTournamentButton
-                  refetchTournamentList={refetchTournamentList}
-                />
+                <AddCourtButton refetchCourtList={refetchCourtList} />
               </div>
             </TableHead>
           </TableRow>
@@ -212,4 +183,4 @@ const TournamentListTable = () => {
   );
 };
 
-export default TournamentListTable;
+export default CourtListTable;
