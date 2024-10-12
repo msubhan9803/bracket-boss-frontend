@@ -1,6 +1,7 @@
 "use client";
 import { useMemo, useEffect } from "react";
 import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 import {
   FaHome,
   FaBox,
@@ -39,75 +40,67 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import useUserPermissions from "@/hooks/useUserPermissions";
 import { ModuleNames } from "@/lib/app-types";
 
+export const dynamic = "force-dynamic";
+
 const menuItems = [
   {
     href: "/dashboard",
     label: "Dashboard",
     icon: FaHome,
-    isActive: true,
     name: ModuleNames.DASHBOARD,
-  },
-  {
-    href: "/club-management",
-    label: "Club Management",
-    icon: FaUsersRectangle,
-    isActive: false,
-    name: ModuleNames.CLUB_MANAGEMENT,
-  },
-  {
-    href: "/league-management",
-    label: "League Management",
-    icon: MdSportsTennis,
-    isActive: false,
-    name: ModuleNames.LEAGUE_MANAGEMENT,
-  },
-  {
-    href: "/tournament-management",
-    label: "Tournament Management",
-    icon: MdSportsScore,
-    isActive: false,
-    name: ModuleNames.TOURNAMENT_MANAGEMENT,
-  },
-  {
-    href: "/score-standings",
-    label: "Score & Standings",
-    icon: MdScoreboard,
-    isActive: false,
-    name: ModuleNames.SCORE_AND_STANDINGS,
   },
   {
     href: "/team-management",
     label: "Team Management",
     icon: FaUsers,
-    isActive: false,
     name: ModuleNames.TEAM_MANAGEMENT,
   },
   {
     href: "/court-management",
     label: "Court Management",
     icon: PiCourtBasketballFill,
-    isActive: false,
     name: ModuleNames.COURT_MANAGEMENT,
+  },
+  {
+    href: "/tournament-management",
+    label: "Tournament Management",
+    icon: MdSportsScore,
+    name: ModuleNames.TOURNAMENT_MANAGEMENT,
+  },
+  {
+    href: "/club-management",
+    label: "Club Management",
+    icon: FaUsersRectangle,
+    name: ModuleNames.CLUB_MANAGEMENT,
+  },
+  {
+    href: "/league-management",
+    label: "League Management",
+    icon: MdSportsTennis,
+    name: ModuleNames.LEAGUE_MANAGEMENT,
+  },
+  {
+    href: "/score-standings",
+    label: "Score & Standings",
+    icon: MdScoreboard,
+    name: ModuleNames.SCORE_AND_STANDINGS,
   },
   {
     href: "/user-management",
     label: "User Management",
     icon: FaUsers,
-    isActive: false,
     name: ModuleNames.USER_MANAGEMENT,
   },
   {
     href: "/reporting-analytics",
     label: "Reporting & Analytics",
     icon: FaChartLine,
-    isActive: false,
     name: ModuleNames.REPORTING_AND_ANALYTICS,
   },
   {
     href: "/chat",
     label: "Chat",
     icon: FaComments,
-    isActive: false,
     badge: 6,
     name: ModuleNames.CHAT,
   },
@@ -115,97 +108,85 @@ const menuItems = [
     href: "/account-settings",
     label: "Account Settings",
     icon: FaCog,
-    isActive: false,
     name: ModuleNames.ACCOUNT_SETTINGS,
   },
   {
     href: "/leagues",
     label: "Leagues",
     icon: FaTrophy,
-    isActive: false,
     name: ModuleNames.LEAGUES,
   },
   {
     href: "/tournaments",
     label: "Tournaments",
     icon: FaMedal,
-    isActive: false,
     name: ModuleNames.TOURNAMENTS,
   },
   {
     href: "/invitations",
     label: "Invitations",
     icon: FaEnvelopeOpenText,
-    isActive: false,
     name: ModuleNames.INVITATIONS,
   },
   {
     href: "/members",
     label: "Members",
     icon: FaUserFriends,
-    isActive: false,
     name: ModuleNames.MEMBERS,
   },
   {
     href: "/customization",
     label: "Customization",
     icon: FaPaintBrush,
-    isActive: false,
     name: ModuleNames.CUSTOMIZATION,
   },
   {
     href: "/my-club",
     label: "My Club",
     icon: FaBuilding,
-    isActive: false,
     name: ModuleNames.MY_CLUB,
   },
   {
     href: "/my-team",
     label: "My Team",
     icon: FaUsers,
-    isActive: false,
     name: ModuleNames.MY_TEAM,
   },
   {
     href: "/my-matches",
     label: "My Matches",
     icon: FaCalendarCheck,
-    isActive: false,
     name: ModuleNames.MY_MATCHES,
   },
   {
     href: "/referral-management",
     label: "Referral Management",
     icon: FaShareAlt,
-    isActive: false,
     name: ModuleNames.REFERRAL_MANAGEMENT,
   },
   {
     href: "/payment-management",
     label: "Payment Management",
     icon: FaMoneyCheckAlt,
-    isActive: false,
     name: ModuleNames.PAYMENT_MANAGEMENT,
   },
   {
     href: "/system-settings",
     label: "System Settings",
     icon: FaCogs,
-    isActive: false,
     name: ModuleNames.SYSTEM_SETTINGS,
   },
   {
     href: "/activity-logs",
     label: "Activity Logs",
     icon: FaClipboardList,
-    isActive: false,
     name: ModuleNames.ACTIVITY_LOGS,
   },
 ];
 
 export default function Sidebar() {
   const { permissions } = useUserPermissions();
+  const pathname = usePathname();
 
   useEffect(() => {
     console.log("✅✅✅✅ permissions: ", permissions);
@@ -234,7 +215,7 @@ export default function Sidebar() {
                 key={item.label}
                 href={item.href}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                  item.isActive
+                  pathname === item.href
                     ? "bg-muted text-primary"
                     : "text-muted-foreground hover:text-primary"
                 }`}
@@ -274,6 +255,7 @@ export default function Sidebar() {
 
 export const MobileMenuButton = () => {
   const { permissions } = useUserPermissions();
+  const pathname = usePathname();
 
   const filteredMenuItems = useMemo(() => {
     return menuItems.filter((item) =>
@@ -297,7 +279,7 @@ export const MobileMenuButton = () => {
               key={item.label}
               href={item.href}
               className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                item.isActive
+                pathname === item.href
                   ? "bg-muted text-primary"
                   : "text-muted-foreground hover:text-primary"
               }`}
