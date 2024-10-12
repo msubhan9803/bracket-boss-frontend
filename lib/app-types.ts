@@ -16,6 +16,7 @@ export enum PageNames {
   LOGIN = "login",
   TOURNAMENT_MANAGEMENT = 'tournament-management',
   COURT_MANAGEMENT = 'court-management',
+  TEAM_MANAGEMENT = 'team-management',
 }
 
 export enum PageUrls {
@@ -32,6 +33,7 @@ export enum PageUrls {
   FORGOT_PASSWORD_RESET = `/forgot-password/reset`,
   TOURNAMENT_MANAGEMENT = `/${PageNames.TOURNAMENT_MANAGEMENT}`,
   COURT_MANAGEMENT = `/${PageNames.COURT_MANAGEMENT}`,
+  TEAM_MANAGEMENT = `/${PageNames.TEAM_MANAGEMENT}`,
 }
 
 export enum ONBOARDING_STEPS {
