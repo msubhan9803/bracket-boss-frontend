@@ -22,8 +22,10 @@ const documents = {
     "\n  mutation ResetPassword($newPassword: String!) {\n    resetPassword(newPassword: $newPassword) {\n      message\n    }\n  }\n": types.ResetPasswordDocument,
     "\n  mutation CreateClub($input: CreateClubInputDto!) {\n    createClub(input: $input) {\n      club {\n        id\n        logo\n        name\n        description\n        createdDate\n        updatedDate\n        users {\n          id\n          name\n          email\n        }\n      }\n      message\n    }\n  }\n": types.CreateClubDocument,
     "\n  mutation UploadFile($file: Upload!) {\n    uploadFile(file: $file) {\n      url\n    }\n  }\n": types.UploadFileDocument,
+    "\n  mutation CreateTournament($input: CreateTournamentInputDto!) {\n    createTournament(input: $input) {\n      created_at\n      description\n      end_date\n      id\n      isPrivate\n      name\n      start_date\n      updated_at\n    }\n  }\n": types.CreateTournamentDocument,
     "\n  mutation UpdateUserRole($input: UpdateUserRoleDto!) {\n    updateUserRole(input: $input) {\n      message\n      userRoleClub {\n        created_at\n        id\n        role {\n          id\n        }\n        updated_at\n      }\n    }\n  }\n": types.UpdateUserRoleDocument,
     "\n  mutation UpdateUserClub($input: UpdateUserClubDto!) {\n    updateUserClub(input: $input) {\n      message\n      user {\n        id\n        email\n        name\n      }\n    }\n  }\n": types.UpdateUserClubDocument,
+    "\n  query GetAllBrackets {\n    getAllBrackets {\n      id\n      name\n    }\n  }\n": types.GetAllBracketsDocument,
     "\n  query GetAllClubs {\n    getAllClubs {\n      createdDate\n      description\n      id\n      logo\n      name\n      slug\n      updatedDate\n    }\n  }\n": types.GetAllClubsDocument,
     "\n  query GetAllTournaments(\n    $filter: String\n    $filterBy: String\n    $page: Int\n    $pageSize: Int\n    $sort: SortInput\n  ) {\n    getAllTournaments(\n      filter: $filter\n      filterBy: $filterBy\n      page: $page\n      pageSize: $pageSize\n      sort: $sort\n    ) {\n      totalRecords\n      tournaments {\n        id\n        name\n        description\n        start_date\n        end_date\n        isPrivate\n        created_at\n        updated_at\n        bracket {\n          name\n        }\n        club {\n          name\n        }\n        sport {\n          name\n        }\n      }\n    }\n  }\n": types.GetAllTournamentsDocument,
     "\n  query GetUsers {\n    getUsers {\n      id\n      email\n      name\n    }\n  }\n": types.GetUsersDocument,
@@ -85,11 +87,19 @@ export function graphql(source: "\n  mutation UploadFile($file: Upload!) {\n    
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n  mutation CreateTournament($input: CreateTournamentInputDto!) {\n    createTournament(input: $input) {\n      created_at\n      description\n      end_date\n      id\n      isPrivate\n      name\n      start_date\n      updated_at\n    }\n  }\n"): (typeof documents)["\n  mutation CreateTournament($input: CreateTournamentInputDto!) {\n    createTournament(input: $input) {\n      created_at\n      description\n      end_date\n      id\n      isPrivate\n      name\n      start_date\n      updated_at\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n  mutation UpdateUserRole($input: UpdateUserRoleDto!) {\n    updateUserRole(input: $input) {\n      message\n      userRoleClub {\n        created_at\n        id\n        role {\n          id\n        }\n        updated_at\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateUserRole($input: UpdateUserRoleDto!) {\n    updateUserRole(input: $input) {\n      message\n      userRoleClub {\n        created_at\n        id\n        role {\n          id\n        }\n        updated_at\n      }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation UpdateUserClub($input: UpdateUserClubDto!) {\n    updateUserClub(input: $input) {\n      message\n      user {\n        id\n        email\n        name\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateUserClub($input: UpdateUserClubDto!) {\n    updateUserClub(input: $input) {\n      message\n      user {\n        id\n        email\n        name\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetAllBrackets {\n    getAllBrackets {\n      id\n      name\n    }\n  }\n"): (typeof documents)["\n  query GetAllBrackets {\n    getAllBrackets {\n      id\n      name\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

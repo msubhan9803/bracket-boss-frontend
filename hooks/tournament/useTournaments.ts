@@ -7,7 +7,7 @@ export enum USE_TOURNAMENT_KEY {
   GET_ALL_TOURNAMENTS = "GET_ALL_TOURNAMENTS",
 }
 
-export default function useTournament(
+export default function useTournaments(
   page: number,
   pageSize: number,
   filterBy: string,

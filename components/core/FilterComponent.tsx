@@ -61,7 +61,7 @@ const FilterComponent = ({
           // Light mode colors
           "text-gray-900 bg-white border-slate-200",
           // Dark mode colors
-          "dark:text-white dark:bg-slate-950 dark:border-slate-800"
+          "dark:text-white dark:bg-muted/40 dark:border-gray-700"
         )}
         placeholder="Search"
         required

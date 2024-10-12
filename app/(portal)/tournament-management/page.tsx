@@ -1,7 +1,7 @@
 import PageTitle from "@/components/PageTitle";
 import TournamentListTable from "@/components/tables/TournamentListTable";
 
-export default async function Dashboard() {
+export default async function TournamentManagement() {
   return (
     <>
       <PageTitle

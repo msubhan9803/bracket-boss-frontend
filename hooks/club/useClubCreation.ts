@@ -8,7 +8,7 @@ export enum USE_CLUB_KEY {
   CREATE_CLUB = "CREATE_CLUB",
 }
 
-export default function useClub() {
+export default function useClubCreation() {
   const createClubMutation = useMutation({
     mutationKey: [USE_CLUB_KEY.CREATE_CLUB],
     mutationFn: async (variables: {

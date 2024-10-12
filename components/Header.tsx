@@ -12,6 +12,7 @@ import {
 import { FaBell } from "react-icons/fa";
 import { MobileMenuButton } from "@/components/Sidebar";
 import useAuth from "@/hooks/useAuth";
+import { ThemeSwitcherButton } from "./theme-switcher-button";
 
 export default function Header() {
   const { signOut } = useAuth();
@@ -24,6 +25,8 @@ export default function Header() {
         <FaBell className="h-4 w-4" />
         <span className="sr-only">Toggle notifications</span>
       </Button>
+
+      <ThemeSwitcherButton />
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

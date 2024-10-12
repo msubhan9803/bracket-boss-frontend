@@ -21,19 +21,10 @@ export default function useUser() {
     enabled: !!userId,
   });
 
-  const userRole = useMemo(() => {
-    if (userDetails?.roles) {
-      const role = userDetails?.roles[0]?.id;
-      return parseInt(role);
-    }
-    return null;
-  }, [userDetails]);
-
   return {
     session: getSession(),
     userDetails,
     isLoading,
     error,
-    userRole,
   };
 }

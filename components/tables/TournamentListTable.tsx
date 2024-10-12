@@ -19,11 +19,12 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import moment from "moment";
 import { Tournament } from "@/graphql/generated/graphql";
 import SkeletonLoader from "@/components/ui/skeleton";
-import Pagination from "../ui/pagination";
+import Pagination from "@/components/ui/pagination";
 import { useTable } from "@/hooks/shared/useTable";
-import useTournament from "@/hooks/useTournament";
+import useTournaments from "@/hooks/tournament/useTournaments";
 import FilterComponent from "@/components/core/FilterComponent";
 import { toTitleCase } from "@/lib/utils";
+import AddTournamentButton from "@/components/mutation-buttons/AddTournamentButton";
 
 const TournamentListTable = () => {
   const [page, setPage] = useState(1);
@@ -44,7 +45,7 @@ const TournamentListTable = () => {
     totalRecords,
     loadingOrder,
     refetchTournamentList,
-  } = useTournament(page, pageSize, filterBy, filter, sort);
+  } = useTournaments(page, pageSize, filterBy, filter, sort);
 
   const tournamentList = useMemo<Partial<Tournament>[]>(
     () => [...tournamentListFetched],
@@ -122,6 +123,8 @@ const TournamentListTable = () => {
                   setFilterBy={setFilterBy}
                   setFilter={setFilter}
                 />
+
+                <AddTournamentButton refetchTournamentList={refetchTournamentList} />
               </div>
             </TableHead>
           </TableRow>

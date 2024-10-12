@@ -9,7 +9,7 @@ import { DynamicFormField } from "@/global";
 import FormWrapper from "@/components/core/FormWrapper";
 import { ONBOARDING_STEPS } from "@/lib/app-types";
 import useFileUpload from "@/hooks/useFileUpload";
-import useClub from "@/hooks/useClub";
+import useClubCreation from "@/hooks/club/useClubCreation";
 import { toSlug } from "@/lib/utils";
 
 const formSchema = z.object({
@@ -24,7 +24,7 @@ type FormData = z.infer<typeof formSchema>;
 export default function AddClubInfoForm() {
   const router = useRouter();
   const { uploadFileMutation } = useFileUpload();
-  const { createClubMutation } = useClub();
+  const { createClubMutation } = useClubCreation();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),

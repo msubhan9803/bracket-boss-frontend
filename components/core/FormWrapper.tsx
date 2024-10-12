@@ -40,7 +40,7 @@ const FormWrapper = <T extends { [key: string]: any }>({
         })}
       >
         <ScrollArea className={isDrawer ? 'h-[calc(100vh-5rem-5rem)]' : 'h-auto'}>
-          <div className={`grid gap-3 p-1 ${gridCols}`}>
+          <div className={`grid gap-3 p-4 ${gridCols}`}>
             {fields.map((field) => (
               <div key={field.name} className={field.className || ''}>
                 <DynamicFormField dynamicField={field} />
