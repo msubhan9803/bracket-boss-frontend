@@ -1,8 +1,8 @@
 import { graphql } from "../generated";
 
-export const GET_USERS = graphql(`
-  query GetUsers {
-    getUsers {
+export const GET_ALL_USERS_WITHOUT_PAGINATION = graphql(`
+  query GetAllUsersWithoutPagination {
+    getAllUsersWithoutPagination {
       id
       email
       name

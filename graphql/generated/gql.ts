@@ -33,7 +33,7 @@ const documents = {
     "\n  query GetAllTeams(\n    $filter: String\n    $filterBy: String\n    $page: Int\n    $pageSize: Int\n    $sort: SortInput\n  ) {\n    getAllTeams(\n      filter: $filter\n      filterBy: $filterBy\n      page: $page\n      pageSize: $pageSize\n      sort: $sort\n    ) {\n      teams {\n        id\n        name\n        tournament {\n          name\n        }\n      }\n      totalRecords\n    }\n  }\n": types.GetAllTeamsDocument,
     "\n  query GetAllTournaments(\n    $filter: String\n    $filterBy: String\n    $page: Int\n    $pageSize: Int\n    $sort: SortInput\n  ) {\n    getAllTournaments(\n      filter: $filter\n      filterBy: $filterBy\n      page: $page\n      pageSize: $pageSize\n      sort: $sort\n    ) {\n      totalRecords\n      tournaments {\n        id\n        name\n        description\n        start_date\n        end_date\n        isPrivate\n        created_at\n        updated_at\n        bracket {\n          name\n        }\n        club {\n          name\n        }\n        sport {\n          name\n        }\n      }\n    }\n  }\n": types.GetAllTournamentsDocument,
     "\n  query GetAllTournamentsWithoutPagination {\n    getAllTournamentsWithoutPagination {\n      created_at\n      description\n      end_date\n      id\n      isPrivate\n      name\n      start_date\n      updated_at\n    }\n  }\n": types.GetAllTournamentsWithoutPaginationDocument,
-    "\n  query GetUsers {\n    getUsers {\n      id\n      email\n      name\n    }\n  }\n": types.GetUsersDocument,
+    "\n  query GetAllUsersWithoutPagination {\n    getAllUsersWithoutPagination {\n      id\n      email\n      name\n    }\n  }\n": types.GetAllUsersWithoutPaginationDocument,
     "\n  query GetUserById($userId: Float!) {\n    getUserById(userId: $userId) {\n      user {\n        created_at\n        email\n        id\n        isEmailVerified\n        name\n        otpSecret\n        profileImage\n        updated_at\n        steps {\n          id\n          name\n        }\n        clubs {\n          id\n        }\n      }\n      userRoleClub {\n        id\n        role {\n          id\n        }\n      }\n    }\n  }\n": types.GetUserByIdDocument,
     "\n  query GetStepsOfUser {\n    getStepsOfUser {\n      id\n      name\n    }\n  }\n": types.GetStepsOfUserDocument,
     "\n  query GetPermissionsByRoleId($roleId: Float!) {\n    getPermissionsByRoleId(roleId: $roleId) {\n      id\n      roleId\n      moduleId\n      moduleName\n      policyId\n      policyName\n    }\n  }\n": types.GetPermissionsByRoleIdDocument,
@@ -136,7 +136,7 @@ export function graphql(source: "\n  query GetAllTournamentsWithoutPagination {\
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetUsers {\n    getUsers {\n      id\n      email\n      name\n    }\n  }\n"): (typeof documents)["\n  query GetUsers {\n    getUsers {\n      id\n      email\n      name\n    }\n  }\n"];
+export function graphql(source: "\n  query GetAllUsersWithoutPagination {\n    getAllUsersWithoutPagination {\n      id\n      email\n      name\n    }\n  }\n"): (typeof documents)["\n  query GetAllUsersWithoutPagination {\n    getAllUsersWithoutPagination {\n      id\n      email\n      name\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

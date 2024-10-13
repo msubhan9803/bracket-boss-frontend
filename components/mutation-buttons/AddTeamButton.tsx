@@ -2,7 +2,11 @@
 import { Fragment, useMemo, useState } from "react";
 import DynamicFormSheet from "@/components/core/DynamicFormSheet";
 import { DynamicFormField } from "@/global";
-import { CreateTeamInputDto, Tournament } from "@/graphql/generated/graphql";
+import {
+  CreateTeamInputDto,
+  Tournament,
+  User,
+} from "@/graphql/generated/graphql";
 import { Button } from "@/components/ui/button";
 import { toTitleCase } from "@/lib/utils";
 import { RootState } from "@/redux/store";
@@ -12,9 +16,14 @@ import useTeamOperations from "@/hooks/team/useTeamOperations";
 interface AddTeamButtonProps {
   refetchTeamList: () => void;
   tournaments: Tournament[];
+  users: User[];
 }
 
-const AddTeamButton: React.FC<AddTeamButtonProps> = ({ refetchTeamList, tournaments }) => {
+const AddTeamButton: React.FC<AddTeamButtonProps> = ({
+  refetchTeamList,
+  tournaments,
+  users,
+}) => {
   const [showModal, setShowModal] = useState(false);
   const { createTeamMutation } = useTeamOperations();
   const clubId = useSelector((state: RootState) => state.user.clubId) as number;
@@ -39,16 +48,30 @@ const AddTeamButton: React.FC<AddTeamButtonProps> = ({ refetchTeamList, tourname
           label: toTitleCase(tournament.name),
           value: tournament.id.toString(),
         })),
-        defaultValue: "",
+        defaultValue: [],
+      },
+      {
+        label: "Users",
+        name: "userIds",
+        type: "multi-select",
+        placeholder: "Select tournament",
+        required: true,
+        options: users?.map((user) => ({
+          label: `${toTitleCase(user.name)} - ${user.email}`,
+          value: user.id.toString(),
+        })),
+        defaultValue: [],
       },
     ],
-    [tournaments]
+    [tournaments, users]
   );
 
   const handleCreating = async (input: CreateTeamInputDto) => {
     await createTeamMutation.mutateAsync({
       ...input,
+      tournamentId: parseInt(input.tournamentId.toString()),
       clubId,
+      userIds: input.userIds.map((id) => parseInt(id.toString())),
     });
     setShowModal(false);
     refetchTeamList();

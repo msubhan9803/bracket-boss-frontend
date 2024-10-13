@@ -201,3 +201,10 @@
 .fade-out {
   animation: fadeOut 0.5s ease-out;
 }
+
+.multi-select > div > div > button > div {
+  height: auto !important;
+}
+.multi-select > div > div > button > div > div {
+  flex-wrap: wrap !important;
+}

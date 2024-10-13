@@ -2,9 +2,11 @@ import PageTitle from "@/components/PageTitle";
 import TeamListTable from "@/components/tables/TeamListTable";
 import { PageUrls } from "@/lib/app-types";
 import { getAllTournamentsWithoutPagination } from "@/server-requests/tournament.server-request";
+import { getAllUsersWithoutPagination } from "@/server-requests/user.server-request";
 
 export default async function TeamManagement() {
   const tournaments = await getAllTournamentsWithoutPagination();
+  const users = await getAllUsersWithoutPagination();
 
   return (
     <>
@@ -15,7 +17,7 @@ export default async function TeamManagement() {
         ]}
       />
 
-      <TeamListTable tournaments={tournaments} />
+      <TeamListTable tournaments={tournaments} users={users} />
     </>
   );
 }
