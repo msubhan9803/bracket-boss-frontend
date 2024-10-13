@@ -30,7 +30,7 @@ export function setHeaders(
 export function handleGraphQLErrors(err: any, isServer: boolean = false) {
   if (
     err?.message &&
-    (err.message.includes("ECONNREFUSED") || err.message.includes("ENOTFOUND"))
+    (err.message.includes("ECONNREFUSED") || err.message.includes("ENOTFOUND") || err.message.includes("Failed to fetch"))
   ) {
     throw new Error("The server is unreachable. Please try again later.");
   }
