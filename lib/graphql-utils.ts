@@ -28,8 +28,14 @@ export function setHeaders(
 }
 
 export function handleGraphQLErrors(err: any, isServer: boolean = false) {
-  const error = err as GraphQLErrorResponse;
+  if (
+    err?.message &&
+    (err.message.includes("ECONNREFUSED") || err.message.includes("ENOTFOUND"))
+  ) {
+    throw new Error("The server is unreachable. Please try again later.");
+  }
 
+  const error = err as GraphQLErrorResponse;
   const errors = error?.response?.errors?.map(
     (err) => (err?.extensions?.originalError?.error as string) ?? err.message
   );
