@@ -60,7 +60,7 @@ const AddTournamentButton: React.FC<AddTournamentButtonProps> = ({ refetchTourna
         type: "switch",
         placeholder: "",
         required: true,
-        defaultValue: "",
+        defaultValue: false,
       },
       {
         label: "Bracket",

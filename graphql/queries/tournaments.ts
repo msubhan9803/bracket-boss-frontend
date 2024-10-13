@@ -38,3 +38,18 @@ export const GET_ALL_TOURNAMENTS = graphql(`
     }
   }
 `);
+
+export const GET_ALL_TOURNAMENTS_WITHOUT_PAGINATION = graphql(`
+  query GetAllTournamentsWithoutPagination {
+    getAllTournamentsWithoutPagination {
+      created_at
+      description
+      end_date
+      id
+      isPrivate
+      name
+      start_date
+      updated_at
+    }
+  }
+`);

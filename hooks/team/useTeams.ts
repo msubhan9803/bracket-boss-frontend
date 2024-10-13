@@ -36,7 +36,7 @@ export default function useTeams(
   return {
     teamListFetched: data?.teams as Team[] || [],
     totalRecords: data?.totalRecords || 0,
-    loadingOrder: isLoading,
+    loadingTeam: isLoading,
     refetchTeamList,
   };
 }

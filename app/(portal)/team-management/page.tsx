@@ -1,8 +1,11 @@
 import PageTitle from "@/components/PageTitle";
 import TeamListTable from "@/components/tables/TeamListTable";
 import { PageUrls } from "@/lib/app-types";
+import { getAllTournamentsWithoutPagination } from "@/server-requests/tournament.server-request";
 
-export default async function TournamentManagement() {
+export default async function TeamManagement() {
+  const tournaments = await getAllTournamentsWithoutPagination();
+
   return (
     <>
       <PageTitle
@@ -12,7 +15,7 @@ export default async function TournamentManagement() {
         ]}
       />
 
-      <TeamListTable />
+      <TeamListTable tournaments={tournaments} />
     </>
   );
 }

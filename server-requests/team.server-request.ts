@@ -21,7 +21,7 @@ export const getAllTeams = async ({
 }: GetAllTeamsParams) => {
   const data = await graphqlRequestHandlerServer({
     query: GET_ALL_TEAMS,
-    options: { isServer: true },
+    options: { isServer: window === undefined },
     variables: {
       page,
       pageSize,

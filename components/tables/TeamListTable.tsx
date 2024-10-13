@@ -16,14 +16,19 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { Court, Team } from "@/graphql/generated/graphql";
+import { Court, Team, Tournament } from "@/graphql/generated/graphql";
 import SkeletonLoader from "@/components/ui/skeleton";
 import Pagination from "@/components/ui/pagination";
 import { useTable } from "@/hooks/shared/useTable";
 import FilterComponent from "@/components/core/FilterComponent";
 import useTeams from "@/hooks/team/useTeams";
+import AddTeamButton from "../mutation-buttons/AddTeamButton";
 
-const TeamListTable = () => {
+type Props = {
+  tournaments: Tournament[];
+}
+
+const TeamListTable = ({ tournaments }: Props) => {
   const [page, setPage] = useState(1);
   const pageSizes = [5, 10, 25];
   const [pageSize, setPageSize] = useState(pageSizes[0]);
@@ -37,7 +42,7 @@ const TeamListTable = () => {
     setSort
   );
 
-  const { teamListFetched, totalRecords, loadingOrder, refetchTeamList } =
+  const { teamListFetched, totalRecords, loadingTeam, refetchTeamList } =
     useTeams(page, pageSize, filterBy, filter, sort);
 
   const teamList = useMemo<Partial<Team>[]>(
@@ -53,10 +58,6 @@ const TeamListTable = () => {
     {
       accessorKey: "name",
       header: "Name",
-    },
-    {
-      accessorKey: "location",
-      header: "Location",
     },
   ];
 
@@ -92,7 +93,7 @@ const TeamListTable = () => {
                   setFilter={setFilter}
                 />
 
-                {/* <AddCourtButton refetchCourtList={refetchCourtList} /> */}
+                <AddTeamButton refetchTeamList={refetchTeamList} tournaments={tournaments} />
               </div>
             </TableHead>
           </TableRow>
@@ -127,7 +128,7 @@ const TeamListTable = () => {
             </TableRow>
           ))}
 
-          {loadingOrder ? (
+          {loadingTeam ? (
             Array(pageSize)
               .fill(0)
               .map((_, index) => (

@@ -1,5 +1,9 @@
 import { graphqlRequestHandlerServer } from "@/lib/graphql-server";
-import { GET_ALL_TOURNAMENTS } from "@/graphql/queries/tournaments";
+import {
+  GET_ALL_TOURNAMENTS,
+  GET_ALL_TOURNAMENTS_WITHOUT_PAGINATION,
+} from "@/graphql/queries/tournaments";
+import { Tournament } from "@/graphql/generated/graphql";
 
 type GetAllTournamentsParams = {
   page: number;
@@ -32,4 +36,13 @@ export const getAllTournaments = async ({
   });
 
   return data?.getAllTournaments;
+};
+
+export const getAllTournamentsWithoutPagination = async () => {
+  const data = await graphqlRequestHandlerServer({
+    query: GET_ALL_TOURNAMENTS_WITHOUT_PAGINATION,
+    options: { isServer: true },
+  });
+
+  return data.getAllTournamentsWithoutPagination as Tournament[];
 };
