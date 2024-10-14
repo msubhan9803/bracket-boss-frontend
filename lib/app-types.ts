@@ -100,7 +100,7 @@ export enum ModuleNames {
   PAYMENT_MANAGEMENT = "payment_management",
   SYSTEM_SETTINGS = "system_settings",
   REPORTING_AND_ANALYTICS = "reporting_&_analytics",
-  SCORE_AND_STANDINGS = "score_&_standings",
+  SCHEDULING_AND_SCORING = "scheduling_&_scoring",
   CHAT = "chat",
   ACCOUNT_SETTINGS = "account_settings",
   ACTIVITY_LOGS = "activity_logs",

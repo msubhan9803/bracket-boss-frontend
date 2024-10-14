@@ -68,6 +68,12 @@ const menuItems = [
     name: ModuleNames.TOURNAMENT_MANAGEMENT,
   },
   {
+    href: "/scheduling-and-scoring",
+    label: "Scheduling and Scoring",
+    icon: MdScoreboard,
+    name: ModuleNames.SCHEDULING_AND_SCORING,
+  },
+  {
     href: "/club-management",
     label: "Club Management",
     icon: FaUsersRectangle,
@@ -78,12 +84,6 @@ const menuItems = [
     label: "League Management",
     icon: MdSportsTennis,
     name: ModuleNames.LEAGUE_MANAGEMENT,
-  },
-  {
-    href: "/score-standings",
-    label: "Score & Standings",
-    icon: MdScoreboard,
-    name: ModuleNames.SCORE_AND_STANDINGS,
   },
   {
     href: "/user-management",

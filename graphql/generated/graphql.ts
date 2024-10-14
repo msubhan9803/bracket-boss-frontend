@@ -109,6 +109,11 @@ export type CreateTournamentInputDto = {
   start_date: Scalars['DateTime']['input'];
 };
 
+export type GetScheduleOfTournamentInput = {
+  tournamentId: Scalars['Float']['input'];
+  users: Array<Scalars['Float']['input']>;
+};
+
 export type LoginInputDto = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -273,6 +278,7 @@ export type Query = {
   getClubById: Club;
   getCourtById: Court;
   getPermissionsByRoleId: Array<PermissionByRoleIdResponse>;
+  getScheduleOfTournament: Scalars['String']['output'];
   getStepsOfUser: Array<Step>;
   getTournamentById: Tournament;
   getUserById: UserWithRoleClub;
@@ -324,6 +330,11 @@ export type QueryGetCourtByIdArgs = {
 
 export type QueryGetPermissionsByRoleIdArgs = {
   roleId: Scalars['Float']['input'];
+};
+
+
+export type QueryGetScheduleOfTournamentArgs = {
+  input: GetScheduleOfTournamentInput;
 };
 
 
