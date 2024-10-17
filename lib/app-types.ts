@@ -17,6 +17,7 @@ export enum PageNames {
   TOURNAMENT_MANAGEMENT = 'tournament-management',
   COURT_MANAGEMENT = 'court-management',
   TEAM_MANAGEMENT = 'team-management',
+  SCHEDULING = 'scheduling',
 }
 
 export enum PageUrls {
@@ -34,6 +35,7 @@ export enum PageUrls {
   TOURNAMENT_MANAGEMENT = `/${PageNames.TOURNAMENT_MANAGEMENT}`,
   COURT_MANAGEMENT = `/${PageNames.COURT_MANAGEMENT}`,
   TEAM_MANAGEMENT = `/${PageNames.TEAM_MANAGEMENT}`,
+  SCHEDULING_MANAGEMENT = `/${PageNames.SCHEDULING}`,
 }
 
 export enum ONBOARDING_STEPS {
@@ -100,7 +102,7 @@ export enum ModuleNames {
   PAYMENT_MANAGEMENT = "payment_management",
   SYSTEM_SETTINGS = "system_settings",
   REPORTING_AND_ANALYTICS = "reporting_&_analytics",
-  SCHEDULING_AND_SCORING = "scheduling_&_scoring",
+  SCHEDULING = "scheduling",
   CHAT = "chat",
   ACCOUNT_SETTINGS = "account_settings",
   ACTIVITY_LOGS = "activity_logs",

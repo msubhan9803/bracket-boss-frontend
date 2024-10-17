@@ -10,6 +10,39 @@ export const GET_ALL_USERS_WITHOUT_PAGINATION = graphql(`
   }
 `);
 
+export const GET_ALL_USERS = graphql(`
+  query GetAllUsers(
+    $userRole: Float
+    $filter: String
+    $filterBy: String
+    $page: Int
+    $pageSize: Int
+    $sort: SortInput
+  ) {
+    getAllUsers(
+      userRole: $userRole
+      filter: $filter
+      filterBy: $filterBy
+      page: $page
+      pageSize: $pageSize
+      sort: $sort
+    ) {
+      totalRecords
+      users {
+        id
+        email
+        name
+        userRoleClub {
+          role {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+`);
+
 export const GET_USER_BY_ID = graphql(`
   query GetUserById($userId: Float!) {
     getUserById(userId: $userId) {

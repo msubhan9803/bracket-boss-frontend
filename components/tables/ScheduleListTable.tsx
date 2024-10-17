@@ -16,15 +16,18 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { Court } from "@/graphql/generated/graphql";
+import moment from "moment";
+import { Tournament } from "@/graphql/generated/graphql";
 import SkeletonLoader from "@/components/ui/skeleton";
 import Pagination from "@/components/ui/pagination";
 import { useTable } from "@/hooks/shared/useTable";
-import useCourts from "@/hooks/court/useCourts";
+import useTournaments from "@/hooks/tournament/useTournaments";
 import FilterComponent from "@/components/core/FilterComponent";
-import AddCourtButton from "../mutation-buttons/AddCourtButton";
+import { toTitleCase } from "@/lib/utils";
+import Link from "next/link";
+import { PageUrls } from "@/lib/app-types";
 
-const CourtListTable = () => {
+const ScheduleListTable = () => {
   const [page, setPage] = useState(1);
   const pageSizes = [5, 10, 25];
   const [pageSize, setPageSize] = useState(pageSizes[0]);
@@ -38,15 +41,19 @@ const CourtListTable = () => {
     setSort
   );
 
-  const { courtListFetched, totalRecords, loadingOrder, refetchCourtList } =
-    useCourts(page, pageSize, filterBy, filter, sort);
+  const {
+    tournamentListFetched,
+    totalRecords,
+    loadingOrder,
+    refetchTournamentList,
+  } = useTournaments(page, pageSize, filterBy, filter, sort);
 
-  const courtList = useMemo<Partial<Court>[]>(
-    () => [...courtListFetched],
-    [courtListFetched]
+  const tournamentList = useMemo<Partial<Tournament>[]>(
+    () => [...tournamentListFetched],
+    [tournamentListFetched]
   );
 
-  const columns: ColumnDef<Partial<Court>, any>[] = [
+  const columns: ColumnDef<Partial<Tournament>, any>[] = [
     {
       accessorKey: "id",
       header: "ID",
@@ -56,19 +63,45 @@ const CourtListTable = () => {
       header: "Name",
     },
     {
-      accessorKey: "location",
-      header: "Location",
+      accessorKey: "bracket.name",
+      header: "Bracket",
+      cell: ({ getValue }) => <div>{toTitleCase(getValue())}</div>,
+    },
+    {
+      accessorKey: "club.name",
+      header: "Club Name",
+    },
+    {
+      accessorKey: "start_date",
+      header: "Start Date",
+      cell: ({ getValue }) => <div>{moment(getValue()).format("ll")}</div>,
+    },
+    {
+      accessorKey: "end_date",
+      header: "End Date",
+      cell: ({ getValue }) => <div>{moment(getValue()).format("ll")}</div>,
+    },
+    {
+      accessorKey: "isPrivate",
+      header: "Private",
+      cell: ({ getValue }) => <div>{getValue() ? "Yes" : "No"}</div>,
+    },
+    {
+      id: "actions",
+      accessorKey: "actions",
+      header: "Actions",
+      cell: ({ row }) => <Link href={`${PageUrls.SCHEDULING_MANAGEMENT}/${row.original.id}`} className="flex gap-2 cursor-pointer hover:text-primary">View Schedule</Link>,
     },
   ];
 
   const table = useReactTable({
-    data: courtList,
+    data: tournamentList,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
   useEffect(() => {
-    refetchCourtList();
+    refetchTournamentList();
   }, [pageSize, sort, filterBy, filter, page]);
 
   return (
@@ -92,8 +125,6 @@ const CourtListTable = () => {
                   setFilterBy={setFilterBy}
                   setFilter={setFilter}
                 />
-
-                <AddCourtButton refetchCourtList={refetchCourtList} />
               </div>
             </TableHead>
           </TableRow>
@@ -183,4 +214,4 @@ const CourtListTable = () => {
   );
 };
 
-export default CourtListTable;
+export default ScheduleListTable;

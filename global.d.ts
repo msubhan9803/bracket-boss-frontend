@@ -2,10 +2,7 @@ import { FieldPath } from "react-hook-form";
 
 type PageProps = {
   params: { [key: string]: string } & {
-    collectionId: string;
-    locationId: string;
-    menuId: string;
-    menuCategoryId: string;
+    tournamentId: string;
   };
 };
 
@@ -39,6 +36,7 @@ type DynamicFormField<T extends Record<string, any> = void> = {
     | "decimal"
     | "multi-select"
     | "file"
+    | "checkbox"
     | "radio";
   required?: true;
   placeholder?: string;

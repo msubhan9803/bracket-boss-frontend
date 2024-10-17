@@ -16,15 +16,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { Court } from "@/graphql/generated/graphql";
 import SkeletonLoader from "@/components/ui/skeleton";
 import Pagination from "@/components/ui/pagination";
 import { useTable } from "@/hooks/shared/useTable";
-import useCourts from "@/hooks/court/useCourts";
 import FilterComponent from "@/components/core/FilterComponent";
-import AddCourtButton from "../mutation-buttons/AddCourtButton";
+import { PredefinedSystemRoles } from "@/lib/app-types";
+import useUsers from "@/hooks/user/useUsers";
+import { User } from "@/graphql/generated/graphql";
 
-const CourtListTable = () => {
+const UserSelectionTable = () => {
   const [page, setPage] = useState(1);
   const pageSizes = [5, 10, 25];
   const [pageSize, setPageSize] = useState(pageSizes[0]);
@@ -38,37 +38,41 @@ const CourtListTable = () => {
     setSort
   );
 
-  const { courtListFetched, totalRecords, loadingOrder, refetchCourtList } =
-    useCourts(page, pageSize, filterBy, filter, sort);
+  const {
+    usersList: usersListFetched,
+    totalRecords,
+    refetchUsers,
+    isLoading,
+  } = useUsers(PredefinedSystemRoles.player, page, pageSize, filterBy, filter, sort);
 
-  const courtList = useMemo<Partial<Court>[]>(
-    () => [...courtListFetched],
-    [courtListFetched]
+  const usersList = useMemo<Partial<User>[]>(
+    () => [...usersListFetched],
+    [usersListFetched]
   );
 
-  const columns: ColumnDef<Partial<Court>, any>[] = [
+  const columns: ColumnDef<Partial<User>, any>[] = [
     {
       accessorKey: "id",
       header: "ID",
     },
     {
-      accessorKey: "name",
-      header: "Name",
+      accessorKey: "email",
+      header: "Email",
     },
     {
-      accessorKey: "location",
-      header: "Location",
+      accessorKey: "name",
+      header: "Name",
     },
   ];
 
   const table = useReactTable({
-    data: courtList,
+    data: usersList,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
   useEffect(() => {
-    refetchCourtList();
+    refetchUsers();
   }, [pageSize, sort, filterBy, filter, page]);
 
   return (
@@ -92,8 +96,6 @@ const CourtListTable = () => {
                   setFilterBy={setFilterBy}
                   setFilter={setFilter}
                 />
-
-                <AddCourtButton refetchCourtList={refetchCourtList} />
               </div>
             </TableHead>
           </TableRow>
@@ -128,7 +130,7 @@ const CourtListTable = () => {
             </TableRow>
           ))}
 
-          {loadingOrder ? (
+          {isLoading ? (
             Array(pageSize)
               .fill(0)
               .map((_, index) => (
@@ -183,4 +185,4 @@ const CourtListTable = () => {
   );
 };
 
-export default CourtListTable;
+export default UserSelectionTable;

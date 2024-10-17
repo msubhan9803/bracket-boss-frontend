@@ -68,10 +68,10 @@ const menuItems = [
     name: ModuleNames.TOURNAMENT_MANAGEMENT,
   },
   {
-    href: "/scheduling-and-scoring",
-    label: "Scheduling and Scoring",
+    href: "/scheduling",
+    label: "Scheduling",
     icon: MdScoreboard,
-    name: ModuleNames.SCHEDULING_AND_SCORING,
+    name: ModuleNames.SCHEDULING,
   },
   {
     href: "/club-management",

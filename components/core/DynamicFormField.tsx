@@ -1,28 +1,29 @@
 import { DynamicFormField as DynamicFormFieldType } from "@/global";
 import React from "react";
 import { useFormContext } from "react-hook-form";
+import { FaEyeSlash, FaEye } from "react-icons/fa";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectTrigger,
   SelectValue,
   SelectItem,
-} from "../ui/select";
-import { Switch } from "../ui/switch";
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { MultiSelect, MultiSelectItem } from "@tremor/react";
 import { cn } from "@/lib/utils";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import FileUploadInput from "@/components/core/FileUploadInput";
-import { FaEyeSlash, FaEye } from "react-icons/fa";
+import { Checkbox } from "@/components/ui/checkbox";
 
 type Props<T extends { [key: string]: any }> = {
   dynamicField: DynamicFormFieldType<T>;
@@ -331,6 +332,27 @@ const DynamicFormField = <T extends { [key: string]: any }>({
               </div>
             </FormControl>
             <FormMessage />
+          </FormItem>
+        )}
+      />
+    );
+  }
+
+  if (dynamicField.type === "checkbox") {
+    return (
+      <FormField
+        defaultValue={dynamicField.defaultValue}
+        control={form.control}
+        name={dynamicField.name}
+        render={({ field }) => (
+          <FormItem className="flex flex-row items-center justify-between">
+            <FormLabel className="text-sm">{dynamicField.label}</FormLabel>
+            <FormControl>
+              <Checkbox
+                checked={field.value}
+                onCheckedChange={field.onChange}
+              />
+            </FormControl>
           </FormItem>
         )}
       />

@@ -96,7 +96,7 @@ const TournamentListTable = () => {
 
   useEffect(() => {
     refetchTournamentList();
-  }, [sort, filterBy, filter, page]);
+  }, [pageSize, sort, filterBy, filter, page]);
 
   return (
     <div className="rounded-md border">
