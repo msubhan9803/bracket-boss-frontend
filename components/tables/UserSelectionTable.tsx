@@ -21,6 +21,7 @@ import Pagination from "@/components/ui/pagination";
 import { useTable } from "@/hooks/shared/useTable";
 import FilterComponent from "@/components/core/FilterComponent";
 import usePagination from "@/hooks/usePagination";
+import { Checkbox } from "../ui/checkbox";
 
 type Props = {
   users: User[];
@@ -61,14 +62,12 @@ const UserSelectionTable = ({ users, handleUsersSelection }: Props) => {
     {
       accessorKey: "select",
       header: () => (
-        <input
-          type="checkbox"
+        <Checkbox
           checked={isAllSelected}
-          ref={(input) => {
+          ref={(input: any) => {
             if (input) input.indeterminate = isSomeSelected;
           }}
-          onChange={(e) => {
-            const isChecked = e.target.checked;
+          onCheckedChange={(isChecked) => {
             setSelectedRows(
               isChecked ? new Set(usersList.map((user) => user.id)) : new Set()
             );
@@ -76,11 +75,9 @@ const UserSelectionTable = ({ users, handleUsersSelection }: Props) => {
         />
       ),
       cell: ({ row }) => (
-        <input
-          type="checkbox"
+        <Checkbox
           checked={selectedRows.has(row.original.id)}
-          onChange={(e) => {
-            const isChecked = e.target.checked;
+          onCheckedChange={(isChecked) => {
             setSelectedRows((prevSelected) => {
               const updatedSelected = new Set(prevSelected);
               if (isChecked) {
@@ -130,14 +127,18 @@ const UserSelectionTable = ({ users, handleUsersSelection }: Props) => {
               <div className="flex justify-between w-full py-1">
                 <FilterComponent
                   columns={
-                    columns as {
+                    columns.filter(
+                      (col: any) => !["select"].includes(col.accessorKey)
+                    ) as {
                       header: string;
                       accessorKey: string;
                     }[]
                   }
                   filterBy={filterBy}
                   setFilterBy={setFilterBy}
-                  setFilter={setFilter}
+                  setFilter={(value: string) => {
+                    setFilter(value.trim());
+                  }}
                 />
               </div>
             </TableHead>

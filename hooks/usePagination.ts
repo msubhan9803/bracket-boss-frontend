@@ -78,8 +78,8 @@ const usePagination = <T>(
     paginatedData,
     setPage: handlePageChange,
     setPageSize: handlePageSizeChange,
-    setFilterBy: handleFilterChange,
-    setFilter: handleFilterChange,
+    setFilterBy,
+    setFilter,
     setSort: handleSortChange,
     setSelectedRows,
   };

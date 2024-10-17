@@ -27,7 +27,7 @@ export default function SchedulePreparation({ users }: Props) {
 
         <div className="space-x-2">
           <ImportScheduleDataButton />
-          <Button>View Schedule</Button>
+          <Button disabled={selectedUsers.length === 0}>View Schedule</Button>
         </div>
       </div>
 
