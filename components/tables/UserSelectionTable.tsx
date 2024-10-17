@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -16,21 +16,33 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import SkeletonLoader from "@/components/ui/skeleton";
+import { User } from "@/graphql/generated/graphql";
 import Pagination from "@/components/ui/pagination";
 import { useTable } from "@/hooks/shared/useTable";
 import FilterComponent from "@/components/core/FilterComponent";
-import { PredefinedSystemRoles } from "@/lib/app-types";
-import useUsers from "@/hooks/user/useUsers";
-import { User } from "@/graphql/generated/graphql";
+import usePagination from "@/hooks/usePagination";
 
-const UserSelectionTable = () => {
-  const [page, setPage] = useState(1);
-  const pageSizes = [5, 10, 25];
-  const [pageSize, setPageSize] = useState(pageSizes[0]);
-  const [filterBy, setFilterBy] = useState("");
-  const [filter, setFilter] = useState("");
-  const [sort, setSort] = useState({ field: "id", direction: "ASC" });
+type Props = {
+  users: User[];
+  handleUsersSelection: (userIds: number[]) => void;
+};
+
+const UserSelectionTable = ({ users, handleUsersSelection }: Props) => {
+  const {
+    page,
+    pageSize,
+    pageSizes,
+    filterBy,
+    sort,
+    selectedRows,
+    paginatedData,
+    setPage,
+    setPageSize,
+    setFilterBy,
+    setFilter,
+    setSort,
+    setSelectedRows,
+  } = usePagination(users);
 
   const { handleSort, getTotalPages, handlePrevBtn, handleNextBtn } = useTable(
     setPage,
@@ -38,19 +50,50 @@ const UserSelectionTable = () => {
     setSort
   );
 
-  const {
-    usersList: usersListFetched,
-    totalRecords,
-    refetchUsers,
-    isLoading,
-  } = useUsers(PredefinedSystemRoles.player, page, pageSize, filterBy, filter, sort);
+  const usersList = useMemo<Partial<User>[]>(() => [...users], [users]);
 
-  const usersList = useMemo<Partial<User>[]>(
-    () => [...usersListFetched],
-    [usersListFetched]
-  );
+  const isAllSelected =
+    usersList.length > 0 && selectedRows.size === usersList.length;
+  const isSomeSelected =
+    selectedRows.size > 0 && selectedRows.size < usersList.length;
 
   const columns: ColumnDef<Partial<User>, any>[] = [
+    {
+      accessorKey: "select",
+      header: () => (
+        <input
+          type="checkbox"
+          checked={isAllSelected}
+          ref={(input) => {
+            if (input) input.indeterminate = isSomeSelected;
+          }}
+          onChange={(e) => {
+            const isChecked = e.target.checked;
+            setSelectedRows(
+              isChecked ? new Set(usersList.map((user) => user.id)) : new Set()
+            );
+          }}
+        />
+      ),
+      cell: ({ row }) => (
+        <input
+          type="checkbox"
+          checked={selectedRows.has(row.original.id)}
+          onChange={(e) => {
+            const isChecked = e.target.checked;
+            setSelectedRows((prevSelected) => {
+              const updatedSelected = new Set(prevSelected);
+              if (isChecked) {
+                updatedSelected.add(row.original.id);
+              } else {
+                updatedSelected.delete(row.original.id);
+              }
+              return updatedSelected;
+            });
+          }}
+        />
+      ),
+    },
     {
       accessorKey: "id",
       header: "ID",
@@ -66,14 +109,14 @@ const UserSelectionTable = () => {
   ];
 
   const table = useReactTable({
-    data: usersList,
+    data: paginatedData,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
   useEffect(() => {
-    refetchUsers();
-  }, [pageSize, sort, filterBy, filter, page]);
+    handleUsersSelection(Array.from(selectedRows).map(Number));
+  }, [selectedRows]);
 
   return (
     <div className="rounded-md border">
@@ -116,9 +159,8 @@ const UserSelectionTable = () => {
                             header.column.columnDef.header,
                             header.getContext()
                           )}
-
                       {sort.field === header.column.id &&
-                        (sort.direction === "asc" ? (
+                        (sort.direction === "ASC" ? (
                           <ChevronUp className="w-5 h-5" />
                         ) : (
                           <ChevronDown className="w-5 h-5" />
@@ -130,23 +172,11 @@ const UserSelectionTable = () => {
             </TableRow>
           ))}
 
-          {isLoading ? (
-            Array(pageSize)
-              .fill(0)
-              .map((_, index) => (
-                <TableRow key={index}>
-                  {columns.map((column, columnIndex) => (
-                    <TableCell key={columnIndex}>
-                      <SkeletonLoader className="my-auto" height="3" />
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-          ) : table.getRowModel().rows?.length ? (
+          {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                data-state={row.getIsSelected() && "selected"}
+                data-state={selectedRows.has(row.original.id) && "selected"}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
@@ -169,7 +199,7 @@ const UserSelectionTable = () => {
               <div className="flex justify-end">
                 <Pagination
                   page={page}
-                  totalPages={getTotalPages(pageSize, totalRecords)}
+                  totalPages={getTotalPages(pageSize, users.length)}
                   pageSize={pageSize}
                   setPageSize={setPageSize}
                   pageSizes={pageSizes}

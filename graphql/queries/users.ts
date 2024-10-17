@@ -1,11 +1,16 @@
 import { graphql } from "../generated";
 
 export const GET_ALL_USERS_WITHOUT_PAGINATION = graphql(`
-  query GetAllUsersWithoutPagination {
-    getAllUsersWithoutPagination {
-      id
+  query GetAllUsersWithoutPagination($userRole: Float) {
+    getAllUsersWithoutPagination(userRole: $userRole) {
+      created_at
       email
+      id
+      isEmailVerified
       name
+      otpSecret
+      profileImage
+      updated_at
     }
   }
 `);

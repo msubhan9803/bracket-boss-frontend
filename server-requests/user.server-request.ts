@@ -8,10 +8,13 @@ import {
 import { GetUserByIdQuery, User } from "@/graphql/generated/graphql";
 import { graphqlRequestHandlerServer } from "@/lib/graphql-server";
 
-export const getAllUsersWithoutPagination = async () => {
+export const getAllUsersWithoutPagination = async (userRole?: number) => {
   const data = await graphqlRequestHandlerServer({
     query: GET_ALL_USERS_WITHOUT_PAGINATION,
     options: { isServer: true },
+    variables: {
+      userRole,
+    },
   });
 
   return data?.getAllUsersWithoutPagination as User[];
