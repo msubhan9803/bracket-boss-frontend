@@ -6,7 +6,7 @@ export enum USE_SCHEDULE_OF_TOURNAMENT {
 }
 
 export default function useGetScheduleOfTournament(
-  tournamentId: string,
+  tournamentId: number,
   userIds: number[]
 ) {
   const {
@@ -18,12 +18,12 @@ export default function useGetScheduleOfTournament(
       USE_SCHEDULE_OF_TOURNAMENT.GET_SCHEDULE_OF_TOURNAMENT,
       tournamentId,
     ],
-    queryFn: () => getScheduleOfTournament(parseInt(tournamentId), userIds),
+    queryFn: () => getScheduleOfTournament(tournamentId, userIds),
   });
 
   return {
-    schedule: data,
-    loadingOrder: isLoading,
+    matches: data?.matches || [],
+    loadingSchedule: isLoading,
     refetchSchedules,
   };
 }
