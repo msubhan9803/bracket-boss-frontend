@@ -18,6 +18,8 @@ export enum PageNames {
   COURT_MANAGEMENT = 'court-management',
   TEAM_MANAGEMENT = 'team-management',
   SCHEDULING = 'scheduling',
+  SCHEDULE_PREPARATION = 'schedule-preparation',
+  SCHEDULE_EDITOR = 'schedule-editor',
 }
 
 export enum PageUrls {

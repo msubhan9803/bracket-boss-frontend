@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import userSlice from "./slices/user.slice";
+import scheduleSlice from "./slices/schedule.slice";
 
 const store = configureStore({
   reducer: {
     user: userSlice,
+    schedule: scheduleSlice,
   },
 });
 

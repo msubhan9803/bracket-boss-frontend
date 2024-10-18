@@ -4,11 +4,11 @@ import { PageProps } from "@/global";
 import { PageUrls } from "@/lib/app-types";
 import { NextPage } from "next";
 
-const SchedulingAndScoring: NextPage<PageProps> = async () => {
+const ScheduleManagement: NextPage<PageProps> = async () => {
   return (
     <>
       <PageTitle
-        title="Scheduling Management"
+        title="Schedule Management"
         breadcrumbs={[
           {
             label: "Schedule Management",
@@ -22,4 +22,4 @@ const SchedulingAndScoring: NextPage<PageProps> = async () => {
   );
 };
 
-export default SchedulingAndScoring;
+export default ScheduleManagement;

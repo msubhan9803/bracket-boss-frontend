@@ -25,7 +25,7 @@ import useTournaments from "@/hooks/tournament/useTournaments";
 import FilterComponent from "@/components/core/FilterComponent";
 import { toTitleCase } from "@/lib/utils";
 import Link from "next/link";
-import { PageUrls } from "@/lib/app-types";
+import { PageNames, PageUrls } from "@/lib/app-types";
 
 const ScheduleListTable = () => {
   const [page, setPage] = useState(1);
@@ -90,7 +90,14 @@ const ScheduleListTable = () => {
       id: "actions",
       accessorKey: "actions",
       header: "Actions",
-      cell: ({ row }) => <Link href={`${PageUrls.SCHEDULING_MANAGEMENT}/${row.original.id}`} className="flex gap-2 cursor-pointer hover:text-primary">View Schedule</Link>,
+      cell: ({ row }) => (
+        <Link
+          href={`${PageUrls.SCHEDULING_MANAGEMENT}/${row.original.id}/${PageNames.SCHEDULE_PREPARATION}`}
+          className="flex gap-2 cursor-pointer hover:text-primary"
+        >
+          View Schedule
+        </Link>
+      ),
     },
   ];
 

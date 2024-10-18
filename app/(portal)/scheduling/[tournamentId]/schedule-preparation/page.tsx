@@ -25,13 +25,13 @@ const ScheduleDetails: NextPage<PageProps> = async ({ params }) => {
             href: PageUrls.SCHEDULING_MANAGEMENT,
           },
           {
-            label: "Schedule Details",
+            label: "Schedule Preparation",
             href: "",
           },
         ]}
       />
 
-      <SchedulePreparation users={users} />
+      <SchedulePreparation tournamentId={params.tournamentId} users={users} />
     </div>
   );
 };
