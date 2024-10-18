@@ -36,10 +36,6 @@ export default function SchedulePreparation({ tournamentId, users }: Props) {
     );
   };
 
-  useEffect(() => {
-    console.log("🌺🌺🌺🌺🌺 selectedUsers: ", selectedUsers);
-  }, [selectedUsers]);
-
   return (
     <>
       <div className="flex justify-between items-center">
