@@ -16,9 +16,9 @@ export default function ScheduleEditor() {
   );
 
   return (
-    <div>
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 my-12">
       {matches.map((match, index) => (
-        <MatchCard key={`match-${index}`} match={match} />
+        <MatchCard key={`match-${index}`} index={index} match={match} />
       ))}
     </div>
   );

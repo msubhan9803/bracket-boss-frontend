@@ -38,7 +38,15 @@ export function toTitleCase(text: string): string {
 }
 
 export function toProperCase(text: string): string {
-  return text.replace(/\w\S*/g, (word) =>
-    word.charAt(0).toUpperCase() + word.substr(1).toLowerCase()
+  return text.replace(
+    /\w\S*/g,
+    (word) => word.charAt(0).toUpperCase() + word.substr(1).toLowerCase()
   );
+}
+
+export function getInitialsOfText(name: string) {
+  const words = name.split(" ");
+  const initials =
+    words.length > 1 ? words[0][0] + words[1][0] : words[0].substring(0, 2);
+  return initials.toUpperCase();
 }

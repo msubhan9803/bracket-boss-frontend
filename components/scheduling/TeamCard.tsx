@@ -1,19 +1,38 @@
-import { TeamType } from "@/graphql/generated/graphql";
 import React from "react";
-import PlayerCard from "./PlayerCard";
+import { TeamType } from "@/graphql/generated/graphql";
+import { Avatar } from "../ui/avatar";
 
 type Props = {
+  index: number;
   team: TeamType;
 };
 
-export default function TeamCard({ team }: Props) {
-  return (
-    <div className="col-span-3 rounded-lg border border-primary shadow-md p-4 my-8">
-      <h2 className="text-lg md:text-xl font-bold">{team.name}</h2>
+export default function TeamCard({ index, team }: Props) {
+  const isEvenIndex = index % 2 === 0;
 
-      {team.players.map((player, index) => (
-        <PlayerCard key={`player-${index}`} player={player} />
-      ))}
+  return (
+    <div className="col-span-3">
+      <div className={`flex items-center ${isEvenIndex ? 'justify-start' : 'justify-end'} gap-x-2`}>
+        {isEvenIndex ? (
+          <>
+            <Avatar name={team.name} className="text-xs w-8 h-8" />
+            <h2 className="text-lg md:text-xl font-bold">{team.name}</h2>
+          </>
+        ) : (
+          <>
+            <h2 className="text-lg md:text-xl font-bold">{team.name}</h2>
+            <Avatar name={team.name} className="text-xs w-8 h-8" />
+          </>
+        )}
+      </div>
+
+      <div className="mt-4">
+        {team.players.map((player, index) => (
+          <div key={`player-${index}`} className="flex flex-col text-start">
+            <h4 className="text-sm font-normal">Player {player}</h4>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

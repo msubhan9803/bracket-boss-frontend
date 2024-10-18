@@ -3,26 +3,26 @@ import React from "react";
 import TeamCard from "./TeamCard";
 
 type Props = {
+  index: number;
   match: MatchType;
 };
 
-export default function MatchCard({ match }: Props) {
+export default function MatchCard({ match, index }: Props) {
   console.log("⚽️⚽️⚽️⚽️⚽️ Match: ", match);
 
   return (
-    <div className="flex flex-col text-center rounded-lg border border-primary shadow-md p-4 my-16">
-      <h2 className="text-xl md:text-2xl font-bold">
-        <span className="bg-gradient-to-b from-primary/60 to-primary text-transparent bg-clip-text">
-          {match.name}
-        </span>
+    <div className="flex flex-col text-center bg-muted/50 rounded-lg border border-secondary hover:border-primary shadow-md p-4">
+      <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-primary">
+        Match {index + 1}
       </h2>
 
-      <div className="w-full grid grid-cols-7 gap-4 items-center">
+      <div className="w-full flex justify-between gap-1 items-center mt-4">
         {match.teams.map((team, index) => (
           <React.Fragment key={`team-${index}`}>
-            <TeamCard team={team} />
+            <TeamCard team={team} index={index} />
+
             {index === 0 && (
-              <div className="col-span-1 text-center text-xl font-bold">Vs</div>
+              <div className="col-span-1 text-center text-md font-bold">VS</div>
             )}
           </React.Fragment>
         ))}
