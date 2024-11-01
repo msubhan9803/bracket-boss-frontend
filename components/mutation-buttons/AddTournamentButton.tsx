@@ -105,6 +105,7 @@ const AddTournamentButton: React.FC<AddTournamentButtonProps> = ({
       ...input,
       clubId: clubId as number,
       formatId: parseInt(input.formatId.toString()),
+      teamGenerationTypeId: parseInt(input.teamGenerationTypeId.toString()),
     });
     setShowModal(false);
     refetchTournamentList();

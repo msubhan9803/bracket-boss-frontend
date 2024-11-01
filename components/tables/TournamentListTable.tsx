@@ -67,6 +67,11 @@ const TournamentListTable = () => {
       cell: ({ getValue }) => <div>{toTitleCase(getValue())}</div>,
     },
     {
+      accessorKey: "teamGenerationType.name",
+      header: "Team Generation",
+      cell: ({ getValue }) => <div>{toTitleCase(getValue())}</div>,
+    },
+    {
       accessorKey: "club.name",
       header: "Club Name",
     },

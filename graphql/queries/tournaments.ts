@@ -28,6 +28,9 @@ export const GET_ALL_TOURNAMENTS = graphql(`
         format {
           name
         }
+        teamGenerationType {
+          name
+        }
         club {
           name
         }

@@ -19,6 +19,7 @@ export default function useTeamGenerationTypeByFormat({
     queryKey: [USE_BRACKET_KEY.GET_ALL_TEAM_GENERATION_TYPES, formatId],
     queryFn: () =>
       getAllTeamGenerationTypesByFormatId(parseInt(formatId as any)),
+    enabled: !!formatId,
   });
 
   const teamGenerationTypesMemo = useMemo(
