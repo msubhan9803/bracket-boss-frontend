@@ -27,10 +27,11 @@ const documents = {
     "\n  mutation CreateTournament($input: CreateTournamentInputDto!) {\n    createTournament(input: $input) {\n      created_at\n      description\n      end_date\n      id\n      isPrivate\n      name\n      start_date\n      updated_at\n    }\n  }\n": types.CreateTournamentDocument,
     "\n  mutation UpdateUserRole($input: UpdateUserRoleDto!) {\n    updateUserRole(input: $input) {\n      message\n      userRoleClub {\n        created_at\n        id\n        role {\n          id\n        }\n        updated_at\n      }\n    }\n  }\n": types.UpdateUserRoleDocument,
     "\n  mutation UpdateUserClub($input: UpdateUserClubDto!) {\n    updateUserClub(input: $input) {\n      message\n      user {\n        id\n        email\n        name\n      }\n    }\n  }\n": types.UpdateUserClubDocument,
-    "\n  query GetAllFormats {\n    getAllFormats {\n      id\n      name\n    }\n  }\n": types.GetAllFormatsDocument,
     "\n  query GetAllClubs {\n    getAllClubs {\n      createdDate\n      description\n      id\n      logo\n      name\n      slug\n      updatedDate\n    }\n  }\n": types.GetAllClubsDocument,
     "\n  query GetAllCourts(\n    $filter: String\n    $filterBy: String\n    $page: Int\n    $pageSize: Int\n    $sort: SortInput\n  ) {\n    getAllCourts(\n      filter: $filter\n      filterBy: $filterBy\n      page: $page\n      pageSize: $pageSize\n      sort: $sort\n    ) {\n      courts {\n        id\n        name\n        location\n        club {\n          name\n        }\n      }\n      totalRecords\n    }\n  }\n": types.GetAllCourtsDocument,
+    "\n  query GetAllFormats {\n    getAllFormats {\n      id\n      name\n    }\n  }\n": types.GetAllFormatsDocument,
     "\n  query GetScheduleOfTournamentInput($input: GetScheduleOfTournamentInput!) {\n    getScheduleOfTournament(input: $input) {\n      matches {\n        name\n        teams {\n          name\n          players\n        }\n      }\n    }\n  }\n": types.GetScheduleOfTournamentInputDocument,
+    "\n  query GetAllTeamGenerationTypesByFormatId($formatId: Float!) {\n    getAllTeamGenerationTypesByFormatId(formatId: $formatId) {\n      id\n      name\n    }\n  }\n": types.GetAllTeamGenerationTypesByFormatIdDocument,
     "\n  query GetAllTeams(\n    $filter: String\n    $filterBy: String\n    $page: Int\n    $pageSize: Int\n    $sort: SortInput\n  ) {\n    getAllTeams(\n      filter: $filter\n      filterBy: $filterBy\n      page: $page\n      pageSize: $pageSize\n      sort: $sort\n    ) {\n      teams {\n        id\n        name\n        tournament {\n          name\n        }\n      }\n      totalRecords\n    }\n  }\n": types.GetAllTeamsDocument,
     "\n  query GetAllTournaments(\n    $filter: String\n    $filterBy: String\n    $page: Int\n    $pageSize: Int\n    $sort: SortInput\n  ) {\n    getAllTournaments(\n      filter: $filter\n      filterBy: $filterBy\n      page: $page\n      pageSize: $pageSize\n      sort: $sort\n    ) {\n      totalRecords\n      tournaments {\n        id\n        name\n        description\n        start_date\n        end_date\n        isPrivate\n        created_at\n        updated_at\n        format {\n          name\n        }\n        club {\n          name\n        }\n        sport {\n          name\n        }\n      }\n    }\n  }\n": types.GetAllTournamentsDocument,
     "\n  query GetAllTournamentsWithoutPagination {\n    getAllTournamentsWithoutPagination {\n      created_at\n      description\n      end_date\n      id\n      isPrivate\n      name\n      start_date\n      updated_at\n    }\n  }\n": types.GetAllTournamentsWithoutPaginationDocument,
@@ -115,10 +116,6 @@ export function graphql(source: "\n  mutation UpdateUserClub($input: UpdateUserC
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query GetAllFormats {\n    getAllFormats {\n      id\n      name\n    }\n  }\n"): (typeof documents)["\n  query GetAllFormats {\n    getAllFormats {\n      id\n      name\n    }\n  }\n"];
-/**
- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
- */
 export function graphql(source: "\n  query GetAllClubs {\n    getAllClubs {\n      createdDate\n      description\n      id\n      logo\n      name\n      slug\n      updatedDate\n    }\n  }\n"): (typeof documents)["\n  query GetAllClubs {\n    getAllClubs {\n      createdDate\n      description\n      id\n      logo\n      name\n      slug\n      updatedDate\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -127,7 +124,15 @@ export function graphql(source: "\n  query GetAllCourts(\n    $filter: String\n 
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n  query GetAllFormats {\n    getAllFormats {\n      id\n      name\n    }\n  }\n"): (typeof documents)["\n  query GetAllFormats {\n    getAllFormats {\n      id\n      name\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n  query GetScheduleOfTournamentInput($input: GetScheduleOfTournamentInput!) {\n    getScheduleOfTournament(input: $input) {\n      matches {\n        name\n        teams {\n          name\n          players\n        }\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetScheduleOfTournamentInput($input: GetScheduleOfTournamentInput!) {\n    getScheduleOfTournament(input: $input) {\n      matches {\n        name\n        teams {\n          name\n          players\n        }\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetAllTeamGenerationTypesByFormatId($formatId: Float!) {\n    getAllTeamGenerationTypesByFormatId(formatId: $formatId) {\n      id\n      name\n    }\n  }\n"): (typeof documents)["\n  query GetAllTeamGenerationTypesByFormatId($formatId: Float!) {\n    getAllTeamGenerationTypesByFormatId(formatId: $formatId) {\n      id\n      name\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

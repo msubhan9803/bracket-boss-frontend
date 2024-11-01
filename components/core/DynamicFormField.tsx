@@ -54,11 +54,17 @@ const DynamicFormField = <T extends { [key: string]: any }>({
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                {dynamicField.options?.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
+                {dynamicField.options && dynamicField.options.length > 0 ? (
+                  dynamicField.options.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem value="unassigned-404" disabled>
+                    No data
                   </SelectItem>
-                ))}
+                )}
               </SelectContent>
             </Select>
             <FormMessage />

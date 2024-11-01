@@ -1,5 +1,5 @@
 import { graphqlRequestHandlerServer } from "@/lib/graphql-server";
-import { GET_ALL_FORMATS } from "@/graphql/queries/brackets";
+import { GET_ALL_FORMATS } from "@/graphql/queries/formats";
 
 export const getAllFormats = async () => {
   const data = await graphqlRequestHandlerServer({

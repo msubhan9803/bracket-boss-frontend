@@ -1,5 +1,5 @@
 "use client";
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import DynamicFormSheet from "@/components/core/DynamicFormSheet";
 import { DynamicFormField } from "@/global";
 import { CreateTournamentInputDto } from "@/graphql/generated/graphql";
@@ -9,16 +9,26 @@ import useFormats from "@/hooks/format/useFormats";
 import { toTitleCase } from "@/lib/utils";
 import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
+import useTeamGenerationTypeByFormat from "@/hooks/teamGenerationTypes/useTeamGenerationTypes";
 
 interface AddTournamentButtonProps {
   refetchTournamentList: () => void;
 }
 
-const AddTournamentButton: React.FC<AddTournamentButtonProps> = ({ refetchTournamentList }) => {
+const AddTournamentButton: React.FC<AddTournamentButtonProps> = ({
+  refetchTournamentList,
+}) => {
   const [showModal, setShowModal] = useState(false);
+  const [formState, setFormState] = useState<CreateTournamentInputDto>(
+    {} as CreateTournamentInputDto
+  );
+  const clubId = useSelector((state: RootState) => state.user.clubId);
+
   const { createTournamentMutation } = useTournamentOperations();
   const { formats } = useFormats();
-  const clubId = useSelector((state: RootState) => state.user.clubId);
+  const { teamGenerationTypes } = useTeamGenerationTypeByFormat({
+    formatId: formState?.formatId,
+  });
 
   const formFields: DynamicFormField<CreateTournamentInputDto>[] = useMemo(
     () => [
@@ -74,8 +84,20 @@ const AddTournamentButton: React.FC<AddTournamentButtonProps> = ({ refetchTourna
         })),
         defaultValue: "",
       },
+      {
+        label: "Team Generation Type",
+        name: "teamGenerationTypeId",
+        type: "select",
+        placeholder: "Select type",
+        required: true,
+        options: teamGenerationTypes?.map((teamGenerationType) => ({
+          label: toTitleCase(teamGenerationType.name),
+          value: teamGenerationType.id.toString(),
+        })),
+        defaultValue: "",
+      },
     ],
-    [formats]
+    [formats, teamGenerationTypes]
   );
 
   const handleCreating = async (input: CreateTournamentInputDto) => {
@@ -101,6 +123,7 @@ const AddTournamentButton: React.FC<AddTournamentButtonProps> = ({ refetchTourna
         description="Creates a new tournament for this club"
         submitButtonLabel="Submit"
         onSubmit={handleCreating}
+        setFormState={setFormState}
       />
     </Fragment>
   );

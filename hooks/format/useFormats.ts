@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAllFormats } from "@/server-requests/bracket.server-request";
+import { getAllFormats } from "@/server-requests/format.server-request";
 
-export enum USE_BRACKET_KEY {
-  GET_ALL_BRACKETS = "GET_ALL_BRACKETS",
+export enum USE_FORMAT_KEY {
+  GET_ALL_FORMATS = "GET_ALL_FORMATS",
 }
 
 export default function useFormats() {
@@ -11,7 +11,7 @@ export default function useFormats() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: [USE_BRACKET_KEY.GET_ALL_BRACKETS],
+    queryKey: [USE_FORMAT_KEY.GET_ALL_FORMATS],
     queryFn: () => getAllFormats(),
   });
 
