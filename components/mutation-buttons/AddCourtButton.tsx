@@ -2,14 +2,9 @@
 import { Fragment, useMemo, useState } from "react";
 import DynamicFormSheet from "@/components/core/DynamicFormSheet";
 import { DynamicFormField } from "@/global";
-import {
-  CreateCourtInputDto,
-  CreateTournamentInputDto,
-} from "@/graphql/generated/graphql";
+import { CreateCourtInputDto } from "@/graphql/generated/graphql";
 import { Button } from "@/components/ui/button";
 import useCourtOperations from "@/hooks/court/useCourtOperations";
-import useBrackets from "@/hooks/bracket/useBrackets";
-import { toTitleCase } from "@/lib/utils";
 import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 
@@ -22,7 +17,6 @@ const AddCourtButton: React.FC<AddCourtButtonButtonProps> = ({
 }) => {
   const [showModal, setShowModal] = useState(false);
   const { createCourtMutation } = useCourtOperations();
-  const { brackets } = useBrackets();
   const clubId = useSelector((state: RootState) => state.user.clubId);
 
   const formFields: DynamicFormField<CreateCourtInputDto>[] = useMemo(
@@ -44,7 +38,7 @@ const AddCourtButton: React.FC<AddCourtButtonButtonProps> = ({
         defaultValue: "",
       },
     ],
-    [brackets]
+    []
   );
 
   const handleCreating = async (input: CreateCourtInputDto) => {

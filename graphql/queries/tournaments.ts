@@ -25,7 +25,7 @@ export const GET_ALL_TOURNAMENTS = graphql(`
         isPrivate
         created_at
         updated_at
-        bracket {
+        format {
           name
         }
         club {

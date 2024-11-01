@@ -1,8 +1,8 @@
 import { graphql } from "../generated";
 
-export const GET_ALL_BRACKETS= graphql(`
-  query GetAllBrackets {
-    getAllBrackets {
+export const GET_ALL_FORMATS= graphql(`
+  query GetAllFormats {
+    getAllFormats {
       id
       name
     }

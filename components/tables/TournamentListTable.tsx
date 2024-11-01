@@ -62,8 +62,8 @@ const TournamentListTable = () => {
       header: "Name",
     },
     {
-      accessorKey: "bracket.name",
-      header: "Bracket",
+      accessorKey: "format.name",
+      header: "Format",
       cell: ({ getValue }) => <div>{toTitleCase(getValue())}</div>,
     },
     {

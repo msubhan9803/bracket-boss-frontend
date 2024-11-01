@@ -5,7 +5,7 @@ import { DynamicFormField } from "@/global";
 import { CreateTournamentInputDto } from "@/graphql/generated/graphql";
 import { Button } from "@/components/ui/button";
 import useTournamentOperations from "@/hooks/tournament/useTournamentOperations";
-import useBrackets from "@/hooks/bracket/useBrackets";
+import useFormats from "@/hooks/format/useFormats";
 import { toTitleCase } from "@/lib/utils";
 import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
@@ -17,7 +17,7 @@ interface AddTournamentButtonProps {
 const AddTournamentButton: React.FC<AddTournamentButtonProps> = ({ refetchTournamentList }) => {
   const [showModal, setShowModal] = useState(false);
   const { createTournamentMutation } = useTournamentOperations();
-  const { brackets } = useBrackets();
+  const { formats } = useFormats();
   const clubId = useSelector((state: RootState) => state.user.clubId);
 
   const formFields: DynamicFormField<CreateTournamentInputDto>[] = useMemo(
@@ -63,26 +63,26 @@ const AddTournamentButton: React.FC<AddTournamentButtonProps> = ({ refetchTourna
         defaultValue: false,
       },
       {
-        label: "Bracket",
-        name: "bracketId",
+        label: "Format",
+        name: "formatId",
         type: "select",
-        placeholder: "Select bracket",
+        placeholder: "Select format",
         required: true,
-        options: brackets?.map((bracket) => ({
-          label: toTitleCase(bracket.name),
-          value: bracket.id.toString(),
+        options: formats?.map((format) => ({
+          label: toTitleCase(format.name),
+          value: format.id.toString(),
         })),
         defaultValue: "",
       },
     ],
-    [brackets]
+    [formats]
   );
 
   const handleCreating = async (input: CreateTournamentInputDto) => {
     await createTournamentMutation.mutateAsync({
       ...input,
       clubId: clubId as number,
-      bracketId: parseInt(input.bracketId.toString()),
+      formatId: parseInt(input.formatId.toString()),
     });
     setShowModal(false);
     refetchTournamentList();
