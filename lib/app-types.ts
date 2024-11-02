@@ -114,3 +114,13 @@ export enum CustomCookies {
   SELECTED_CLUB = "selected-club",
   RESET_PASSWWORD_TOKEN = "reset-password-token",
 }
+
+export enum GroupByEnum {
+  GENDER = 'GENDER',
+  RATING = 'RATING',
+}
+
+export enum TeamGenerationTypeEnum {
+  blind_draw = 'blind_draw',
+  split_switch = 'split_switch',
+}

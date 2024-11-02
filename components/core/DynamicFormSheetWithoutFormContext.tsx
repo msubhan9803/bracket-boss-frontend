@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
 import {
   Sheet,
   SheetContent,
@@ -20,9 +20,11 @@ type Props<T extends { [key: string]: any }> = {
   description?: string;
   submitButtonLabel?: string;
   onSubmit: (values: T) => any | Promise<any>;
+  setFormState?: Dispatch<SetStateAction<T>>;
+  form: UseFormReturn<T>;
 };
 
-const DynamicFormSheet = <T extends { [key: string]: any }>({
+const DynamicFormSheetWithoutFormContext = <T extends { [key: string]: any }>({
   isOpen,
   setIsOpen,
   isLoading,
@@ -31,11 +33,8 @@ const DynamicFormSheet = <T extends { [key: string]: any }>({
   description,
   submitButtonLabel,
   onSubmit,
+  form,
 }: Props<T>) => {
-  const form = useForm<T>({
-    mode: "onBlur",
-  });
-
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       {isLoading ? (
@@ -62,4 +61,4 @@ const DynamicFormSheet = <T extends { [key: string]: any }>({
   );
 };
 
-export default DynamicFormSheet;
+export default DynamicFormSheetWithoutFormContext;

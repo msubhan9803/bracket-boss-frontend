@@ -37,6 +37,7 @@ export const GET_ALL_TOURNAMENTS = graphql(`
         sport {
           name
         }
+        splitSwitchGroupBy
       }
     }
   }
@@ -68,6 +69,13 @@ export const GET_TOURNAMENT_BY_ID = graphql(`
       name
       start_date
       updated_at
+      format {
+        name
+      }
+      teamGenerationType {
+        name
+      }
+      splitSwitchGroupBy
     }
   }
 `);

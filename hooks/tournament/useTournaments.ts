@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { getAllTournaments } from "@/server-requests/tournament.server-request";
-import { Dispatch, SetStateAction } from "react";
 import { Tournament } from "@/graphql/generated/graphql";
 
 export enum USE_TOURNAMENT_KEY {

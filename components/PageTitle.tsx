@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/breadcrumb";
 
 type Props = {
-  title: string;
+  title?: string;
   breadcrumbs?: Array<{ label: string; href?: string }>;
 };
 
@@ -30,15 +30,13 @@ export default function PageTitle({ title, breadcrumbs = [] }: Props) {
                     <BreadcrumbPage>{breadcrumb.label}</BreadcrumbPage>
                   )}
                 </BreadcrumbItem>
-                {index < breadcrumbs.length - 1 && (
-                  <BreadcrumbSeparator />
-                )}
+                {index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
               </React.Fragment>
             ))}
           </BreadcrumbList>
         </Breadcrumb>
       )}
-      <h1 className="text-lg font-semibold md:text-2xl">{title}</h1>
+      {title && <h1 className="text-lg font-semibold md:text-2xl">{title}</h1>}
     </div>
   );
 }
