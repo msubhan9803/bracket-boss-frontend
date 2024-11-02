@@ -12,7 +12,11 @@ export default function TeamCard({ index, team }: Props) {
 
   return (
     <div className="col-span-3">
-      <div className={`flex items-center ${isEvenIndex ? 'justify-start' : 'justify-end'} gap-x-2`}>
+      <div
+        className={`flex items-center ${
+          isEvenIndex ? "justify-start" : "justify-end"
+        } gap-x-2`}
+      >
         {isEvenIndex ? (
           <>
             <Avatar name={team.name} className="text-xs w-8 h-8" />
@@ -29,7 +33,7 @@ export default function TeamCard({ index, team }: Props) {
       <div className="mt-4">
         {team.players.map((player, index) => (
           <div key={`player-${index}`} className="flex flex-col text-start">
-            <h4 className="text-sm font-normal">Player {player}</h4>
+            <h4 className="text-sm font-normal">{player.name}</h4>
           </div>
         ))}
       </div>
