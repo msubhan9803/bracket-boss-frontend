@@ -1,6 +1,6 @@
 import React from "react";
 import { TeamType } from "@/graphql/generated/graphql";
-import { Avatar } from "../ui/avatar";
+import { InitialsAvatar } from "../ui/avatar";
 
 type Props = {
   index: number;
@@ -19,13 +19,13 @@ export default function TeamCard({ index, team }: Props) {
       >
         {isEvenIndex ? (
           <>
-            <Avatar name={team.name} className="text-xs w-8 h-8" />
+            <InitialsAvatar name={team.name} className="text-xs w-8 h-8" />
             <h2 className="text-lg md:text-xl font-bold">{team.name}</h2>
           </>
         ) : (
           <>
             <h2 className="text-lg md:text-xl font-bold">{team.name}</h2>
-            <Avatar name={team.name} className="text-xs w-8 h-8" />
+            <InitialsAvatar name={team.name} className="text-xs w-8 h-8" />
           </>
         )}
       </div>
