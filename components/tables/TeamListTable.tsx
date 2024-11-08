@@ -16,7 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { Court, Team, Tournament, User } from "@/graphql/generated/graphql";
+import { Team, Tournament, User } from "@/graphql/generated/graphql";
 import SkeletonLoader from "@/components/ui/skeleton";
 import Pagination from "@/components/ui/pagination";
 import { useTable } from "@/hooks/shared/useTable";
@@ -27,7 +27,7 @@ import AddTeamButton from "../mutation-buttons/AddTeamButton";
 type Props = {
   tournaments: Tournament[];
   users: User[];
-}
+};
 
 const TeamListTable = ({ tournaments, users }: Props) => {
   const [page, setPage] = useState(1);
@@ -64,6 +64,13 @@ const TeamListTable = ({ tournaments, users }: Props) => {
       accessorKey: "tournament.name",
       header: "Tournament",
     },
+    {
+      accessorKey: "users",
+      header: "Players",
+      cell: ({ row }) => (
+        <div>{row.original.users?.map((user) => user.name)?.join(", ")}</div>
+      ),
+    },
   ];
 
   const table = useReactTable({
@@ -98,7 +105,11 @@ const TeamListTable = ({ tournaments, users }: Props) => {
                   setFilter={setFilter}
                 />
 
-                <AddTeamButton refetchTeamList={refetchTeamList} tournaments={tournaments} users={users} />
+                <AddTeamButton
+                  refetchTeamList={refetchTeamList}
+                  tournaments={tournaments}
+                  users={users}
+                />
               </div>
             </TableHead>
           </TableRow>

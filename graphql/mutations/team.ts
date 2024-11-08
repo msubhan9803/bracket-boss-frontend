@@ -7,15 +7,6 @@ export const CREATE_TEAM = graphql(`
       id
       name
       updatedDate
-      teamsTournamentsUsers {
-        id
-        club {
-          id
-        }
-        team {
-          id
-        }
-      }
       tournament {
         id
       }

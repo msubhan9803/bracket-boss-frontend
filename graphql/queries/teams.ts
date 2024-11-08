@@ -21,6 +21,12 @@ export const GET_ALL_TEAMS = graphql(`
         tournament {
           name
         }
+        club {
+          name
+        }
+        users {
+          name
+        }
       }
       totalRecords
     }
