@@ -21,7 +21,7 @@ const scheduleSlice = createSlice({
     setScheduleOfTorunamentInput(
       state,
       action: PayloadAction<{
-        tournamentId: number;
+        tournamentId: number | null;
         userIds: number[];
       }>
     ) {

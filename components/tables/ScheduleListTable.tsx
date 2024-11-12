@@ -25,12 +25,14 @@ import { useTable } from "@/hooks/shared/useTable";
 import useTournaments from "@/hooks/tournament/useTournaments";
 import FilterComponent from "@/components/core/FilterComponent";
 import { toTitleCase } from "@/lib/utils";
-import Link from "next/link";
 import { PageNames, PageUrls } from "@/lib/app-types";
 import { Button } from "../ui/button";
 import useGetScheduleOfTournament from "@/hooks/schedule/useGetScheduleOfTournament";
+import { setScheduleOfTorunamentInput } from "@/redux/slices/schedule.slice";
+import { useDispatch } from "react-redux";
 
 const ScheduleListTable = () => {
+  const dispatch = useDispatch();
   const router = useRouter()
   const [page, setPage] = useState(1);
   const pageSizes = [5, 10, 25];
@@ -135,6 +137,13 @@ const ScheduleListTable = () => {
   useEffect(() => {
     refetchTournamentList();
   }, [pageSize, sort, filterBy, filter, page]);
+
+  useEffect(() => {
+    dispatch(setScheduleOfTorunamentInput({
+      tournamentId: null,
+      userIds: [],
+    }));
+  }, [])
 
   return (
     <div className="rounded-md border">

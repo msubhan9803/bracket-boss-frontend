@@ -52,6 +52,22 @@ query GetScheduleOfTournament($input: GetScheduleOfTournamentInput!) {
           }
         }
       }
+      matches {
+        awayTeam {
+          name
+          users {
+            id
+            name
+          }
+        }
+        homeTeam {
+          name
+          users {
+            id
+            name
+          }
+        }
+      }
     }
   }
 }

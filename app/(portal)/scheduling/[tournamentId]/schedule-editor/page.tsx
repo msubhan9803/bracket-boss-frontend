@@ -2,14 +2,30 @@ import React from "react";
 import { NextPage } from "next";
 import PageTitle from "@/components/PageTitle";
 import { PageProps } from "@/global";
-import { PageUrls } from "@/lib/app-types";
+import { MatchTypeScheduleEditorScreen, PageUrls } from "@/lib/app-types";
 import ScheduleEditor from "./_components/ScheduleEditor";
 import { getSingleTournament } from "@/server-requests/tournament.server-request";
+import { getScheduleOfTournament } from "@/server-requests/schedule.server-request";
 
 const ScheduleEditorPage: NextPage<PageProps> = async ({ params }) => {
-  const tournamentDetails = await getSingleTournament(
-    parseInt(params.tournamentId)
-  );
+  const tournamentId = parseInt(params.tournamentId as string);
+  const scheduleData = await getScheduleOfTournament(tournamentId);
+  const createdMatches = scheduleData.schedule.matches.map((match) => {
+    return {
+      name: `${match.awayTeam.name} vs ${match.homeTeam.name}`,
+      teams: [
+        {
+          name: match.awayTeam.name,
+          players: match.awayTeam.users?.map((user) => user?.name),
+        },
+        {
+          name: match.homeTeam.name,
+          players: match.homeTeam.users?.map((user) => user?.name),
+        }
+      ]
+    };
+  })
+  const tournamentDetails = await getSingleTournament(tournamentId);
 
   return (
     <div>
@@ -27,7 +43,7 @@ const ScheduleEditorPage: NextPage<PageProps> = async ({ params }) => {
         ]}
       />
 
-      <ScheduleEditor />
+      <ScheduleEditor createdMatches={createdMatches as MatchTypeScheduleEditorScreen[]} />
     </div>
   );
 };

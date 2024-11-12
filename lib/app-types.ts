@@ -124,3 +124,11 @@ export enum TeamGenerationTypeEnum {
   blind_draw = 'blind_draw',
   split_switch = 'split_switch',
 }
+
+export type MatchTypeScheduleEditorScreen = {
+  name: string;
+  teams: {
+      name: string;
+      players: string[] | undefined;
+  }[];
+};
