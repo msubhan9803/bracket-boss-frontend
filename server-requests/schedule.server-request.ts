@@ -1,7 +1,7 @@
 import { graphqlRequestHandlerServer } from "@/lib/graphql-server";
 import { GET_SCHEDULE_OF_TOURNAMENT_INPUT } from "@/graphql/queries/schedule";
 
-export const getScheduleOfTournament = async (
+export const getSchedulePreperationDataOfTournament = async (
   tournamentId: number,
   users: number[]
 ) => {
@@ -16,5 +16,5 @@ export const getScheduleOfTournament = async (
     },
   });
 
-  return data?.getScheduleOfTournament;
+  return data?.getSchedulePreperationDataOfTournament;
 };

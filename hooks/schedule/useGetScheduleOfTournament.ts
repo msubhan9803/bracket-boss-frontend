@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getScheduleOfTournament } from "@/server-requests/schedule.server-request";
+import { getSchedulePreperationDataOfTournament } from "@/server-requests/schedule.server-request";
 
 export enum USE_SCHEDULE_OF_TOURNAMENT {
   GET_SCHEDULE_OF_TOURNAMENT = "GET_SCHEDULE_OF_TOURNAMENT",
@@ -18,7 +18,7 @@ export default function useGetScheduleOfTournament(
       USE_SCHEDULE_OF_TOURNAMENT.GET_SCHEDULE_OF_TOURNAMENT,
       tournamentId,
     ],
-    queryFn: () => getScheduleOfTournament(tournamentId, userIds),
+    queryFn: () => getSchedulePreperationDataOfTournament(tournamentId, userIds),
   });
 
   return {

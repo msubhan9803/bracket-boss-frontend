@@ -8,8 +8,6 @@ type Props = {
 };
 
 export default function MatchCard({ match, index }: Props) {
-  console.log("⚽️⚽️⚽️⚽️⚽️ Match: ", match);
-
   return (
     <div className="flex flex-col text-center bg-muted/50 rounded-lg border border-secondary hover:border-primary shadow-md p-4">
       <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-primary">
