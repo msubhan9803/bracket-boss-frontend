@@ -129,6 +129,6 @@ export type MatchTypeScheduleEditorScreen = {
   name: string;
   teams: {
       name: string;
-      players: string[] | undefined;
+      players: { name: string }[];
   }[];
 };
