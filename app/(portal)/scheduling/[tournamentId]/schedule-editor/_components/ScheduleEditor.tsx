@@ -2,7 +2,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import useGetScheduleOfTournament from "@/hooks/schedule/useGetScheduleOfTournament";
+import useGetSchedulePreperationDataOfTournament from "@/hooks/schedule/useGetSchedulePreperationDataOfTournament";
 import MatchCard from "@/components/scheduling/MatchCard";
 import { MatchType } from "@/graphql/generated/graphql";
 
@@ -11,7 +11,7 @@ export default function ScheduleEditor() {
     (state: RootState) => state.schedule.scheduleOfTorunamentInput
   );
 
-  const { matches, loadingSchedule } = useGetScheduleOfTournament(
+  const { matches } = useGetSchedulePreperationDataOfTournament(
     tournamentId as number,
     userIds
   );

@@ -15,7 +15,7 @@ const buttonVariants = cva(
         outline: 'border border-primary bg-white hover:bg-primary hover:text-primary-foreground dark:border-primary/50 dark:bg-primary/10 dark:hover:bg-primary dark:hover:text-primary-foreground', // Consistent border and text contrast
         secondary: 'bg-slate-100 text-slate-900 hover:bg-slate-100/80 dark:bg-slate-700 dark:text-slate-50 dark:hover:bg-slate-600', // Refined dark mode background and hover
         ghost: 'hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-700 dark:hover:text-slate-50', // Enhanced hover effect in dark mode
-        link: 'text-slate-900 underline-offset-4 hover:underline dark:text-slate-50 dark:hover:text-slate-200', // Slightly lighter hover text for better visibility
+        link: 'text-primary/90 dark:text-primary/90 dark:hover:text-primary', // Slightly lighter hover text for better visibility
       },
       size: {
         default: 'h-10 px-4 py-2',

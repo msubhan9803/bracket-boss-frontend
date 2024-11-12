@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/table";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import moment from "moment";
+import { useRouter } from 'next/navigation'
 import { Tournament } from "@/graphql/generated/graphql";
 import SkeletonLoader from "@/components/ui/skeleton";
 import Pagination from "@/components/ui/pagination";
@@ -26,8 +27,11 @@ import FilterComponent from "@/components/core/FilterComponent";
 import { toTitleCase } from "@/lib/utils";
 import Link from "next/link";
 import { PageNames, PageUrls } from "@/lib/app-types";
+import { Button } from "../ui/button";
+import useGetScheduleOfTournament from "@/hooks/schedule/useGetScheduleOfTournament";
 
 const ScheduleListTable = () => {
+  const router = useRouter()
   const [page, setPage] = useState(1);
   const pageSizes = [5, 10, 25];
   const [pageSize, setPageSize] = useState(pageSizes[0]);
@@ -40,6 +44,8 @@ const ScheduleListTable = () => {
     sort,
     setSort
   );
+
+  const { getScheduleOfTournamentMutation } = useGetScheduleOfTournament();
 
   const {
     tournamentListFetched,
@@ -91,15 +97,34 @@ const ScheduleListTable = () => {
       accessorKey: "actions",
       header: "Actions",
       cell: ({ row }) => (
-        <Link
-          href={`${PageUrls.SCHEDULING_MANAGEMENT}/${row.original.id}/${PageNames.SCHEDULE_PREPARATION}`}
-          className="flex gap-2 cursor-pointer hover:text-primary"
+        // <Link
+        //   href={`${PageUrls.SCHEDULING_MANAGEMENT}/${row.original.id}/${PageNames.SCHEDULE_PREPARATION}`}
+        //   className="flex gap-2 cursor-pointer hover:text-primary"
+        // >
+        //   View Schedule
+        // </Link>
+        <Button
+          className="flex gap-2 cursor-pointer !hover:text-primary"
+          variant='link'
+          onClick={() => handleViewSchedule(row.original.id)}
         >
           View Schedule
-        </Link>
+        </Button>
       ),
     },
   ];
+
+  const handleViewSchedule = async (tournamentId: number) => {
+    const data = await getScheduleOfTournamentMutation.mutateAsync({
+      tournamentId,
+    })
+
+    if (data.getScheduleOfTournament.schedule.tournamentRounds.length > 0) {
+      router.push(`${PageUrls.SCHEDULING_MANAGEMENT}/${tournamentId}/${PageNames.SCHEDULE_EDITOR}`)
+    } else {
+      router.push(`${PageUrls.SCHEDULING_MANAGEMENT}/${tournamentId}/${PageNames.SCHEDULE_PREPARATION}`)
+    }
+  }
 
   const table = useReactTable({
     data: tournamentList,
@@ -149,9 +174,9 @@ const ScheduleListTable = () => {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
 
                       {sort.field === header.column.id &&
                         (sort.direction === "asc" ? (
