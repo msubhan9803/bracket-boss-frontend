@@ -1,14 +1,26 @@
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { GetScheduleOfTournamentInput } from "@/graphql/generated/graphql";
 import { GET_SCHEDULE_OF_TOURNAMENT } from "@/graphql/queries/schedule";
 import { graphqlRequestHandler } from "@/lib/graphql-client";
+import { getScheduleOfTournament } from "@/server-requests/schedule.server-request";
 
 export enum USE_SCHEDULE_OF_TOURNAMENT {
+  GET_SCHEDULE_OF_TOURNAMENT_QUERY = "GET_SCHEDULE_OF_TOURNAMENT_QUERY",
   GET_SCHEDULE_OF_TOURNAMENT = "GET_SCHEDULE_OF_TOURNAMENT",
 }
 
-export default function useGetScheduleOfTournament() {
+export default function useGetScheduleOfTournament(tournamentId?: number) {
+  const {
+    data,
+  } = useQuery({
+    queryKey: [
+      USE_SCHEDULE_OF_TOURNAMENT.GET_SCHEDULE_OF_TOURNAMENT_QUERY,
+      tournamentId,
+    ],
+    queryFn: () => getScheduleOfTournament(tournamentId as number),
+    enabled: !!tournamentId,
+  });
+
   const getScheduleOfTournamentMutation = useMutation({
     mutationKey: [USE_SCHEDULE_OF_TOURNAMENT.GET_SCHEDULE_OF_TOURNAMENT],
     mutationFn: async (variables: GetScheduleOfTournamentInput) =>
@@ -19,6 +31,21 @@ export default function useGetScheduleOfTournament() {
   });
 
   return {
+    createdMatches: data?.schedule.matches.map((match) => {
+      return {
+        name: `${match.awayTeam.name} vs ${match.homeTeam.name}`,
+        teams: [
+          {
+            name: match.awayTeam.name,
+            players: match.awayTeam.users?.map((user) => ({ name: user?.name })),
+          },
+          {
+            name: match.homeTeam.name,
+            players: match.homeTeam.users?.map((user) => ({ name: user?.name })),
+          }
+        ]
+      };
+    }),
     getScheduleOfTournamentMutation
   };
 }

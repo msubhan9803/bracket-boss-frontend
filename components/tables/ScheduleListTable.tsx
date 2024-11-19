@@ -99,12 +99,6 @@ const ScheduleListTable = () => {
       accessorKey: "actions",
       header: "Actions",
       cell: ({ row }) => (
-        // <Link
-        //   href={`${PageUrls.SCHEDULING_MANAGEMENT}/${row.original.id}/${PageNames.SCHEDULE_PREPARATION}`}
-        //   className="flex gap-2 cursor-pointer hover:text-primary"
-        // >
-        //   View Schedule
-        // </Link>
         <Button
           className="flex gap-2 cursor-pointer !hover:text-primary"
           variant='link'
