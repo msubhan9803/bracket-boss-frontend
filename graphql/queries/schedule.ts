@@ -8,6 +8,7 @@ export const GET_SCHEDULE_OF_TOURNAMENT_INPUT = graphql(`
         teams {
           name
           players {
+            id
             name
           }
         }

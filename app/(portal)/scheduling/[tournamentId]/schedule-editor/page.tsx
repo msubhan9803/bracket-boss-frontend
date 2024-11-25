@@ -9,11 +9,10 @@ const ScheduleEditorPage: NextPage<PageProps> = async ({ params }) => {
   const tournamentDetails = await getSingleTournament(tournamentId);
 
   return (
-    <div>
-      <ScheduleEditor 
-        tournamentDetails={tournamentDetails} 
-      />
-    </div>
+
+    <ScheduleEditor
+      tournamentDetails={tournamentDetails}
+    />
   );
 };
 
