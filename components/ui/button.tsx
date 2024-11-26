@@ -39,7 +39,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, loading, disabled, loaderSize = 18, children, absoluteLoaderPosition = true, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, loading, disabled, loaderSize = 18, children, absoluteLoaderPosition = false, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button'
     return (
       <Comp disabled={loading || disabled} className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props}>

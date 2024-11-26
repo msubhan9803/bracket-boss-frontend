@@ -37,3 +37,11 @@ export const CREATE_SCHEDULE = graphql(`
     }
   }
 `);
+
+export const DELETE_SCHEDULE = graphql(`
+  mutation DeleteSchedule($input: DeleteScheduleInputDto!) {
+    deleteSchedule(input: $input) {
+      message
+    }
+  }
+`);

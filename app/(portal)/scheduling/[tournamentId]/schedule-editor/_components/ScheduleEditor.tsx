@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import useGetScheduleOfTournament from "@/hooks/schedule/useGetScheduleOfTournament";
 import { useParams } from "next/navigation";
 import useScheduleCreation from "@/hooks/schedule/useScheduleCreation";
+import useDeleteCreation from "@/hooks/schedule/useDeleteCreation";
 
 type Props = {
   tournamentDetails: Tournament;
@@ -29,6 +30,7 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
     userIds
   );
   const { createScheduleMutation } = useScheduleCreation();
+  const { deleteScheduleMutation } = useDeleteCreation();
   const router = useRouter()
 
   const handleScheduleCreation = async () => {
@@ -49,13 +51,19 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
     });
   }
 
+  const handleScheduleDelete = async () => {
+    await deleteScheduleMutation.mutateAsync({
+      tournamentId: parseInt(params.tournamentId as string)
+    });
+  }
+
   const goToScheduleEditorScreen = () => {
     router.push(`${PageUrls.SCHEDULING_MANAGEMENT}/${params.tournamentId}/${PageNames.SCHEDULE_PREPARATION}`)
   }
 
   return (
     <>
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center">
         <PageTitle
           title={tournamentDetails.name}
           breadcrumbs={[
@@ -70,7 +78,10 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
           ]}
         />
 
-        <Button onClick={handleScheduleCreation}>Create Schedule</Button>
+        <div className="space-x-2 my-2 lg:my-0 flex items-center">
+          <Button variant='secondary' onClick={handleScheduleDelete} loading={deleteScheduleMutation.isPending}>Delete Schedule</Button>
+          <Button onClick={handleScheduleCreation} loading={createScheduleMutation.isPending}>Create Schedule</Button>
+        </div>
       </div>
 
       {
