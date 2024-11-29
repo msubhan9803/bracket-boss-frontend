@@ -12,6 +12,7 @@ export enum USE_SCHEDULE_OF_TOURNAMENT {
 export default function useGetScheduleOfTournament(tournamentId?: number) {
   const {
     data,
+    refetch,
   } = useQuery({
     queryKey: [
       USE_SCHEDULE_OF_TOURNAMENT.GET_SCHEDULE_OF_TOURNAMENT_QUERY,
@@ -46,6 +47,7 @@ export default function useGetScheduleOfTournament(tournamentId?: number) {
         ]
       };
     }),
-    getScheduleOfTournamentMutation
+    getScheduleOfTournamentMutation,
+    useGetScheduleOfTournamentRefetch: refetch,
   };
 }

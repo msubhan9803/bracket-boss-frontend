@@ -24,7 +24,7 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
   );
   const clubId = useSelector((state: RootState) => state.user.clubId);
   const params = useParams()
-  const { createdMatches } = useGetScheduleOfTournament(parseInt(params.tournamentId as string));
+  const { createdMatches, useGetScheduleOfTournamentRefetch } = useGetScheduleOfTournament(parseInt(params.tournamentId as string));
   const { matches: fetchedMatches } = useGetSchedulePreperationDataOfTournament(
     tournamentId as number,
     userIds
@@ -49,12 +49,14 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
         };
       })
     });
+    await useGetScheduleOfTournamentRefetch();
   }
 
   const handleScheduleDelete = async () => {
     await deleteScheduleMutation.mutateAsync({
       tournamentId: parseInt(params.tournamentId as string)
     });
+    await useGetScheduleOfTournamentRefetch();
   }
 
   const goToScheduleEditorScreen = () => {
@@ -79,7 +81,11 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
         />
 
         <div className="space-x-2 my-2 lg:my-0 flex items-center">
-          <Button variant='secondary' onClick={handleScheduleDelete} loading={deleteScheduleMutation.isPending}>Delete Schedule</Button>
+          {
+            createdMatches && createdMatches?.length > 0 && (
+              <Button variant='secondary' onClick={handleScheduleDelete} loading={deleteScheduleMutation.isPending}>Delete Schedule</Button>
+            )
+          }
           <Button onClick={handleScheduleCreation} loading={createScheduleMutation.isPending}>Create Schedule</Button>
         </div>
       </div>
