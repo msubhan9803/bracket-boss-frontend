@@ -50,3 +50,13 @@ export function getInitialsOfText(name: string) {
     words.length > 1 ? words[0][0] + words[1][0] : words[0].substring(0, 2);
   return initials.toUpperCase();
 }
+
+export const downloadCSV = (base64Data: string, fileName: string) => {
+  const binaryData = atob(base64Data);
+  const blob = new Blob([binaryData], { type: 'text/csv' });
+  const link = document.createElement('a');
+  link.download = fileName;
+  link.href = window.URL.createObjectURL(blob);
+  link.click();
+  window.URL.revokeObjectURL(link.href);
+};

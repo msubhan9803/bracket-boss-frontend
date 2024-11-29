@@ -1,47 +1,47 @@
 "use client";
 import { Fragment, useMemo, useState } from "react";
-import DynamicFormSheet from "@/components/core/DynamicFormSheet";
 import { DynamicFormField } from "@/global";
 import { CreateTeamInputDto } from "@/graphql/generated/graphql";
 import { Button } from "@/components/ui/button";
-import { RootState } from "@/redux/store";
-import { useSelector } from "react-redux";
-import useTeamOperations from "@/hooks/team/useTeamOperations";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "../ui/sheet";
+import useDownloadUserDataForSchedule from "@/hooks/schedule/useDownloadUserDataForSchedule";
+import { downloadCSV } from "@/lib/utils";
 
 const ImportScheduleDataButton: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
-  const { createTeamMutation } = useTeamOperations();
-  const clubId = useSelector((state: RootState) => state.user.clubId) as number;
+
+  const { downloadUserDataForScheduleMutation } = useDownloadUserDataForSchedule();
 
   const formFields: DynamicFormField<CreateTeamInputDto>[] = useMemo(
     () => [],
     []
   );
 
-  const handleCreating = async (input: CreateTeamInputDto) => {
-    await createTeamMutation.mutateAsync({
-      ...input,
-      tournamentId: parseInt(input.tournamentId.toString()),
-      clubId,
-      userIds: input.userIds.map((id) => parseInt(id.toString())),
-    });
-    setShowModal(false);
-  };
+  const handleDownloadUserData = async () => {
+    const data = await downloadUserDataForScheduleMutation.mutateAsync();
+    downloadCSV(data.downloadUserDataForSchedule, 'user_data_template.csv');
+  }
 
   return (
     <Fragment>
       <Button onClick={() => setShowModal(true)} variant="secondary">
         Import data
       </Button>
-      <DynamicFormSheet
-        isOpen={showModal}
-        setIsOpen={setShowModal}
-        fields={formFields}
-        title="Import Schedule data"
-        description="Upload a CSV file to import schedule data"
-        submitButtonLabel="Submit"
-        onSubmit={handleCreating}
-      />
+
+      <Sheet open={showModal} onOpenChange={setShowModal}>
+        <SheetContent className="w-screen md:max-w-md lg:max-w-lg xl:max-w-xl h-screen px-5">
+          <SheetHeader className="text-left h-20 flex flex-col justify-center">
+            <SheetTitle>Import Schedule data</SheetTitle>
+            <SheetDescription>Upload a CSV file to import schedule data</SheetDescription>
+          </SheetHeader>
+
+          <div className="flex justify-end">
+            <Button onClick={handleDownloadUserData} loading={downloadUserDataForScheduleMutation.isPending}>
+              Download User Data
+            </Button>
+          </div>
+        </SheetContent>
+      </Sheet>
     </Fragment>
   );
 };

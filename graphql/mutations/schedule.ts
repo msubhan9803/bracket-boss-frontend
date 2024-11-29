@@ -45,3 +45,9 @@ export const DELETE_SCHEDULE = graphql(`
     }
   }
 `);
+
+export const DOWNLOAD_USER_DATA_FOR_SCHEDULE = graphql(`
+  mutation DownloadUserDataForSchedule {
+    downloadUserDataForSchedule
+  }
+`);

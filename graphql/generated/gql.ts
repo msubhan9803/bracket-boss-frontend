@@ -25,6 +25,7 @@ const documents = {
     "\n  mutation UploadFile($file: Upload!) {\n    uploadFile(file: $file) {\n      url\n    }\n  }\n": types.UploadFileDocument,
     "\n  mutation CreateSchedule($input: CreateScheduleInputDto!) {\n    createSchedule(input: $input) {\n      schedule {\n        tournament {\n          id\n          name\n        }\n        tournamentRounds {\n          id\n          roundNumber\n          roundFormat {\n            name\n          }\n        }\n        matches {\n          id\n          homeTeam {\n            name\n          }\n          awayTeam {\n            name\n          }\n          statuses {\n            status\n          }\n          courts {\n            name\n          }\n        }\n        teams {\n          name\n        }\n      }\n    }\n  }\n": types.CreateScheduleDocument,
     "\n  mutation DeleteSchedule($input: DeleteScheduleInputDto!) {\n    deleteSchedule(input: $input) {\n      message\n    }\n  }\n": types.DeleteScheduleDocument,
+    "\n  mutation DownloadUserDataForSchedule {\n    downloadUserDataForSchedule\n  }\n": types.DownloadUserDataForScheduleDocument,
     "\n  mutation CreateTeam($input: CreateTeamInputDto!) {\n    createTeam(input: $input) {\n      createdDate\n      id\n      name\n      updatedDate\n      tournament {\n        id\n      }\n      club {\n        id\n      }\n    }\n  }\n": types.CreateTeamDocument,
     "\n  mutation CreateTournament($input: CreateTournamentInputDto!) {\n    createTournament(input: $input) {\n      created_at\n      description\n      end_date\n      id\n      isPrivate\n      name\n      start_date\n      updated_at\n    }\n  }\n": types.CreateTournamentDocument,
     "\n  mutation UpdateUserRole($input: UpdateUserRoleDto!) {\n    updateUserRole(input: $input) {\n      message\n      userRoleClub {\n        created_at\n        id\n        role {\n          id\n        }\n        updated_at\n      }\n    }\n  }\n": types.UpdateUserRoleDocument,
@@ -108,6 +109,10 @@ export function graphql(source: "\n  mutation CreateSchedule($input: CreateSched
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation DeleteSchedule($input: DeleteScheduleInputDto!) {\n    deleteSchedule(input: $input) {\n      message\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteSchedule($input: DeleteScheduleInputDto!) {\n    deleteSchedule(input: $input) {\n      message\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation DownloadUserDataForSchedule {\n    downloadUserDataForSchedule\n  }\n"): (typeof documents)["\n  mutation DownloadUserDataForSchedule {\n    downloadUserDataForSchedule\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
