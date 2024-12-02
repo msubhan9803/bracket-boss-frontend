@@ -51,9 +51,14 @@ export function getInitialsOfText(name: string) {
   return initials.toUpperCase();
 }
 
-export const downloadCSV = (base64Data: string, fileName: string) => {
+export const downloadXLSX = (base64Data: string, fileName: string) => {
   const binaryData = atob(base64Data);
-  const blob = new Blob([binaryData], { type: 'text/csv' });
+  const byteNumbers = new Array(binaryData.length);
+  for (let i = 0; i < binaryData.length; i++) {
+    byteNumbers[i] = binaryData.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNumbers);
+  const blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
   const link = document.createElement('a');
   link.download = fileName;
   link.href = window.URL.createObjectURL(blob);

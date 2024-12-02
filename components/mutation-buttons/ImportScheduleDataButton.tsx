@@ -4,13 +4,16 @@ import { DynamicFormField } from "@/global";
 import { CreateTeamInputDto } from "@/graphql/generated/graphql";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "../ui/sheet";
-import useDownloadUserDataForSchedule from "@/hooks/schedule/useDownloadUserDataForSchedule";
-import { downloadCSV } from "@/lib/utils";
+import useDownloadScheduleTemplates from "@/hooks/schedule/useDownloadScheduleTemplates";
+import { downloadXLSX } from "@/lib/utils";
 
 const ImportScheduleDataButton: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
 
-  const { downloadUserDataForScheduleMutation } = useDownloadUserDataForSchedule();
+  const {
+    downloadUserDataForScheduleMutation,
+    downloadEmptyScheduleTemplateMutation
+  } = useDownloadScheduleTemplates();
 
   const formFields: DynamicFormField<CreateTeamInputDto>[] = useMemo(
     () => [],
@@ -19,7 +22,12 @@ const ImportScheduleDataButton: React.FC = () => {
 
   const handleDownloadUserData = async () => {
     const data = await downloadUserDataForScheduleMutation.mutateAsync();
-    downloadCSV(data.downloadUserDataForSchedule, 'user_data_template.csv');
+    downloadXLSX(data.downloadUserDataForSchedule, 'user_data_template.xlsx');
+  }
+
+  const handleDownloadEmptyScheduleTemplate = async () => {
+    const data = await downloadEmptyScheduleTemplateMutation.mutateAsync();
+    downloadXLSX(data.downloadEmptyScheduleTemplate, 'empty-schedule-template.xlsx');
   }
 
   return (
@@ -35,11 +43,13 @@ const ImportScheduleDataButton: React.FC = () => {
             <SheetDescription>Upload a CSV file to import schedule data</SheetDescription>
           </SheetHeader>
 
-          <div className="flex justify-end">
-            <Button onClick={handleDownloadUserData} loading={downloadUserDataForScheduleMutation.isPending}>
-              Download User Data
-            </Button>
-          </div>
+          <Button onClick={handleDownloadUserData} loading={downloadUserDataForScheduleMutation.isPending} className="w-full my-2">
+            Download User Data
+          </Button>
+
+          <Button onClick={handleDownloadEmptyScheduleTemplate} loading={downloadEmptyScheduleTemplateMutation.isPending} className="w-full my-2">
+            Download Empty Schedule Template
+          </Button>
         </SheetContent>
       </Sheet>
     </Fragment>

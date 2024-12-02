@@ -51,3 +51,9 @@ export const DOWNLOAD_USER_DATA_FOR_SCHEDULE = graphql(`
     downloadUserDataForSchedule
   }
 `);
+
+export const DOWNLOAD_EMPTY_SCHEDULE_TEMPLATE = graphql(`
+  mutation DownloadEmptyScheduleTemplate {
+    downloadEmptyScheduleTemplate
+  }
+`);
