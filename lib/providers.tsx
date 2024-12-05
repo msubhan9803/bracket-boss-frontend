@@ -18,7 +18,7 @@ const Providers = ({ children }: Props) => {
       <ReduxProvider store={store}>
         <ThemeProvider attribute="class" defaultTheme="system">
           {children}
-          <Toaster richColors position="top-center" visibleToasts={1} />
+          <Toaster style={{ zIndex: 9999999 }} richColors position="top-center" visibleToasts={1} />
         </ThemeProvider>
       </ReduxProvider>
     </QueryClientProvider>

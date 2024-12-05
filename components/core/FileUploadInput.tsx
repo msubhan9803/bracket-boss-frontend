@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { FiUpload, FiX } from "react-icons/fi";
+import { FiX } from "react-icons/fi";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
 import { ImageUp } from "lucide-react";
+import { AiOutlineFileExcel } from "react-icons/ai";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 interface Props {
   aspectRatio?: string;
@@ -13,6 +15,10 @@ interface Props {
   variant?: "default" | "outline";
   defaultPhotoUrl?: string;
   onChange?: (file: File | null | undefined) => void;
+  allowedTypes?: {
+    type: string;
+    label: string;  
+  }[];
 }
 
 export default function FileUploadInput({
@@ -23,6 +29,12 @@ export default function FileUploadInput({
   className = "",
   style = {},
   defaultPhotoUrl,
+  allowedTypes = [
+    {
+      type: "image/*",
+      label: "Image"
+    }
+  ],
 }: Props) {
   const [photo, setPhoto] = useState<File>();
   const [imageUrl, setImageUrl] = useState<string>();
@@ -38,6 +50,8 @@ export default function FileUploadInput({
       onChange(photo);
       setImageUrl(undefined);
     }
+
+    console.log('🌺 photo: ', photo)
   }, [photo, onChange]);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -47,9 +61,17 @@ export default function FileUploadInput({
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: {
-      "image/*": [],
-    },
+    accept: allowedTypes.reduce((acc: any, type: any) => {
+      acc[type.type] = [];
+      return acc;
+    }, {}),
+    onDropRejected: (fileRejections) => {
+      const fileRejection = fileRejections[0];
+      if (fileRejection.errors[0].code === "file-invalid-type") {
+        const allowedTypesString = allowedTypes.map(type => type.label).join(", ");
+        toast.error(`Invalid file type. Only the following file types are allowed: ${allowedTypesString}`);
+      }
+    }
   });
 
   const renderUploadPlaceholder = (currentlyDragging: boolean) =>
@@ -73,12 +95,19 @@ export default function FileUploadInput({
       <input {...getInputProps()} aria-label="file upload" />
       {!photo && !imageUrl && renderUploadPlaceholder(isDragActive)}
 
-      {photo && (
+      {photo && photo.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" && (
+        <div className="flex flex-col items-center">
+          <AiOutlineFileExcel className="text-primary" size={50} />
+          <p className="my-4 text-center">{photo.name}</p>
+        </div>
+      )}
+
+      {photo && photo.type.startsWith("image/") && (
         <Image
-          src={photo ? URL.createObjectURL(photo) : (defaultPhotoUrl as string)}
+          src={URL.createObjectURL(photo)}
           alt="Upload preview"
           layout="fill"
-          objectFit="conver"
+          objectFit="cover"
           className="rounded-lg"
         />
       )}
@@ -88,7 +117,7 @@ export default function FileUploadInput({
           src={imageUrl}
           alt="Upload preview"
           layout="fill"
-          objectFit="conver"
+          objectFit="cover"
         />
       )}
 
@@ -96,13 +125,13 @@ export default function FileUploadInput({
         onClick={
           photo || imageUrl
             ? (e: React.MouseEvent<HTMLButtonElement>) => {
-                e.stopPropagation();
-                setPhoto(undefined);
-                setImageUrl(undefined);
-                if (onChange) {
-                  onChange(null);
-                }
+              e.stopPropagation();
+              setPhoto(undefined);
+              setImageUrl(undefined);
+              if (onChange) {
+                onChange(null);
               }
+            }
             : undefined
         }
         className={cn(

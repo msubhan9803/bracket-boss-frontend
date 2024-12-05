@@ -49,6 +49,10 @@ type DynamicFormField<T extends Record<string, any> = void> = {
   prefixRender?: ReactNode;
   showPassword?: boolean;
   toggleShowPassword?: () => void;
+  allowedTypes?: {
+    type: string;
+    label: string;  
+  }[];
 };
 
 interface GraphQLErrorResponse {

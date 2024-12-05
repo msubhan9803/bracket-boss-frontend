@@ -47,7 +47,7 @@ const FormWrapper = <T extends { [key: string]: any }>({
               </div>
             ))}
 
-            <div className="w-full flex items-center col-span-full">
+            <div className="w-full flex items-center col-span-full mt-6">
               {submitButton ? (
                 submitButton
               ) : (

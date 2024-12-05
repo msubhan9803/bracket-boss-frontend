@@ -296,6 +296,8 @@ const DynamicFormField = <T extends { [key: string]: any }>({
               <FileUploadInput
                 onChange={(file) => field.onChange(file)}
                 defaultPhotoUrl={dynamicField.defaultValue}
+                allowedTypes={dynamicField.allowedTypes}
+                className={dynamicField.className}
               />
             </FormControl>
             <FormMessage />
