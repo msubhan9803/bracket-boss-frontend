@@ -74,7 +74,7 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
 
   const doesCreatedMatchesExist = useMemo(() => createdMatches && createdMatches?.length > 0, [createdMatches]);
   const doesFetchedMatchesExist = useMemo(() => fetchedMatches.length > 0, [fetchedMatches]);
-  const showCreateButton = useMemo(() => !doesCreatedMatchesExist && doesFetchedMatchesExist, [doesCreatedMatchesExist]);
+  const showCreateButton = useMemo(() => !doesCreatedMatchesExist && doesFetchedMatchesExist, [doesCreatedMatchesExist, doesFetchedMatchesExist]);
   const showDeleteButton = useMemo(() => doesCreatedMatchesExist, [doesCreatedMatchesExist]);
   const showMatches = useMemo(() => doesCreatedMatchesExist || doesFetchedMatchesExist, [doesCreatedMatchesExist, doesFetchedMatchesExist]);
 
@@ -108,8 +108,7 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
             <Button onClick={handleScheduleCreation} loading={createScheduleMutation.isPending}>
               Create Schedule
             </Button>
-          )
-          }
+          )}
         </div>
       </div>
 
