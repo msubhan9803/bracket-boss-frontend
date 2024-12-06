@@ -13,6 +13,7 @@ export default function useGetScheduleOfTournament(tournamentId?: number) {
   const {
     data,
     refetch,
+    isLoading
   } = useQuery({
     queryKey: [
       USE_SCHEDULE_OF_TOURNAMENT.GET_SCHEDULE_OF_TOURNAMENT_QUERY,
@@ -49,5 +50,6 @@ export default function useGetScheduleOfTournament(tournamentId?: number) {
     }),
     getScheduleOfTournamentMutation,
     useGetScheduleOfTournamentRefetch: refetch,
+    isLoading
   };
 }
