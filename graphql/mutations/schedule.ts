@@ -57,3 +57,11 @@ export const DOWNLOAD_EMPTY_SCHEDULE_TEMPLATE = graphql(`
     downloadEmptyScheduleTemplate
   }
 `);
+
+export const BULK_MATCH_IMPORT = graphql(`
+  mutation BulkMatchImport($file: Upload!) {
+    bulkMatchImport(file: $file) {
+      message
+    }
+  }
+`);

@@ -1,11 +1,11 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
 import ImportScheduleDataButton from "@/components/mutation-buttons/ImportScheduleDataButton";
 import UserSelectionTable from "@/components/tables/UserSelectionTable";
 import { Button } from "@/components/ui/button";
 import { User } from "@/graphql/generated/graphql";
-import { useDispatch } from "react-redux";
 import { setScheduleOfTorunamentInput } from "@/redux/slices/schedule.slice";
 import { PageNames, PageUrls } from "@/lib/app-types";
 

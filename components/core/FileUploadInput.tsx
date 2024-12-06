@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { FiX } from "react-icons/fi";
+import { FiTrash, FiX } from "react-icons/fi";
 import Image from "next/image";
 import { ImageUp } from "lucide-react";
 import { AiOutlineFileExcel } from "react-icons/ai";
@@ -50,8 +50,6 @@ export default function FileUploadInput({
       onChange(photo);
       setImageUrl(undefined);
     }
-
-    console.log('🌺 photo: ', photo)
   }, [photo, onChange]);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -141,7 +139,7 @@ export default function FileUploadInput({
         )}
         aria-label="photo"
       >
-        {photo || imageUrl ? <FiX /> : "+"}
+        {photo || imageUrl ? <FiTrash /> : "+"}
       </button>
     </div>
   );

@@ -4,12 +4,12 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DynamicFormField } from "@/global";
-import { CreateTeamInputDto } from "@/graphql/generated/graphql";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "../ui/sheet";
 import useDownloadScheduleTemplates from "@/hooks/schedule/useDownloadScheduleTemplates";
 import { downloadXLSX } from "@/lib/utils";
 import FormWrapper from "../core/FormWrapper";
+import useBulkMatchImport from "@/hooks/schedule/useBulkMatchImport";
 
 const formSchema = z.object({
   file: z.instanceof(File).nullable(),
@@ -25,10 +25,12 @@ const ImportScheduleDataButton: React.FC = () => {
     downloadEmptyScheduleTemplateMutation
   } = useDownloadScheduleTemplates();
 
+  const { bulkMatchImportMutation } = useBulkMatchImport();
+
   const formFields: DynamicFormField<any>[] = useMemo(
     () => [
       {
-        label: "Bulk Match Upload",
+        label: "Bulk Import",
         name: "file",
         type: "file",
         placeholder: "Upload a file",
@@ -62,7 +64,7 @@ const ImportScheduleDataButton: React.FC = () => {
   }
 
   const onSubmit = async (values: FormData) => {
-    console.log('Here is the file', values.file);
+    await bulkMatchImportMutation.mutateAsync({ file: values.file as File });
   };
 
   return (

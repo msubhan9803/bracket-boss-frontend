@@ -27,6 +27,7 @@ const documents = {
     "\n  mutation DeleteSchedule($input: DeleteScheduleInputDto!) {\n    deleteSchedule(input: $input) {\n      message\n    }\n  }\n": types.DeleteScheduleDocument,
     "\n  mutation DownloadUserDataForSchedule {\n    downloadUserDataForSchedule\n  }\n": types.DownloadUserDataForScheduleDocument,
     "\n  mutation DownloadEmptyScheduleTemplate {\n    downloadEmptyScheduleTemplate\n  }\n": types.DownloadEmptyScheduleTemplateDocument,
+    "\n  mutation BulkMatchImport($file: Upload!) {\n    bulkMatchImport(file: $file) {\n      message\n    }\n  }\n": types.BulkMatchImportDocument,
     "\n  mutation CreateTeam($input: CreateTeamInputDto!) {\n    createTeam(input: $input) {\n      createdDate\n      id\n      name\n      updatedDate\n      tournament {\n        id\n      }\n      club {\n        id\n      }\n    }\n  }\n": types.CreateTeamDocument,
     "\n  mutation CreateTournament($input: CreateTournamentInputDto!) {\n    createTournament(input: $input) {\n      created_at\n      description\n      end_date\n      id\n      isPrivate\n      name\n      start_date\n      updated_at\n    }\n  }\n": types.CreateTournamentDocument,
     "\n  mutation UpdateUserRole($input: UpdateUserRoleDto!) {\n    updateUserRole(input: $input) {\n      message\n      userRoleClub {\n        created_at\n        id\n        role {\n          id\n        }\n        updated_at\n      }\n    }\n  }\n": types.UpdateUserRoleDocument,
@@ -118,6 +119,10 @@ export function graphql(source: "\n  mutation DownloadUserDataForSchedule {\n   
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation DownloadEmptyScheduleTemplate {\n    downloadEmptyScheduleTemplate\n  }\n"): (typeof documents)["\n  mutation DownloadEmptyScheduleTemplate {\n    downloadEmptyScheduleTemplate\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation BulkMatchImport($file: Upload!) {\n    bulkMatchImport(file: $file) {\n      message\n    }\n  }\n"): (typeof documents)["\n  mutation BulkMatchImport($file: Upload!) {\n    bulkMatchImport(file: $file) {\n      message\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

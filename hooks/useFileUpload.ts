@@ -40,6 +40,7 @@ export default function useFileUpload() {
 
       return fileUploadMutationHandler<UploadFileResponse, UploadFileVariables>(
         {
+          operationName: payload.operationName,
           query: payload.query,
           variables: payload.variables,
           file: variables.file,

@@ -1,8 +1,9 @@
 "use client";
 import React from "react";
 import { useSelector } from "react-redux";
+import { useRouter, useParams } from 'next/navigation';
 import { RootState } from "@/redux/store";
-import { useRouter } from 'next/navigation'
+import { useDispatch } from "react-redux";
 import useGetSchedulePreperationDataOfTournament from "@/hooks/schedule/useGetSchedulePreperationDataOfTournament";
 import MatchCard from "@/components/scheduling/MatchCard";
 import { MatchType, Tournament } from "@/graphql/generated/graphql";
@@ -10,9 +11,11 @@ import { PageNames, PageUrls } from "@/lib/app-types";
 import PageTitle from "@/components/PageTitle";
 import { Button } from "@/components/ui/button";
 import useGetScheduleOfTournament from "@/hooks/schedule/useGetScheduleOfTournament";
-import { useParams } from "next/navigation";
 import useScheduleCreation from "@/hooks/schedule/useScheduleCreation";
 import useDeleteCreation from "@/hooks/schedule/useDeleteCreation";
+import { setScheduleOfTorunamentInput } from "@/redux/slices/schedule.slice";
+import ImportScheduleDataButton from "@/components/mutation-buttons/ImportScheduleDataButton";
+import { Separator } from "@/components/ui/separator";
 
 type Props = {
   tournamentDetails: Tournament;
@@ -31,7 +34,8 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
   );
   const { createScheduleMutation } = useScheduleCreation();
   const { deleteScheduleMutation } = useDeleteCreation();
-  const router = useRouter()
+  const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleScheduleCreation = async () => {
     await createScheduleMutation.mutateAsync({
@@ -56,6 +60,10 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
     await deleteScheduleMutation.mutateAsync({
       tournamentId: parseInt(params.tournamentId as string)
     });
+    dispatch(setScheduleOfTorunamentInput({
+      tournamentId: null,
+      userIds: [],
+    }));
     await useGetScheduleOfTournamentRefetch();
   }
 
@@ -86,7 +94,7 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
               <Button variant='secondary' onClick={handleScheduleDelete} loading={deleteScheduleMutation.isPending}>Delete Schedule</Button>
             )
           }
-          <Button onClick={handleScheduleCreation} loading={createScheduleMutation.isPending}>Create Schedule</Button>
+          {(createdMatches && createdMatches?.length === 0 && fetchedMatches.length > 0) && <Button onClick={handleScheduleCreation} loading={createScheduleMutation.isPending}>Create Schedule</Button>}
         </div>
       </div>
 
@@ -106,6 +114,14 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
             <div className="flex flex-col items-center gap-y-4">
               <h2 className="text-primary text-2xl">No schedule found</h2>
               <Button onClick={goToScheduleEditorScreen}>Go back to select users</Button>
+
+              <div className="flex items-center my-2">
+                <div className="border-t border-1 border-gray-600 flex-grow w-8"></div>
+                <div className="px-3 text-gray-400 text-sm">OR</div>
+                <div className="border-t border-1 border-gray-600 flex-grow w-8"></div>
+              </div>
+
+              <ImportScheduleDataButton />
             </div>
           </div>
         )

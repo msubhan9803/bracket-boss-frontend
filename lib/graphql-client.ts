@@ -16,6 +16,7 @@ interface GraphQLRequestHandlerOptions<T, V> {
 }
 
 interface FileUploadGraphQLRequestHandlerOptions<T, V> {
+  operationName?: string;
   query: string;
   variables?: V | {};
   options?: GraphQLServerOptions;
@@ -32,6 +33,7 @@ export const fileUploadMutationHandler = async <
   T,
   V extends { [key: string]: any }
 >({
+  operationName,
   query,
   variables,
   file,
@@ -41,7 +43,7 @@ export const fileUploadMutationHandler = async <
 
   const operations = JSON.stringify({
     query,
-    operationName: "UploadFile",
+    operationName: operationName || "UploadFile",
     variables: { ...variables, file: null },
   });
 
