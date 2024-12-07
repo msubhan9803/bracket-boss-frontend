@@ -1,30 +1,69 @@
-import { MatchType } from "@/graphql/generated/graphql";
+import { Droppable, Draggable } from "@hello-pangea/dnd";
 import React from "react";
-import TeamCard from "./TeamCard";
+import { MatchType } from "@/graphql/generated/graphql";
 
-type Props = {
-  index: number;
+type MatchCardProps = {
   match: MatchType;
+  matchIndex: number;
 };
 
-export default function MatchCard({ match, index }: Props) {
+export default function MatchCard({ match, matchIndex }: MatchCardProps) {
   return (
-    <div className="flex flex-col text-center bg-muted/50 rounded-lg border border-secondary hover:border-primary shadow-md p-4">
-      <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-primary">
-        Match {index + 1}
-      </h2>
+    <div className="p-4 bg-muted/50 rounded-lg border border-secondary hover:border-primary shadow-md">
+      <h3 className="font-bold mb-2">Match {matchIndex + 1}</h3>
+      {/* Teams Droppable */}
+      <Droppable droppableId={`droppable-teams-${matchIndex}`} type="TEAM" direction="vertical">
+        {(providedTeams: any) => (
+          <div ref={providedTeams.innerRef} {...providedTeams.droppableProps}>
+            {match.teams.map((team, teamIndex) => (
+              <Draggable
+                key={`match-${matchIndex}-team-${teamIndex}`}
+                draggableId={`match-${matchIndex}-team-${teamIndex}`}
+                index={teamIndex}
+              >
+                {(teamProvided: any) => (
+                  <div
+                    className="border p-2 rounded mb-2"
+                    ref={teamProvided.innerRef}
+                    {...teamProvided.draggableProps}
+                    {...teamProvided.dragHandleProps}
+                  >
+                    <h4 className="font-semibold">{team.name}</h4>
 
-      <div className="w-full flex justify-between gap-1 items-center mt-4">
-        {match.teams.map((team, index) => (
-          <React.Fragment key={`team-${index}`}>
-            <TeamCard team={team} index={index} />
-
-            {index === 0 && (
-              <div className="col-span-1 text-center text-md font-bold">VS</div>
-            )}
-          </React.Fragment>
-        ))}
-      </div>
+                    {/* Players Droppable */}
+                    <Droppable droppableId={`droppable-players-${matchIndex}-${teamIndex}`} type="PLAYER" direction="vertical">
+                      {(providedPlayers) => (
+                        <div ref={providedPlayers.innerRef} {...providedPlayers.droppableProps} className="bg-gray-50 p-2 rounded">
+                          {team.players.map((player, playerIndex) => (
+                            <Draggable
+                              key={`match-${matchIndex}-team-${teamIndex}-player-${player.id}`}
+                              draggableId={`match-${matchIndex}-team-${teamIndex}-player-${player.id}`}
+                              index={playerIndex}
+                            >
+                              {(playerProvided) => (
+                                <div
+                                  className="border rounded p-1 mb-1 bg-white"
+                                  ref={playerProvided.innerRef}
+                                  {...playerProvided.draggableProps}
+                                  {...playerProvided.dragHandleProps}
+                                >
+                                  {player.name}
+                                </div>
+                              )}
+                            </Draggable>
+                          ))}
+                          {providedPlayers.placeholder}
+                        </div>
+                      )}
+                    </Droppable>
+                  </div>
+                )}
+              </Draggable>
+            ))}
+            {providedTeams.placeholder}
+          </div>
+        )}
+      </Droppable>
     </div>
   );
 }
