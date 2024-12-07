@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { DragDropContext } from "@hello-pangea/dnd";
 import { RootState } from "@/redux/store";
 import useGetSchedulePreperationDataOfTournament from "@/hooks/schedule/useGetSchedulePreperationDataOfTournament";
-import { MatchType, Tournament } from "@/graphql/generated/graphql";
+import { MatchType, TeamType, Tournament } from "@/graphql/generated/graphql";
 import { PageNames, PageUrls } from "@/lib/app-types";
 import PageTitle from "@/components/PageTitle";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,8 @@ import ImportScheduleDataButton from "@/components/mutation-buttons/ImportSchedu
 import LoadingSpinner from "@/components/core/LoadingSpinner";
 import MatchesContainer from "@/components/scheduling/MatchesContainer";
 import useScheduleDragAndDrop from "@/hooks/schedule/useScheduleDragAndDrop";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import TeamsGlobalContainer from "@/components/scheduling/TeamsGlobalContainer";
 
 type Props = {
   tournamentDetails: Tournament;
@@ -38,12 +40,9 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
       tournamentId as number,
       userIds,
     );
+
   const [matches, setMatches] = useState<MatchType[] | CreatedMatchType[]>([]);
-
-
-  const { createScheduleMutation } = useScheduleCreation();
-  const { deleteScheduleMutation } = useDeleteCreation();
-  const { onDragEnd } = useScheduleDragAndDrop({ matches, setMatches });
+  const [activeTab, setActiveTab] = useState<"matches" | "teams">("matches");
 
   const doesCreatedMatchesExist = useMemo(
     () => createdMatches && createdMatches.length > 0,
@@ -76,6 +75,26 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
       setMatches([]);
     }
   }, [createdMatches, fetchedMatches]);
+
+  const { createScheduleMutation } = useScheduleCreation();
+  const { deleteScheduleMutation } = useDeleteCreation();
+
+  // Extract all unique teams from all matches
+  const allTeams = useMemo(() => {
+    const uniqueTeamsMap: { [teamName: string]: TeamType } = {};
+    for (const match of matches) {
+      const typedMatch = match as MatchType;
+      for (const team of typedMatch.teams) {
+        // Use team.name as a unique key. If you have team.id, use that instead.
+        if (!uniqueTeamsMap[team.name]) {
+          uniqueTeamsMap[team.name] = team;
+        }
+      }
+    }
+    return Object.values(uniqueTeamsMap);
+  }, [matches]);
+
+  const { onDragEnd } = useScheduleDragAndDrop({ matches, setMatches, activeTab, allTeams });
 
   const handleScheduleCreation = async () => {
     await createScheduleMutation.mutateAsync({
@@ -167,9 +186,22 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
       )}
 
       {showMatches && (
-        <DragDropContext onDragEnd={onDragEnd}>
-          <MatchesContainer matches={matches as MatchType[]} />
-        </DragDropContext>
+        <Tabs value={activeTab} onValueChange={(val: any) => setActiveTab(val as "matches" | "teams")}>
+          <TabsList>
+            <TabsTrigger value="matches">Matches</TabsTrigger>
+            <TabsTrigger value="teams">Teams</TabsTrigger>
+          </TabsList>
+          <TabsContent value="matches">
+            <DragDropContext onDragEnd={onDragEnd}>
+              <MatchesContainer matches={matches as MatchType[]} />
+            </DragDropContext>
+          </TabsContent>
+          <TabsContent value="teams">
+            <DragDropContext onDragEnd={onDragEnd}>
+              <TeamsGlobalContainer teams={allTeams} />
+            </DragDropContext>
+          </TabsContent>
+        </Tabs>
       )}
     </>
   );
