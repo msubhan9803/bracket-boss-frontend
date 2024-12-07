@@ -25,7 +25,7 @@ export default function TeamsGlobalContainer({ teams }: TeamsGlobalContainerProp
                         >
                             {(teamProvided) => (
                                 <div
-                                    className="border p-2 rounded mb-4 bg-white"
+                                    className="border p-2 rounded mb-4 bg-white dark:bg-muted/75 dark:border-gray-600"
                                     ref={teamProvided.innerRef}
                                     {...teamProvided.draggableProps}
                                     {...teamProvided.dragHandleProps}
@@ -41,7 +41,7 @@ export default function TeamsGlobalContainer({ teams }: TeamsGlobalContainerProp
                                             <div
                                                 ref={playersProvided.innerRef}
                                                 {...playersProvided.droppableProps}
-                                                className="bg-gray-50 p-2 rounded"
+                                                className="bg-gray-50 dark:bg-gray-800 dark:border-gray-600 p-2 rounded"
                                             >
                                                 {team.players.map((player, playerIndex) => (
                                                     <Draggable
@@ -51,7 +51,7 @@ export default function TeamsGlobalContainer({ teams }: TeamsGlobalContainerProp
                                                     >
                                                         {(playerProvided) => (
                                                             <div
-                                                                className="border rounded p-1 mb-1 bg-white"
+                                                                className="border rounded p-1 mb-1 bg-white dark:bg-gray-700 dark:border-gray-600"
                                                                 ref={playerProvided.innerRef}
                                                                 {...playerProvided.draggableProps}
                                                                 {...playerProvided.dragHandleProps}

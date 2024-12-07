@@ -22,7 +22,7 @@ export default function TeamsContainer({ matchIndex, teams }: TeamsContainerProp
                         >
                             {(teamProvided) => (
                                 <div
-                                    className="border p-2 rounded mb-2"
+                                    className="p-2 rounded mb-2 bg-muted/50 border dark:border-gray-600"
                                     ref={teamProvided.innerRef}
                                     {...teamProvided.draggableProps}
                                     {...teamProvided.dragHandleProps}
