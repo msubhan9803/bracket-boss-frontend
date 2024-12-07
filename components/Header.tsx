@@ -18,7 +18,7 @@ export default function Header() {
   const { signOut } = useAuth();
 
   return (
-    <header className="flex h-14 justify-between md:justify-end items-center gap-4 border-b bg-neutral-900 px-4 lg:h-[60px] lg:px-6">
+    <header className="flex h-14 justify-between md:justify-end items-center gap-4 border-b bg-muted/40 dark:bg-neutral-900 px-4 lg:h-[60px] lg:px-6">
       <MobileMenuButton />
 
       <Button variant="outline" size="icon" className="ml-auto h-8 w-8">

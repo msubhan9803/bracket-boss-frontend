@@ -17,7 +17,11 @@ export default function PlayersContainer({ matchIndex, teamIndex, players }: Pla
     return (
         <Droppable droppableId={`droppable-players-${matchIndex}-${teamIndex}`} type="PLAYER" direction="vertical">
             {(providedPlayers) => (
-                <div ref={providedPlayers.innerRef} {...providedPlayers.droppableProps} className="bg-gray-50 p-2 rounded">
+                <div
+                    ref={providedPlayers.innerRef}
+                    {...providedPlayers.droppableProps}
+                    className="bg-gray-50 p-2 rounded dark:bg-gray-800"
+                >
                     {players.map((player, playerIndex) => (
                         <Draggable
                             key={`match-${matchIndex}-team-${teamIndex}-player-${player.id}`}
@@ -26,7 +30,7 @@ export default function PlayersContainer({ matchIndex, teamIndex, players }: Pla
                         >
                             {(playerProvided) => (
                                 <div
-                                    className="border rounded p-1 mb-1 bg-white"
+                                    className="border rounded p-1 mb-1 bg-white dark:bg-gray-700 dark:border-gray-600"
                                     ref={playerProvided.innerRef}
                                     {...playerProvided.draggableProps}
                                     {...playerProvided.dragHandleProps}
