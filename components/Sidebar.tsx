@@ -201,14 +201,14 @@ export default function Sidebar() {
   return (
     <div className="hidden border-r bg-muted/40 md:block">
       <div className="flex h-full max-h-screen flex-col gap-2">
-        <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+        <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6 py-4">
           <Link href="/" className="flex items-center gap-2 font-semibold">
             <FaBox className="h-6 w-6" />
             <span className="">Acme Inc</span>
           </Link>
         </div>
 
-        <div className="flex-1 overflow-y-scroll">
+        <div className="flex-1 overflow-y-scroll min-h-96">
           <nav className="grid items-start px-2 text-sm font-medium lg:px-4 py-4">
             {filteredMenuItems.map((item) => (
               <Link
@@ -273,7 +273,7 @@ export const MobileMenuButton = () => {
       </SheetTrigger>
 
       <SheetContent side="left" className="flex flex-col">
-        <nav className="flex-1 grid gap-2 text-lg font-medium overflow-y-auto">
+        <nav className="flex-1 grid gap-2 text-lg font-medium overflow-y-auto mt-4 pt-4">
           {filteredMenuItems.map((item) => (
             <Link
               key={item.label}
