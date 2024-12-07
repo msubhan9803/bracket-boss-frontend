@@ -86,6 +86,53 @@ export default function useScheduleDragAndDrop({ matches, setMatches, activeTab,
                 return;
             }
 
+            if (type === "GLOBAL_PLAYERS") {
+                const parseDroppableId = (id: string) => {
+                    const parts = id.split("-");
+                    return {
+                        matchIndex: parseInt(parts[2]),
+                        teamIndex: parseInt(parts[3])
+                    };
+                };
+
+                const { matchIndex: sMatchI, teamIndex: sTeamI } = parseDroppableId(source.droppableId);
+                const { matchIndex: dMatchI, teamIndex: dTeamI } = parseDroppableId(destination.droppableId);
+
+                const newMatches = [...matches]; // Avoid mutation of state directly
+                const sourceMatch = { ...newMatches[sMatchI] } as MatchType;
+                const destMatch = { ...newMatches[dMatchI] } as MatchType;
+                const sourceTeam = { ...sourceMatch.teams[sTeamI] };
+                const destTeam = { ...destMatch.teams[dTeamI] };
+
+                const sourcePlayers = [...sourceTeam.players];
+                const [removedPlayer] = sourcePlayers.splice(source.index, 1);  // Remove player from source team
+
+                // If moving the player within the same match and same team
+                if (sMatchI === dMatchI && sTeamI === dTeamI) {
+                    sourcePlayers.splice(destination.index, 0, removedPlayer); // Insert player in new position within the same team
+                    sourceTeam.players = sourcePlayers;
+                    sourceMatch.teams[sTeamI] = sourceTeam;
+                    newMatches[sMatchI] = sourceMatch;
+                } else {
+                    // Moving player to a different match/team
+                    const destPlayers = [...destTeam.players];
+                    destPlayers.splice(destination.index, 0, removedPlayer); // Add player to destination team
+
+                    // Update both teams in the match
+                    sourceTeam.players = sourcePlayers;
+                    destTeam.players = destPlayers;
+                    sourceMatch.teams[sTeamI] = sourceTeam;
+                    destMatch.teams[dTeamI] = destTeam;
+
+                    newMatches[sMatchI] = sourceMatch;
+                    newMatches[dMatchI] = destMatch;
+                }
+
+                setMatches(newMatches); // Update state with new matches array
+                return;
+            }
+
+
             if (type === "PLAYER") {
                 const parseDroppableId = (id: string) => {
                     const parts = id.split("-");
@@ -130,6 +177,7 @@ export default function useScheduleDragAndDrop({ matches, setMatches, activeTab,
                 setMatches(newMatches);
                 return;
             }
+
         }
     }, [matches, setMatches, activeTab, allTeams]);
 
