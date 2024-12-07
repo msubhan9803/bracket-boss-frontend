@@ -9,7 +9,6 @@ const ScheduleEditorPage: NextPage<PageProps> = async ({ params }) => {
   const tournamentDetails = await getSingleTournament(tournamentId);
 
   return (
-
     <ScheduleEditor
       tournamentDetails={tournamentDetails}
     />

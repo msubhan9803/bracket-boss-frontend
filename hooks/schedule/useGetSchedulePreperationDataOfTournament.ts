@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getSchedulePreperationDataOfTournament } from "@/server-requests/schedule.server-request";
+import { useMemo } from "react";
 
 export enum USE_SCHEDULE_OF_TOURNAMENT {
   GET_SCHEDULE_PREPERATION_DATA_OF_TOURNAMENT = "GET_SCHEDULE_PREPERATION_DATA_OF_TOURNAMENT",
@@ -24,8 +25,10 @@ export default function useGetSchedulePreperationDataOfTournament(
       !!tournamentId,
   });
 
+  const matches = useMemo(() => data?.matches ? data?.matches : [], [data]);
+
   return {
-    matches: data?.matches ? data?.matches : [],
+    matches,
     loadingSchedule: isLoading,
     refetchSchedules,
   };

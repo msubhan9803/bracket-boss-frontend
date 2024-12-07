@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useRouter, useParams } from 'next/navigation';
 import { RootState } from "@/redux/store";
@@ -10,7 +10,7 @@ import { MatchType, Tournament } from "@/graphql/generated/graphql";
 import { PageNames, PageUrls } from "@/lib/app-types";
 import PageTitle from "@/components/PageTitle";
 import { Button } from "@/components/ui/button";
-import useGetScheduleOfTournament from "@/hooks/schedule/useGetScheduleOfTournament";
+import useGetScheduleOfTournament, { CreatedMatchType } from "@/hooks/schedule/useGetScheduleOfTournament";
 import useScheduleCreation from "@/hooks/schedule/useScheduleCreation";
 import useDeleteCreation from "@/hooks/schedule/useDeleteCreation";
 import { setScheduleOfTorunamentInput } from "@/redux/slices/schedule.slice";
@@ -21,20 +21,27 @@ type Props = {
 }
 
 export default function ScheduleEditor({ tournamentDetails }: Props) {
+  const router = useRouter();
+  const dispatch = useDispatch();
   const { tournamentId, userIds } = useSelector(
     (state: RootState) => state.schedule.scheduleOfTorunamentInput
   );
   const clubId = useSelector((state: RootState) => state.user.clubId);
   const params = useParams()
+  const [matches, setMatches] = useState<MatchType[] | CreatedMatchType[]>([])
   const { createdMatches, useGetScheduleOfTournamentRefetch, isLoading: createdMatchesLoading } = useGetScheduleOfTournament(parseInt(params.tournamentId as string));
   const { matches: fetchedMatches, refetchSchedules, loadingSchedule } = useGetSchedulePreperationDataOfTournament(
     tournamentId as number,
-    userIds
+    userIds,
   );
   const { createScheduleMutation } = useScheduleCreation();
   const { deleteScheduleMutation } = useDeleteCreation();
-  const router = useRouter();
-  const dispatch = useDispatch();
+
+  const doesCreatedMatchesExist = useMemo(() => createdMatches && createdMatches?.length > 0, [createdMatches]);
+  const doesFetchedMatchesExist = useMemo(() => fetchedMatches.length > 0, [fetchedMatches]);
+  const showCreateButton = useMemo(() => !doesCreatedMatchesExist && doesFetchedMatchesExist, [doesCreatedMatchesExist, doesFetchedMatchesExist]);
+  const showDeleteButton = useMemo(() => doesCreatedMatchesExist, [doesCreatedMatchesExist]);
+  const showMatches = useMemo(() => doesCreatedMatchesExist || doesFetchedMatchesExist, [doesCreatedMatchesExist, doesFetchedMatchesExist]);
 
   const handleScheduleCreation = async () => {
     await createScheduleMutation.mutateAsync({
@@ -72,11 +79,15 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
     router.push(`${PageUrls.SCHEDULING_MANAGEMENT}/${params.tournamentId}/${PageNames.SCHEDULE_PREPARATION}`)
   }
 
-  const doesCreatedMatchesExist = useMemo(() => createdMatches && createdMatches?.length > 0, [createdMatches]);
-  const doesFetchedMatchesExist = useMemo(() => fetchedMatches.length > 0, [fetchedMatches]);
-  const showCreateButton = useMemo(() => !doesCreatedMatchesExist && doesFetchedMatchesExist, [doesCreatedMatchesExist, doesFetchedMatchesExist]);
-  const showDeleteButton = useMemo(() => doesCreatedMatchesExist, [doesCreatedMatchesExist]);
-  const showMatches = useMemo(() => doesCreatedMatchesExist || doesFetchedMatchesExist, [doesCreatedMatchesExist, doesFetchedMatchesExist]);
+  useEffect(() => {
+    if (createdMatches?.length > 0) {
+      setMatches(createdMatches);
+    } else if (fetchedMatches?.length > 0) {
+      setMatches(fetchedMatches);
+    } else {
+      setMatches([]);
+    }
+  }, [createdMatches, fetchedMatches]);
 
   return (
     <>
@@ -115,7 +126,7 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
       {
         showMatches ? (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 my-12">
-            {(createdMatches && createdMatches?.length > 0 ? createdMatches : fetchedMatches).map((match, index) => (
+            {matches.map((match, index) => (
               <MatchCard key={`match-${index}`} index={index} match={match as MatchType} />
             ))}
           </div>
