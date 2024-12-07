@@ -1,8 +1,8 @@
 "use client";
-import React, { useEffect, useMemo, useState, useCallback } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter, useParams } from "next/navigation";
-import { DragDropContext, DropResult } from "@hello-pangea/dnd";
+import { DragDropContext } from "@hello-pangea/dnd";
 import { RootState } from "@/redux/store";
 import useGetSchedulePreperationDataOfTournament from "@/hooks/schedule/useGetSchedulePreperationDataOfTournament";
 import { MatchType, Tournament } from "@/graphql/generated/graphql";
@@ -16,6 +16,7 @@ import { setScheduleOfTorunamentInput } from "@/redux/slices/schedule.slice";
 import ImportScheduleDataButton from "@/components/mutation-buttons/ImportScheduleDataButton";
 import LoadingSpinner from "@/components/core/LoadingSpinner";
 import MatchesContainer from "@/components/scheduling/MatchesContainer";
+import useScheduleDragAndDrop from "@/hooks/schedule/useScheduleDragAndDrop";
 
 type Props = {
   tournamentDetails: Tournament;
@@ -30,25 +31,41 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
   const clubId = useSelector((state: RootState) => state.user.clubId);
   const params = useParams();
 
-  const { createdMatches, useGetScheduleOfTournamentRefetch, isLoading: createdMatchesLoading } = useGetScheduleOfTournament(parseInt(params.tournamentId as string));
-  const { matches: fetchedMatches, refetchSchedules, loadingSchedule } = useGetSchedulePreperationDataOfTournament(
-    tournamentId as number,
-    userIds,
-  );
+  const { createdMatches, useGetScheduleOfTournamentRefetch, isLoading: createdMatchesLoading } =
+    useGetScheduleOfTournament(parseInt(params.tournamentId as string));
+  const { matches: fetchedMatches, refetchSchedules, loadingSchedule } =
+    useGetSchedulePreperationDataOfTournament(
+      tournamentId as number,
+      userIds,
+    );
+  const [matches, setMatches] = useState<MatchType[] | CreatedMatchType[]>([]);
+
 
   const { createScheduleMutation } = useScheduleCreation();
   const { deleteScheduleMutation } = useDeleteCreation();
-  
-  const [matches, setMatches] = useState<MatchType[] | CreatedMatchType[]>([]);
+  const { onDragEnd } = useScheduleDragAndDrop({ matches, setMatches });
 
-  const doesCreatedMatchesExist = useMemo(() => createdMatches && createdMatches.length > 0, [createdMatches]);
-  const doesFetchedMatchesExist = useMemo(() => fetchedMatches.length > 0, [fetchedMatches]);
+  const doesCreatedMatchesExist = useMemo(
+    () => createdMatches && createdMatches.length > 0,
+    [createdMatches]
+  );
+  const doesFetchedMatchesExist = useMemo(
+    () => fetchedMatches.length > 0,
+    [fetchedMatches]
+  );
+
   const showCreateButton = useMemo(
     () => !doesCreatedMatchesExist && doesFetchedMatchesExist,
     [doesCreatedMatchesExist, doesFetchedMatchesExist]
   );
-  const showDeleteButton = useMemo(() => doesCreatedMatchesExist, [doesCreatedMatchesExist]);
-  const showMatches = useMemo(() => doesCreatedMatchesExist || doesFetchedMatchesExist, [doesCreatedMatchesExist, doesFetchedMatchesExist]);
+  const showDeleteButton = useMemo(
+    () => doesCreatedMatchesExist,
+    [doesCreatedMatchesExist]
+  );
+  const showMatches = useMemo(
+    () => doesCreatedMatchesExist || doesFetchedMatchesExist,
+    [doesCreatedMatchesExist, doesFetchedMatchesExist]
+  );
 
   useEffect(() => {
     if (createdMatches?.length > 0) {
@@ -89,100 +106,10 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
   };
 
   const goToScheduleEditorScreen = () => {
-    router.push(`${PageUrls.SCHEDULING_MANAGEMENT}/${params.tournamentId}/${PageNames.SCHEDULE_PREPARATION}`);
+    router.push(
+      `${PageUrls.SCHEDULING_MANAGEMENT}/${params.tournamentId}/${PageNames.SCHEDULE_PREPARATION}`
+    );
   };
-
-  const onDragEnd = useCallback((result: DropResult) => {
-    const { destination, source, type } = result;
-    if (!destination) return;
-
-    // If the location didn't change
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) {
-      return;
-    }
-
-    const newMatches = Array.from(matches);
-
-    if (type === "MATCH") {
-      // Reorder matches
-      const [removed] = newMatches.splice(source.index, 1);
-      newMatches.splice(destination.index, 0, removed);
-      setMatches(newMatches);
-      return;
-    }
-
-    if (type === "TEAM") {
-      const sourceMatchIndex = parseInt(source.droppableId.split("-")[2]);
-      const destMatchIndex = parseInt(destination.droppableId.split("-")[2]);
-
-      const sourceMatch = { ...newMatches[sourceMatchIndex] };
-      const destMatch = { ...newMatches[destMatchIndex] };
-
-      const sourceTeams = Array.from(sourceMatch.teams);
-      const [removedTeam] = sourceTeams.splice(source.index, 1);
-
-      if (sourceMatchIndex === destMatchIndex) {
-        sourceTeams.splice(destination.index, 0, removedTeam);
-        sourceMatch.teams = sourceTeams;
-        newMatches[sourceMatchIndex] = sourceMatch;
-      } else {
-        const destTeams = Array.from(destMatch.teams);
-        destTeams.splice(destination.index, 0, removedTeam);
-        sourceMatch.teams = sourceTeams;
-        destMatch.teams = destTeams;
-        newMatches[sourceMatchIndex] = sourceMatch;
-        newMatches[destMatchIndex] = destMatch;
-      }
-
-      setMatches(newMatches);
-      return;
-    }
-
-    if (type === "PLAYER") {
-      const parseDroppableId = (id: string) => {
-        const parts = id.split("-");
-        return {
-          matchIndex: parseInt(parts[2]),
-          teamIndex: parseInt(parts[3])
-        };
-      };
-
-      const { matchIndex: sMatchI, teamIndex: sTeamI } = parseDroppableId(source.droppableId);
-      const { matchIndex: dMatchI, teamIndex: dTeamI } = parseDroppableId(destination.droppableId);
-
-      const sourceMatch = { ...newMatches[sMatchI] };
-      const destMatch = { ...newMatches[dMatchI] };
-      const sourceTeam = { ...sourceMatch.teams[sTeamI] };
-      const destTeam = { ...destMatch.teams[dTeamI] };
-
-      const sourcePlayers = Array.from(sourceTeam.players as any);
-      const [removedPlayer] = sourcePlayers.splice(source.index, 1);
-
-      if (sMatchI === dMatchI && sTeamI === dTeamI) {
-        // reorder players within the same team
-        sourcePlayers.splice(destination.index, 0, removedPlayer);
-        sourceTeam.players = sourcePlayers as any;
-        sourceMatch.teams[sTeamI] = sourceTeam;
-        newMatches[sMatchI] = sourceMatch;
-      } else {
-        // moving player to a different team
-        const destPlayers = Array.from(destTeam.players as any);
-        destPlayers.splice(destination.index, 0, removedPlayer);
-        sourceTeam.players = sourcePlayers as any;
-        destTeam.players = destPlayers as any;
-        sourceMatch.teams[sTeamI] = sourceTeam;
-        destMatch.teams[dTeamI] = destTeam;
-        newMatches[sMatchI] = sourceMatch;
-        newMatches[dMatchI] = destMatch;
-      }
-
-      setMatches(newMatches);
-      return;
-    }
-  }, [matches]);
 
   return (
     <>
