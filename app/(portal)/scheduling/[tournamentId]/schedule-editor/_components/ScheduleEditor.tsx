@@ -15,6 +15,7 @@ import useScheduleCreation from "@/hooks/schedule/useScheduleCreation";
 import useDeleteCreation from "@/hooks/schedule/useDeleteCreation";
 import { setScheduleOfTorunamentInput } from "@/redux/slices/schedule.slice";
 import ImportScheduleDataButton from "@/components/mutation-buttons/ImportScheduleDataButton";
+import LoadingSpinner from "@/components/core/LoadingSpinner";
 
 type Props = {
   tournamentDetails: Tournament;
@@ -134,22 +135,28 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
       }
 
       {
-        !doesCreatedMatchesExist && !doesFetchedMatchesExist && (
+        createdMatchesLoading || loadingSchedule ? (
           <div className="flex-1 w-full flex items-center justify-center my-auto">
-            <div className="flex flex-col items-center gap-y-4">
-              <h2 className="text-primary text-2xl">No schedule found</h2>
-              <Button onClick={goToScheduleEditorScreen}>Go back to select users</Button>
-
-              <div className="flex items-center my-2">
-                <div className="border-t border-1 border-gray-600 flex-grow w-8"></div>
-                <div className="px-3 text-gray-400 text-sm">OR</div>
-                <div className="border-t border-1 border-gray-600 flex-grow w-8"></div>
-              </div>
-
-              <ImportScheduleDataButton />
-            </div>
+            <LoadingSpinner />
           </div>
-        )
+        ) :
+          !doesCreatedMatchesExist && !doesFetchedMatchesExist ? (
+            <div className="flex-1 w-full flex items-center justify-center my-auto">
+              <div className="flex flex-col items-center gap-y-4">
+                <h2 className="text-primary text-2xl">No schedule found</h2>
+                <Button onClick={goToScheduleEditorScreen}>Go back to select users</Button>
+
+                <div className="flex items-center my-2">
+                  <div className="border-t border-1 border-gray-600 flex-grow w-8"></div>
+                  <div className="px-3 text-gray-400 text-sm">OR</div>
+                  <div className="border-t border-1 border-gray-600 flex-grow w-8"></div>
+                </div>
+
+                <ImportScheduleDataButton />
+              </div>
+            </div>
+          ) :
+          ''
       }
     </>
   );
