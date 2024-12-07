@@ -2,10 +2,9 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter, useParams } from "next/navigation";
-import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
+import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 import { RootState } from "@/redux/store";
 import useGetSchedulePreperationDataOfTournament from "@/hooks/schedule/useGetSchedulePreperationDataOfTournament";
-import MatchCard from "@/components/scheduling/MatchCard";
 import { MatchType, Tournament } from "@/graphql/generated/graphql";
 import { PageNames, PageUrls } from "@/lib/app-types";
 import PageTitle from "@/components/PageTitle";
@@ -16,6 +15,7 @@ import useDeleteCreation from "@/hooks/schedule/useDeleteCreation";
 import { setScheduleOfTorunamentInput } from "@/redux/slices/schedule.slice";
 import ImportScheduleDataButton from "@/components/mutation-buttons/ImportScheduleDataButton";
 import LoadingSpinner from "@/components/core/LoadingSpinner";
+import MatchesContainer from "@/components/scheduling/MatchesContainer";
 
 type Props = {
   tournamentDetails: Tournament;
@@ -41,9 +41,12 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
   
   const [matches, setMatches] = useState<MatchType[] | CreatedMatchType[]>([]);
 
-  const doesCreatedMatchesExist = useMemo(() => createdMatches && createdMatches?.length > 0, [createdMatches]);
+  const doesCreatedMatchesExist = useMemo(() => createdMatches && createdMatches.length > 0, [createdMatches]);
   const doesFetchedMatchesExist = useMemo(() => fetchedMatches.length > 0, [fetchedMatches]);
-  const showCreateButton = useMemo(() => !doesCreatedMatchesExist && doesFetchedMatchesExist, [doesCreatedMatchesExist, doesFetchedMatchesExist]);
+  const showCreateButton = useMemo(
+    () => !doesCreatedMatchesExist && doesFetchedMatchesExist,
+    [doesCreatedMatchesExist, doesFetchedMatchesExist]
+  );
   const showDeleteButton = useMemo(() => doesCreatedMatchesExist, [doesCreatedMatchesExist]);
   const showMatches = useMemo(() => doesCreatedMatchesExist || doesFetchedMatchesExist, [doesCreatedMatchesExist, doesFetchedMatchesExist]);
 
@@ -61,17 +64,13 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
     await createScheduleMutation.mutateAsync({
       clubId: clubId as number,
       tournamentId: parseInt(params.tournamentId as string),
-      matches: fetchedMatches.map((match) => {
-        return {
-          matchDate: new Date(),
-          teams: match.teams.map((team) => {
-            return {
-              name: team.name,
-              userIds: team.players.map((player) => player.id),
-            };
-          })
-        };
-      })
+      matches: (fetchedMatches as MatchType[]).map((match) => ({
+        matchDate: new Date(),
+        teams: match.teams.map((team) => ({
+          name: team.name,
+          userIds: team.players.map((player) => player.id),
+        })),
+      }))
     });
     await useGetScheduleOfTournamentRefetch();
     await refetchSchedules();
@@ -93,12 +92,8 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
     router.push(`${PageUrls.SCHEDULING_MANAGEMENT}/${params.tournamentId}/${PageNames.SCHEDULE_PREPARATION}`);
   };
 
-  /**
-   * Handle drag end event for matches, teams, and players.
-   * We'll differentiate by `type` and droppableIds.
-   */
   const onDragEnd = useCallback((result: DropResult) => {
-    const { destination, source, draggableId, type } = result;
+    const { destination, source, type } = result;
     if (!destination) return;
 
     // If the location didn't change
@@ -109,10 +104,10 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
       return;
     }
 
-    // We have three levels: MATCH, TEAM, PLAYER
+    const newMatches = Array.from(matches);
+
     if (type === "MATCH") {
-      // Reorder matches array
-      const newMatches = Array.from(matches);
+      // Reorder matches
       const [removed] = newMatches.splice(source.index, 1);
       newMatches.splice(destination.index, 0, removed);
       setMatches(newMatches);
@@ -120,11 +115,9 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
     }
 
     if (type === "TEAM") {
-      // Droppable IDs: "droppable-teams-{matchIndex}"
       const sourceMatchIndex = parseInt(source.droppableId.split("-")[2]);
       const destMatchIndex = parseInt(destination.droppableId.split("-")[2]);
 
-      const newMatches = Array.from(matches);
       const sourceMatch = { ...newMatches[sourceMatchIndex] };
       const destMatch = { ...newMatches[destMatchIndex] };
 
@@ -132,12 +125,10 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
       const [removedTeam] = sourceTeams.splice(source.index, 1);
 
       if (sourceMatchIndex === destMatchIndex) {
-        // same match team reorder
         sourceTeams.splice(destination.index, 0, removedTeam);
         sourceMatch.teams = sourceTeams;
         newMatches[sourceMatchIndex] = sourceMatch;
       } else {
-        // moving team between different matches
         const destTeams = Array.from(destMatch.teams);
         destTeams.splice(destination.index, 0, removedTeam);
         sourceMatch.teams = sourceTeams;
@@ -151,7 +142,6 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
     }
 
     if (type === "PLAYER") {
-      // Droppable IDs: "droppable-players-{matchIndex}-{teamIndex}"
       const parseDroppableId = (id: string) => {
         const parts = id.split("-");
         return {
@@ -163,7 +153,6 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
       const { matchIndex: sMatchI, teamIndex: sTeamI } = parseDroppableId(source.droppableId);
       const { matchIndex: dMatchI, teamIndex: dTeamI } = parseDroppableId(destination.droppableId);
 
-      const newMatches = Array.from(matches);
       const sourceMatch = { ...newMatches[sMatchI] };
       const destMatch = { ...newMatches[dMatchI] };
       const sourceTeam = { ...sourceMatch.teams[sTeamI] };
@@ -179,7 +168,7 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
         sourceMatch.teams[sTeamI] = sourceTeam;
         newMatches[sMatchI] = sourceMatch;
       } else {
-        // moving player to a different team (possibly in a different match)
+        // moving player to a different team
         const destPlayers = Array.from(destTeam.players as any);
         destPlayers.splice(destination.index, 0, removedPlayer);
         sourceTeam.players = sourcePlayers as any;
@@ -227,13 +216,11 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
         </div>
       </div>
 
-      {
-        (createdMatchesLoading || loadingSchedule) && (
-          <div className="flex-1 w-full flex items-center justify-center my-auto">
-            <LoadingSpinner />
-          </div>
-        )
-      }
+      {(createdMatchesLoading || loadingSchedule) && (
+        <div className="flex-1 w-full flex items-center justify-center my-auto">
+          <LoadingSpinner />
+        </div>
+      )}
 
       {!doesCreatedMatchesExist && !doesFetchedMatchesExist && !(createdMatchesLoading || loadingSchedule) && (
         <div className="flex-1 w-full flex items-center justify-center my-auto">
@@ -252,38 +239,9 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
         </div>
       )}
 
-      {/* If we have matches, show them in a DragDropContext */}
       {showMatches && (
         <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable droppableId="droppable-matches" direction="horizontal" type="MATCH">
-            {(provided: any) => (
-              <div 
-                className="grid grid-cols-1 lg:grid-cols-3 gap-6 my-12"
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-              >
-                {matches.map((match, matchIndex) => (
-                  <Draggable
-                    key={`match-${matchIndex}`}
-                    draggableId={`match-${matchIndex}`}
-                    index={matchIndex}
-                  >
-                    {(matchProvided: any) => (
-                      <div
-                        ref={matchProvided.innerRef}
-                        {...matchProvided.draggableProps}
-                        {...matchProvided.dragHandleProps}
-                      >
-                        {/* Each match card now handles its own teams and players as droppable/draggable */}
-                        <MatchCard match={match as MatchType} matchIndex={matchIndex} />
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
+          <MatchesContainer matches={matches as MatchType[]} />
         </DragDropContext>
       )}
     </>
