@@ -1,31 +1,6 @@
 "use client";
-import { useMemo, useEffect } from "react";
 import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
-import {
-  FaHome,
-  FaBox,
-  FaUsers,
-  FaChartLine,
-  FaComments,
-  FaCog,
-  FaBuilding,
-  FaCalendarCheck,
-  FaClipboardList,
-  FaCogs,
-  FaEnvelopeOpenText,
-  FaMedal,
-  FaMoneyCheckAlt,
-  FaPaintBrush,
-  FaShareAlt,
-  FaTrophy,
-  FaUserFriends,
-} from "react-icons/fa";
-import { MdSportsScore } from "react-icons/md";
-import { PiCourtBasketballFill } from "react-icons/pi";
-import { FaUsersRectangle } from "react-icons/fa6";
-import { MdSportsTennis } from "react-icons/md";
-import { MdScoreboard } from "react-icons/md";
+import { FaBox } from "react-icons/fa";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,166 +12,12 @@ import {
 } from "@/components/ui/card";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import useUserPermissions from "@/hooks/useUserPermissions";
-import { ModuleNames } from "@/lib/app-types";
+import useFilteredMenuItems from "@/hooks/useFilteredMenuItems";
 
 export const dynamic = "force-dynamic";
 
-const menuItems = [
-  {
-    href: "/dashboard",
-    label: "Dashboard",
-    icon: FaHome,
-    name: ModuleNames.DASHBOARD,
-  },
-  {
-    href: "/team-management",
-    label: "Team Management",
-    icon: FaUsers,
-    name: ModuleNames.TEAM_MANAGEMENT,
-  },
-  {
-    href: "/court-management",
-    label: "Court Management",
-    icon: PiCourtBasketballFill,
-    name: ModuleNames.COURT_MANAGEMENT,
-  },
-  {
-    href: "/tournament-management",
-    label: "Tournament Management",
-    icon: MdSportsScore,
-    name: ModuleNames.TOURNAMENT_MANAGEMENT,
-  },
-  {
-    href: "/scheduling",
-    label: "Scheduling",
-    icon: MdScoreboard,
-    name: ModuleNames.SCHEDULING,
-  },
-  {
-    href: "/club-management",
-    label: "Club Management",
-    icon: FaUsersRectangle,
-    name: ModuleNames.CLUB_MANAGEMENT,
-  },
-  {
-    href: "/league-management",
-    label: "League Management",
-    icon: MdSportsTennis,
-    name: ModuleNames.LEAGUE_MANAGEMENT,
-  },
-  {
-    href: "/user-management",
-    label: "User Management",
-    icon: FaUsers,
-    name: ModuleNames.USER_MANAGEMENT,
-  },
-  {
-    href: "/reporting-analytics",
-    label: "Reporting & Analytics",
-    icon: FaChartLine,
-    name: ModuleNames.REPORTING_AND_ANALYTICS,
-  },
-  {
-    href: "/chat",
-    label: "Chat",
-    icon: FaComments,
-    badge: 6,
-    name: ModuleNames.CHAT,
-  },
-  {
-    href: "/account-settings",
-    label: "Account Settings",
-    icon: FaCog,
-    name: ModuleNames.ACCOUNT_SETTINGS,
-  },
-  {
-    href: "/leagues",
-    label: "Leagues",
-    icon: FaTrophy,
-    name: ModuleNames.LEAGUES,
-  },
-  {
-    href: "/tournaments",
-    label: "Tournaments",
-    icon: FaMedal,
-    name: ModuleNames.TOURNAMENTS,
-  },
-  {
-    href: "/invitations",
-    label: "Invitations",
-    icon: FaEnvelopeOpenText,
-    name: ModuleNames.INVITATIONS,
-  },
-  {
-    href: "/members",
-    label: "Members",
-    icon: FaUserFriends,
-    name: ModuleNames.MEMBERS,
-  },
-  {
-    href: "/customization",
-    label: "Customization",
-    icon: FaPaintBrush,
-    name: ModuleNames.CUSTOMIZATION,
-  },
-  {
-    href: "/my-club",
-    label: "My Club",
-    icon: FaBuilding,
-    name: ModuleNames.MY_CLUB,
-  },
-  {
-    href: "/my-team",
-    label: "My Team",
-    icon: FaUsers,
-    name: ModuleNames.MY_TEAM,
-  },
-  {
-    href: "/my-matches",
-    label: "My Matches",
-    icon: FaCalendarCheck,
-    name: ModuleNames.MY_MATCHES,
-  },
-  {
-    href: "/referral-management",
-    label: "Referral Management",
-    icon: FaShareAlt,
-    name: ModuleNames.REFERRAL_MANAGEMENT,
-  },
-  {
-    href: "/payment-management",
-    label: "Payment Management",
-    icon: FaMoneyCheckAlt,
-    name: ModuleNames.PAYMENT_MANAGEMENT,
-  },
-  {
-    href: "/system-settings",
-    label: "System Settings",
-    icon: FaCogs,
-    name: ModuleNames.SYSTEM_SETTINGS,
-  },
-  {
-    href: "/activity-logs",
-    label: "Activity Logs",
-    icon: FaClipboardList,
-    name: ModuleNames.ACTIVITY_LOGS,
-  },
-];
-
 export default function Sidebar() {
-  const { permissions } = useUserPermissions();
-  const pathname = usePathname();
-
-  useEffect(() => {
-    console.log("✅✅✅✅ permissions: ", permissions);
-  }, [permissions]);
-
-  const filteredMenuItems = useMemo(() => {
-    return menuItems.filter((item) =>
-      permissions?.find((p) => p.moduleName === item.name)
-    );
-  }, [permissions]);
+  const { filteredMenuItems, currentModuleName } = useFilteredMenuItems();
 
   return (
     <div className="hidden border-r bg-muted/40 md:block">
@@ -214,11 +35,10 @@ export default function Sidebar() {
               <Link
                 key={item.label}
                 href={item.href}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                  pathname === item.href
-                    ? "bg-muted text-primary"
-                    : "text-muted-foreground hover:text-primary"
-                }`}
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${item.href.includes(currentModuleName)
+                  ? "bg-muted text-primary"
+                  : "text-muted-foreground hover:text-primary"
+                  }`}
               >
                 <item.icon className="h-4 w-4" />
                 {item.label}
@@ -254,14 +74,7 @@ export default function Sidebar() {
 }
 
 export const MobileMenuButton = () => {
-  const { permissions } = useUserPermissions();
-  const pathname = usePathname();
-
-  const filteredMenuItems = useMemo(() => {
-    return menuItems.filter((item) =>
-      permissions?.find((p) => p.moduleName === item.name)
-    );
-  }, [permissions]);
+  const { filteredMenuItems, currentModuleName } = useFilteredMenuItems();
 
   return (
     <Sheet>
@@ -278,11 +91,10 @@ export const MobileMenuButton = () => {
             <Link
               key={item.label}
               href={item.href}
-              className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
-                pathname === item.href
-                  ? "bg-muted text-primary"
-                  : "text-muted-foreground hover:text-primary"
-              }`}
+              className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${item.href.includes(currentModuleName)
+                ? "bg-muted text-primary"
+                : "text-muted-foreground hover:text-primary"
+                }`}
             >
               <item.icon className="h-4 w-4" />
               {item.label}

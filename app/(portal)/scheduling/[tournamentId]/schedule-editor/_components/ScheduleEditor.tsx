@@ -19,6 +19,8 @@ import MatchesContainer from "@/components/scheduling/MatchesContainer";
 import useScheduleDragAndDrop from "@/hooks/schedule/useScheduleDragAndDrop";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import TeamsGlobalContainer from "@/components/scheduling/TeamsGlobalContainer";
+import { toTitleCase } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 type Props = {
   tournamentDetails: Tournament;
@@ -134,7 +136,19 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
     <>
       <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center">
         <PageTitle
-          title={tournamentDetails.name}
+          render={
+            <div className="my-4">
+              <h1 className="text-lg font-semibold md:text-2xl">
+                {tournamentDetails.name}
+              </h1>
+
+              <Badge className="my-2" variant='secondary'>
+                {`${toTitleCase(tournamentDetails.format.name)} - ${toTitleCase(
+                  tournamentDetails.teamGenerationType.name
+                )}`}
+              </Badge>
+            </div>
+          }
           breadcrumbs={[
             {
               label: "Schedule Management",

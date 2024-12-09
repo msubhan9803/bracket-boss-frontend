@@ -11,9 +11,10 @@ import {
 type Props = {
   title?: string;
   breadcrumbs?: Array<{ label: string; href?: string }>;
+  render?: React.ReactNode;
 };
 
-export default function PageTitle({ title, breadcrumbs = [] }: Props) {
+export default function PageTitle({ title, breadcrumbs = [], render }: Props) {
   return (
     <div className="flex flex-col gap-2">
       {breadcrumbs.length > 0 && (
@@ -37,6 +38,7 @@ export default function PageTitle({ title, breadcrumbs = [] }: Props) {
         </Breadcrumb>
       )}
       {title && <h1 className="text-lg font-semibold md:text-2xl">{title}</h1>}
+      {render && <div>{render}</div>}
     </div>
   );
 }
