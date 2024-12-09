@@ -12,13 +12,14 @@ export default function TeamsGlobalContainer({ teams }: TeamsGlobalContainerProp
         <Droppable droppableId="droppable-all-teams" direction="vertical" type="GLOBAL_TEAMS">
             {(provided) => (
                 <div
-                    className="p-4 bg-muted/50 rounded-lg border border-secondary shadow-md"
+                    className="p-4 bg-muted/50 rounded-lg border border-secondary shadow-md my-12"
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                 >
                     <h3 className="font-bold mb-4">All Teams</h3>
                     {teams.map((team, teamIndex) => (
                         <div
+                            key={`global-team-${teamIndex}`}
                             className="border p-2 rounded mb-4 bg-white dark:bg-muted/75 dark:border-gray-600"
                         >
                             <h4 className="font-semibold mb-2">{team.name}</h4>

@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { Droppable, Draggable } from "@hello-pangea/dnd";
 
 type PlayerType = {
     id: string;
@@ -15,34 +14,14 @@ type PlayersContainerProps = {
 
 export default function PlayersContainer({ matchIndex, teamIndex, players }: PlayersContainerProps) {
     return (
-        <Droppable droppableId={`droppable-players-${matchIndex}-${teamIndex}`} type="PLAYER" direction="vertical">
-            {(providedPlayers) => (
-                <div
-                    ref={providedPlayers.innerRef}
-                    {...providedPlayers.droppableProps}
-                    className="bg-gray-50 p-2 rounded dark:bg-gray-800"
-                >
-                    {players.map((player, playerIndex) => (
-                        <Draggable
-                            key={`match-${matchIndex}-team-${teamIndex}-player-${player.id}`}
-                            draggableId={`match-${matchIndex}-team-${teamIndex}-player-${player.id}`}
-                            index={playerIndex}
-                        >
-                            {(playerProvided) => (
-                                <div
-                                    className="border rounded p-1 mb-1 bg-white dark:bg-gray-700 dark:border-gray-600"
-                                    ref={playerProvided.innerRef}
-                                    {...playerProvided.draggableProps}
-                                    {...playerProvided.dragHandleProps}
-                                >
-                                    {player.name}
-                                </div>
-                            )}
-                        </Draggable>
-                    ))}
-                    {providedPlayers.placeholder}
+        <div
+            className="bg-gray-50 p-2 rounded dark:bg-gray-800"
+        >
+            {players.map((player, playerIndex) => (
+                <div className="border rounded p-1 mb-1 bg-white dark:bg-gray-700 dark:border-gray-600" key={`player-${matchIndex}-${teamIndex}-${playerIndex}`}>
+                    {player.name}
                 </div>
-            )}
-        </Droppable>
+            ))}
+        </div>
     );
 }
