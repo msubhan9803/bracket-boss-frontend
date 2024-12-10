@@ -37,8 +37,8 @@ export default function TeamsGlobalContainer({ teams }: TeamsGlobalContainerProp
                                     >
                                         {team.players.map((player, playerIndex) => (
                                             <Draggable
-                                                key={`global-team-${teamIndex}-player-${player.id}`}
-                                                draggableId={`global-team-${teamIndex}-player-${player.id}`}
+                                                key={`global-team-${teamIndex}-player-${playerIndex}`}
+                                                draggableId={`global-team-${teamIndex}-player-${playerIndex}`}
                                                 index={playerIndex}
                                             >
                                                 {(playerProvided) => (
