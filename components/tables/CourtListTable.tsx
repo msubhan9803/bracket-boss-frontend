@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Pencil, Trash } from "lucide-react";
 import { Court } from "@/graphql/generated/graphql";
 import SkeletonLoader from "@/components/ui/skeleton";
 import Pagination from "@/components/ui/pagination";
@@ -23,6 +23,7 @@ import { useTable } from "@/hooks/shared/useTable";
 import useCourts from "@/hooks/court/useCourts";
 import FilterComponent from "@/components/core/FilterComponent";
 import AddCourtButton from "../mutation-buttons/AddCourtButton";
+import ManageCourtDrawer from "../drawers/ManageCourtDrawer";
 
 const CourtListTable = () => {
   const [page, setPage] = useState(1);
@@ -31,6 +32,8 @@ const CourtListTable = () => {
   const [filterBy, setFilterBy] = useState("");
   const [filter, setFilter] = useState("");
   const [sort, setSort] = useState({ field: "id", direction: "ASC" });
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [currentEditingCourt, setCurrentEditingCourt] = useState<Partial<Court>>();
 
   const { handleSort, getTotalPages, handlePrevBtn, handleNextBtn } = useTable(
     setPage,
@@ -40,6 +43,24 @@ const CourtListTable = () => {
 
   const { courtListFetched, totalRecords, loadingOrder, refetchCourtList } =
     useCourts(page, pageSize, filterBy, filter, sort);
+
+  const handleEditOpen = (court: Partial<Court>) => {
+    setCurrentEditingCourt(court)
+    setEditModalOpen(true)
+  }
+
+  const handleEdit = async (values: any) => {
+    // const { context, newCollections, newLocations, newRoles, status, userId } = values
+    // await editUser({
+    //   context,
+    //   newCollections,
+    //   newLocations,
+    //   newRoles,
+    //   status,
+    //   userId,
+    // })
+    setEditModalOpen(true)
+  }
 
   const courtList = useMemo<Partial<Court>[]>(
     () => [...courtListFetched],
@@ -58,6 +79,17 @@ const CourtListTable = () => {
     {
       accessorKey: "location",
       header: "Location",
+    },
+    {
+      id: 'actions',
+      accessorKey: 'actions',
+      header: 'Actions',
+      cell: ({ row }) => (
+        <div className='flex gap-2'>
+          <Pencil size={18} className='cursor-pointer' onClick={() => handleEditOpen(row.original)} />
+          <Trash size={18} className='cursor-pointer' />
+        </div>
+      ),
     },
   ];
 
@@ -111,9 +143,9 @@ const CourtListTable = () => {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
 
                       {sort.field === header.column.id &&
                         (sort.direction === "asc" ? (
@@ -179,6 +211,8 @@ const CourtListTable = () => {
           </TableRow>
         </TableFooter>
       </Table>
+
+      {editModalOpen && <ManageCourtDrawer editModalOpen={editModalOpen} setEditModalOpen={setEditModalOpen} item={currentEditingCourt as Partial<Court>} onUpdate={handleEdit} />}
     </div>
   );
 };

@@ -21,6 +21,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import TeamsGlobalContainer from "@/components/scheduling/TeamsGlobalContainer";
 import { toTitleCase } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import Dialog from "@/components/shared/Dialog";
 
 type Props = {
   tournamentDetails: Tournament;
@@ -34,6 +35,7 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
   );
   const clubId = useSelector((state: RootState) => state.user.clubId);
   const params = useParams();
+  const [deleteScheduleOpen, setDeleteScheduleOpen] = useState(false)
 
   const { createdMatches, useGetScheduleOfTournamentRefetch, isLoading: createdMatchesLoading } =
     useGetScheduleOfTournament(parseInt(params.tournamentId as string));
@@ -118,6 +120,7 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
     await deleteScheduleMutation.mutateAsync({
       tournamentId: parseInt(params.tournamentId as string)
     });
+    setDeleteScheduleOpen(false)
     dispatch(setScheduleOfTorunamentInput({
       tournamentId: null,
       userIds: [],
@@ -163,7 +166,7 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
 
         <div className="space-x-2 my-2 lg:my-0 flex items-center">
           {showDeleteButton && (
-            <Button variant='secondary' onClick={handleScheduleDelete} loading={deleteScheduleMutation.isPending}>
+            <Button variant='secondary' onClick={() => setDeleteScheduleOpen(!deleteScheduleOpen)} loading={deleteScheduleMutation.isPending}>
               Delete Schedule
             </Button>
           )}
@@ -217,6 +220,16 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
           </TabsContent>
         </Tabs>
       )}
+
+      <Dialog
+        open={deleteScheduleOpen}
+        onOpenChange={setDeleteScheduleOpen}
+        title="Do you want to delete this schedule?"
+        description="This action cannot be undone. This will permanently delete this item."
+        onConfirm={handleScheduleDelete}
+        onCancel={() => setDeleteScheduleOpen(false)}
+        confirmLoading={deleteScheduleMutation.isPending}
+      />
     </>
   );
 }

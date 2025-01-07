@@ -64,6 +64,16 @@ export type CourtListResponse = {
   totalRecords: Scalars['Int']['output'];
 };
 
+export type CourtSchedule = {
+  __typename?: 'CourtSchedule';
+  court: Court;
+  createdAt: Scalars['DateTime']['output'];
+  day: Day;
+  id: Scalars['Float']['output'];
+  timeSlot: TimeSlots;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
 export type CreateClubInputDto = {
   description: Scalars['String']['input'];
   logo: Scalars['String']['input'];
@@ -112,6 +122,24 @@ export type CreateTournamentInputDto = {
   start_date: Scalars['DateTime']['input'];
   teamGenerationTypeId: Scalars['Float']['input'];
 };
+
+export type Day = {
+  __typename?: 'Day';
+  createdAt: Scalars['DateTime']['output'];
+  id: Scalars['Float']['output'];
+  name: DayName;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export enum DayName {
+  Friday = 'FRIDAY',
+  Monday = 'MONDAY',
+  Saturday = 'SATURDAY',
+  Sunday = 'SUNDAY',
+  Thursday = 'THURSDAY',
+  Tuesday = 'TUESDAY',
+  Wednesday = 'WEDNESDAY'
+}
 
 export type DeleteScheduleInputDto = {
   tournamentId: Scalars['Float']['input'];
@@ -675,6 +703,15 @@ export type TeamType = {
   __typename?: 'TeamType';
   name: Scalars['String']['output'];
   players: Array<User>;
+};
+
+export type TimeSlots = {
+  __typename?: 'TimeSlots';
+  createdAt: Scalars['DateTime']['output'];
+  endTime: Scalars['String']['output'];
+  id: Scalars['Float']['output'];
+  startTime: Scalars['String']['output'];
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 export type Tournament = {
