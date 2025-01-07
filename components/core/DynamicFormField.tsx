@@ -25,6 +25,16 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import FileUploadInput from "@/components/core/FileUploadInput";
 import { Checkbox } from "@/components/ui/checkbox";
 
+type PrefixProps = {
+  content: React.ReactNode;
+  className?: string;
+};
+
+type SuffixProps = {
+  content: React.ReactNode;
+  className?: string;
+};
+
 type Props<T extends { [key: string]: any }> = {
   dynamicField: DynamicFormFieldType<T>;
 };
@@ -46,6 +56,32 @@ const DynamicFormField = <T extends { [key: string]: any }>({
 
   const getErrorClass = (name: string) =>
     cn(form.formState.errors[name] && "border-destructive");
+
+  const Prefix: React.FC<PrefixProps> = ({ content, className }) => {
+    return (
+      <span
+        className={cn(
+          "inline-flex items-center px-3 text-sm font-bold text-gray-900 bg-gray-200 rounded-e-0 border-e-0 rounded-s-md dark:text-gray-400 dark:bg-gray-700",
+          className
+        )}
+      >
+        {content}
+      </span>
+    );
+  };
+
+  const Suffix: React.FC<SuffixProps> = ({ content, className }) => {
+    return (
+      <span
+        className={cn(
+          "inline-flex items-center px-3 text-sm font-bold text-gray-900 bg-gray-200 rounded-e-md border-e border-gray-300 dark:text-gray-400 dark:bg-gray-700 dark:border-gray-600",
+          className
+        )}
+      >
+        {content}
+      </span>
+    );
+  };
 
   if (dynamicField.type === "select") {
     return (
@@ -126,22 +162,12 @@ const DynamicFormField = <T extends { [key: string]: any }>({
             <FormControl>
               <div className="flex">
                 {dynamicField.prefixRender && (
-                  <span
-                    className={cn(
-                      "inline-flex items-center px-3 text-sm",
-                      "font-bold text-gray-900 bg-gray-200",
-                      "rounded-e-0 border-e-0 rounded-s-md",
-                      "dark:text-gray-400 dark:bg-gray-700"
-                    )}
-                  >
-                    {dynamicField.prefixRender}
-                  </span>
+                  <Prefix content={dynamicField.prefixRender} />
                 )}
                 <Input
                   className={cn(
-                    dynamicField.prefixRender
-                      ? "rounded-none rounded-e-lg"
-                      : "",
+                    dynamicField.prefixRender ? "rounded-none rounded-e-lg" : "",
+                    dynamicField.suffixRender ? "rounded-none rounded-s-lg" : "",
                     getErrorClass(dynamicField.name)
                   )}
                   type={dynamicField.type}
@@ -149,6 +175,48 @@ const DynamicFormField = <T extends { [key: string]: any }>({
                   placeholder={dynamicField.placeholder}
                   {...field}
                 />
+                {dynamicField.suffixRender && (
+                  <Suffix content={dynamicField.suffixRender} />
+                )}
+              </div>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    );
+  }
+
+  if (dynamicField.type === "decimal" || dynamicField.type === "number") {
+    return (
+      <FormField
+        defaultValue={dynamicField.defaultValue}
+        control={form.control}
+        name={dynamicField.name}
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{dynamicField.label}</FormLabel>
+            <FormControl>
+              <div className="flex">
+                {dynamicField.prefixRender && (
+                  <Prefix content={dynamicField.prefixRender} />
+                )}
+                <Input
+                  className={cn(
+                    dynamicField.prefixRender ? "rounded-none rounded-e-lg" : "",
+                    dynamicField.suffixRender ? "rounded-none rounded-s-lg" : "",
+                    getErrorClass(dynamicField.name)
+                  )}
+                  type={dynamicField.type}
+                  required={dynamicField.required}
+                  {...form.register(field.name, {
+                    setValueAs: (value) => parseFloat(value),
+                  })}
+                  placeholder={dynamicField.placeholder}
+                />
+                {dynamicField.suffixRender && (
+                  <Suffix content={dynamicField.suffixRender} />
+                )}
               </div>
             </FormControl>
             <FormMessage />
@@ -196,32 +264,6 @@ const DynamicFormField = <T extends { [key: string]: any }>({
             <FormControl>
               <Switch checked={field.value} onCheckedChange={field.onChange} />
             </FormControl>
-          </FormItem>
-        )}
-      />
-    );
-  }
-
-  if (dynamicField.type === "decimal" || dynamicField.type === "number") {
-    return (
-      <FormField
-        defaultValue={dynamicField.defaultValue}
-        control={form.control}
-        name={dynamicField.name}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>{dynamicField.label}</FormLabel>
-            <FormControl>
-              <Input
-                className={cn(getErrorClass(dynamicField.name))}
-                type={dynamicField.type}
-                required={dynamicField.required}
-                {...form.register(field.name, {
-                  setValueAs: (value) => parseFloat(value),
-                })}
-              />
-            </FormControl>
-            <FormMessage />
           </FormItem>
         )}
       />

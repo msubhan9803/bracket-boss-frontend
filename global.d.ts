@@ -57,6 +57,7 @@ interface BaseInputField<T extends Record<string, any> = void> {
   className?: string;
   render?: (data: any) => ReactNode; // for custom radio rendering
   prefixRender?: ReactNode;
+  suffixRender?: ReactNode;
   showPassword?: boolean;
   toggleShowPassword?: () => void;
   allowedTypes?: {

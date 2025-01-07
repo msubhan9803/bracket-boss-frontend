@@ -24,6 +24,7 @@ type Props<T extends { [key: string]: any }> = {
   cancelButtonLabel?: string;
   onSubmit: (values: T) => any | Promise<any>;
   fixedFooter?: boolean;
+  formGridCols?: string;
 };
 
 const DynamicFormSheet = <T extends { [key: string]: any }>({
@@ -36,7 +37,8 @@ const DynamicFormSheet = <T extends { [key: string]: any }>({
   submitButtonLabel,
   cancelButtonLabel,
   onSubmit,
-  fixedFooter
+  fixedFooter,
+  formGridCols
 }: Props<T>) => {
   const form = useForm<T>({
     mode: "onBlur",
@@ -55,12 +57,13 @@ const DynamicFormSheet = <T extends { [key: string]: any }>({
         </SheetContent>
       ) : (
         <SheetContent className="w-screen md:max-w-md lg:max-w-lg xl:max-w-xl h-screen p-0">
-          <SheetHeader className="text-left h-20 flex flex-col justify-center px-5">
+          <SheetHeader className="text-left h-20 flex flex-col justify-center px-5 border-b">
             <SheetTitle>{title}</SheetTitle>
             {description && <SheetDescription>{description}</SheetDescription>}
           </SheetHeader>
 
           <FormWrapper
+            gridCols={formGridCols ? formGridCols : undefined}
             form={form}
             fields={fields}
             onSubmit={onSubmit}
@@ -70,7 +73,7 @@ const DynamicFormSheet = <T extends { [key: string]: any }>({
 
           {
             fixedFooter && (
-              <SheetFooter className="px-5">
+              <SheetFooter className="px-5 border-t">
                 <Button
                   absoluteLoaderPosition
                   loading={form.formState.isSubmitting}
