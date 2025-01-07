@@ -35,6 +35,7 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
       description='Update properties for this court'
       fields={formFields}
       onSubmit={(values) => onUpdate(item?.id as string, values)}
+      fixedFooter
     />
   )
 }

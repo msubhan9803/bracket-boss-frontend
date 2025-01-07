@@ -47,21 +47,25 @@ const FormWrapper = <T extends { [key: string]: any }>({
               </div>
             ))}
 
-            <div className="w-full flex items-center col-span-full mt-6">
-              {submitButton ? (
-                submitButton
-              ) : (
-                <Button
-                  absoluteLoaderPosition
-                  loading={form.formState.isSubmitting}
-                  disabled={form.formState.isSubmitting}
-                  type='submit'
-                  className='w-full mt-4 font-bold'
-                >
-                  {submitButtonLabel || 'Submit'}
-                </Button>
-              )}
-            </div>
+            {
+              submitButtonLabel && (
+                <div className="w-full flex items-center col-span-full mt-6">
+                  {submitButton ? (
+                    submitButton
+                  ) : (
+                    <Button
+                      absoluteLoaderPosition
+                      loading={form.formState.isSubmitting}
+                      disabled={form.formState.isSubmitting}
+                      type='submit'
+                      className='w-full mt-4 font-bold'
+                    >
+                      {submitButtonLabel || 'Submit'}
+                    </Button>
+                  )}
+                </div>
+              )
+            }
           </div>
         </ScrollArea>
       </form>

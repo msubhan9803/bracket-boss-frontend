@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ChevronDown, ChevronUp, Pencil, Trash } from "lucide-react";
+import { ChevronDown, ChevronUp, Pencil } from "lucide-react";
 import { Court } from "@/graphql/generated/graphql";
 import SkeletonLoader from "@/components/ui/skeleton";
 import Pagination from "@/components/ui/pagination";
@@ -50,16 +50,8 @@ const CourtListTable = () => {
   }
 
   const handleEdit = async (values: any) => {
-    // const { context, newCollections, newLocations, newRoles, status, userId } = values
-    // await editUser({
-    //   context,
-    //   newCollections,
-    //   newLocations,
-    //   newRoles,
-    //   status,
-    //   userId,
-    // })
-    setEditModalOpen(true)
+    // Call mutation here
+    setEditModalOpen(!editModalOpen)
   }
 
   const courtList = useMemo<Partial<Court>[]>(
@@ -87,7 +79,6 @@ const CourtListTable = () => {
       cell: ({ row }) => (
         <div className='flex gap-2'>
           <Pencil size={18} className='cursor-pointer' onClick={() => handleEditOpen(row.original)} />
-          <Trash size={18} className='cursor-pointer' />
         </div>
       ),
     },
