@@ -21,10 +21,22 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
         required: true,
         defaultValue: item?.name || '',
       },
-    ]
+      {
+        type: "render",
+        className: "col-span-2 my-4",
+        isVisible: true,
+        render: () => (
+          <div className="flex items-center my-2">
+            <div className="border-t border-1 border-gray-400 flex-grow"></div>
+            <span className="px-3 text-primary text-sm">OR</span>
+            <div className="border-t border-1 border-gray-400 flex-grow"></div>
+          </div>
+        ),
+      },
+    ];
 
     return fields
-  }, [item])
+  }, [item]);
 
   return (
     <DynamicFormSheet

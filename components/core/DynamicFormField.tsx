@@ -34,6 +34,16 @@ const DynamicFormField = <T extends { [key: string]: any }>({
 }: Props<T>) => {
   const form = useFormContext();
 
+  if (dynamicField.isVisible === false) return null;
+
+  if (dynamicField.type === "render") {
+    return (
+      <div className={dynamicField.className}>
+        {dynamicField.render()}
+      </div>
+    );
+  }
+
   const getErrorClass = (name: string) =>
     cn(form.formState.errors[name] && "border-destructive");
 

@@ -1,4 +1,6 @@
 import { FieldPath } from "react-hook-form";
+import { ReactNode } from "react";
+import { IconType } from "react-icons";
 
 type PageProps = {
   params: { [key: string]: string } & {
@@ -18,26 +20,34 @@ type CustomRadio = {
   icon: string;
 };
 
-type DynamicFormField<T extends Record<string, any> = void> = {
+interface RenderField {
+  type: "render";
+  label?: string | null;
+  className?: string;
+  isVisible?: boolean;
+  render: () => ReactNode;
+}
+
+interface BaseInputField<T extends Record<string, any> = void> {
   label: string | null;
   name: FieldPath<T>;
   type:
-    | "text"
-    | "number"
-    | "tel"
-    | "color"
-    | "date"
-    | "datetime"
-    | "password"
-    | "textarea"
-    | "email"
-    | "select"
-    | "switch"
-    | "decimal"
-    | "multi-select"
-    | "file"
-    | "checkbox"
-    | "radio";
+  | "text"
+  | "number"
+  | "tel"
+  | "color"
+  | "date"
+  | "datetime"
+  | "password"
+  | "textarea"
+  | "email"
+  | "select"
+  | "switch"
+  | "decimal"
+  | "multi-select"
+  | "file"
+  | "checkbox"
+  | "radio";
   required?: true;
   placeholder?: string;
   defaultValue?: any;
@@ -45,15 +55,19 @@ type DynamicFormField<T extends Record<string, any> = void> = {
   disabled?: boolean;
   isVisible?: boolean;
   className?: string;
-  render?: (data: CustomRadio) => ReactNode;
+  render?: (data: any) => ReactNode; // for custom radio rendering
   prefixRender?: ReactNode;
   showPassword?: boolean;
   toggleShowPassword?: () => void;
   allowedTypes?: {
     type: string;
-    label: string;  
+    label: string;
   }[];
-};
+}
+
+export type DynamicFormField<T extends Record<string, any> = void> =
+  | BaseInputField<T>
+  | RenderField;
 
 interface GraphQLErrorResponse {
   response: {
