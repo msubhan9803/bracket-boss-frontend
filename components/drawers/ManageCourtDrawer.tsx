@@ -1,11 +1,13 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { useForm, useFieldArray } from "react-hook-form";
-import { DynamicFormField } from '@/global'
+import { DynamicFormField as DynamicFormFieldType } from '@/global'
 import DynamicFormSheet from '../core/DynamicFormSheet'
 import { Court } from '@/graphql/generated/graphql'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Button } from "../ui/button";
+import DynamicFormField from "../core/DynamicFormField";
+import { MoveRight, Trash } from "lucide-react";
 
 type ManageCourtDrawerProps = {
   editModalOpen: boolean
@@ -51,7 +53,6 @@ const validationSchema = z.object({
 
 const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: ManageCourtDrawerProps) => {
   const [activeDay, setActiveDay] = useState(DAYS_OF_WEEK[0]);
-
   const form = useForm<FormData>({
     defaultValues: {
       name: item?.name || "",
@@ -64,19 +65,17 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
       })),
     },
   });
-
   const { fields: scheduleFields, append, remove } = useFieldArray({
     control: form.control,
     name: `dailySchedule`,
   });
-
-  const activeDayIndex = scheduleFields.findIndex(
+  const formState = useMemo(() => form.watch(), [form]);
+  const activeDayIndex = useMemo(() => scheduleFields.findIndex(
     (field) => field.day === activeDay
-  );
+  ), [scheduleFields, activeDay]);
 
   const handleAddTimeSlot = (dayIndex: number) => {
-    const currentTimings =
-      form.getValues(`dailySchedule.${dayIndex}.scheduleTimings`) || [];
+    const currentTimings = form.getValues(`dailySchedule.${dayIndex}.scheduleTimings`) || [];
     form.setValue(`dailySchedule.${dayIndex}.scheduleTimings`, [
       ...currentTimings,
       { startTime: "", endTime: "" },
@@ -93,7 +92,7 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
   };
 
   const formFields = useMemo(() => {
-    const fields: DynamicFormField<any>[] = [
+    const fields: DynamicFormFieldType<any>[] = [
       {
         type: "render",
         className: "col-span-2",
@@ -158,7 +157,7 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
         isVisible: true,
         render: () => (
           <Tabs value={activeDay} onValueChange={setActiveDay}>
-            <TabsList>
+            <TabsList className="my-2">
               {scheduleFields.map((field, index) => (
                 <TabsTrigger
                   key={field.day}
@@ -171,7 +170,7 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
             </TabsList>
 
             {scheduleFields.map((field, dayIndex) => (
-              <TabsContent key={field.day} value={field.day}>
+              <TabsContent key={field.day} value={field.day} className="my-2">
                 <div className="flex justify-between items-center">
                   <h2 className="text-lg font-bold">Time Slots</h2>
 
@@ -187,29 +186,35 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
 
                 {form
                   .getValues(`dailySchedule.${dayIndex}.scheduleTimings`)
-                  ?.map((timing, timingIndex) => (
-                    <div key={timingIndex} className="flex items-center space-x-2">
-                      <input
-                        className="input"
-                        placeholder="Start Time"
-                        {...form.register(
-                          `dailySchedule.${dayIndex}.scheduleTimings.${timingIndex}.startTime`
-                        )}
+                  ?.map((_, timingIndex) => (
+                    <div key={timingIndex} className="flex items-end gap-2">
+                      <DynamicFormField
+                        dynamicField={{
+                          name: `dailySchedule.${dayIndex}.scheduleTimings.${timingIndex}.startTime`,
+                          type: "time",
+                          placeholder: "Select Start Time",
+                          required: true,
+                          className: "flex-1 !w-[125.69px]",
+                        }}
                       />
-                      <input
-                        className="input"
-                        placeholder="End Time"
-                        {...form.register(
-                          `dailySchedule.${dayIndex}.scheduleTimings.${timingIndex}.endTime`
-                        )}
+                      <MoveRight size={18} className="me-2 self-center" />
+                      <DynamicFormField
+                        dynamicField={{
+                          name: `dailySchedule.${dayIndex}.scheduleTimings.${timingIndex}.endTime`,
+                          type: "time",
+                          placeholder: "Select End Time",
+                          required: true,
+                          className: "flex-1 !w-[125.69px]",
+                        }}
                       />
-                      <button
+                      <Button
                         type="button"
+                        variant='ghost'
                         className="btn btn-danger"
                         onClick={() => handleRemoveTimeSlot(dayIndex, timingIndex)}
                       >
-                        Remove
-                      </button>
+                        <Trash size={18} className='cursor-pointer' />
+                      </Button>
                     </div>
                   ))}
               </TabsContent>
@@ -220,7 +225,7 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
     ];
 
     return fields;
-  }, [item, activeDay]);
+  }, [item, activeDay, formState]);
 
   return (
     <DynamicFormSheet

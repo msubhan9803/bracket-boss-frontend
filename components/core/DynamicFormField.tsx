@@ -295,6 +295,32 @@ const DynamicFormField = <T extends { [key: string]: any }>({
     );
   }
 
+  if (dynamicField.type === "time") {
+    return (
+      <FormField
+        defaultValue={dynamicField.defaultValue}
+        control={form.control}
+        name={dynamicField.name}
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{dynamicField.label}</FormLabel>
+            <FormControl>
+              <Input
+                type="time"
+                required={dynamicField.required}
+                className={cn(getErrorClass(dynamicField.name))}
+                placeholder={dynamicField.placeholder}
+                style={{ width: '125.69px' }}
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    );
+  }
+
   if (dynamicField.type === "radio") {
     return (
       <FormField

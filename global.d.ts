@@ -29,7 +29,7 @@ interface RenderField {
 }
 
 interface BaseInputField<T extends Record<string, any> = void> {
-  label: string | null;
+  label?: string | null;
   name: FieldPath<T>;
   type:
   | "text"
@@ -47,7 +47,8 @@ interface BaseInputField<T extends Record<string, any> = void> {
   | "multi-select"
   | "file"
   | "checkbox"
-  | "radio";
+  | "radio"
+  | "time";
   required?: true;
   placeholder?: string;
   defaultValue?: any;
