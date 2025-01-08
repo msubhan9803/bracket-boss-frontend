@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Button } from "../ui/button";
 import DynamicFormField from "../core/DynamicFormField";
 import { MoveRight, Trash } from "lucide-react";
+import { Input } from "../ui/input";
 
 type ManageCourtDrawerProps = {
   editModalOpen: boolean
@@ -69,26 +70,50 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
     control: form.control,
     name: `dailySchedule`,
   });
-  const formState = useMemo(() => form.watch(), [form]);
+  const formState = form.watch();
   const activeDayIndex = useMemo(() => scheduleFields.findIndex(
     (field) => field.day === activeDay
   ), [scheduleFields, activeDay]);
 
   const handleAddTimeSlot = (dayIndex: number) => {
-    const currentTimings = form.getValues(`dailySchedule.${dayIndex}.scheduleTimings`) || [];
+    const currentDaySchedule = formState.dailySchedule.find((_, index) => index === dayIndex)?.scheduleTimings || [];
     form.setValue(`dailySchedule.${dayIndex}.scheduleTimings`, [
-      ...currentTimings,
+      ...currentDaySchedule,
       { startTime: "", endTime: "" },
     ]);
   };
 
+  const handleTimeChange = (dayIndex: number, timingIndex: number, field: 'startTime' | 'endTime', value: string) => {
+    const updatedSchedule = formState.dailySchedule.map((day, dIndex) => {
+      if (dIndex === dayIndex) {
+        const updatedTimings = day.scheduleTimings.map((timing, tIndex) => {
+          if (tIndex === timingIndex) {
+            return { ...timing, [field]: value };
+          }
+          return timing;
+        });
+        return { ...day, scheduleTimings: updatedTimings };
+      }
+      return day;
+    });
+
+    form.setValue('dailySchedule', updatedSchedule);
+  };
+
   const handleRemoveTimeSlot = (dayIndex: number, timingIndex: number) => {
-    const currentTimings =
-      form.getValues(`dailySchedule.${dayIndex}.scheduleTimings`) || [];
-    form.setValue(
-      `dailySchedule.${dayIndex}.scheduleTimings`,
-      currentTimings.filter((_, i) => i !== timingIndex)
+    debugger
+    const currentDaySchedule = formState.dailySchedule.find((_, index) => index === dayIndex)?.scheduleTimings;
+    const updatedSchedule = currentDaySchedule?.filter((_, i) => i !== timingIndex);
+
+    let updatedDailySchedule = formState.dailySchedule.map((day, dIndex) => {
+        if (dIndex === dayIndex) {
+          return { ...day, scheduleTimings: updatedSchedule };
+        }
+        return day;
+      }
     );
+
+    form.setValue(`dailySchedule`, updatedDailySchedule as DailySchedule[]);
   };
 
   const formFields = useMemo(() => {
@@ -186,37 +211,42 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
 
                 {form
                   .getValues(`dailySchedule.${dayIndex}.scheduleTimings`)
-                  ?.map((_, timingIndex) => (
-                    <div key={timingIndex} className="flex items-end gap-2">
-                      <DynamicFormField
-                        dynamicField={{
-                          name: `dailySchedule.${dayIndex}.scheduleTimings.${timingIndex}.startTime`,
-                          type: "time",
-                          placeholder: "Select Start Time",
-                          required: true,
-                          className: "flex-1 !w-[125.69px]",
-                        }}
-                      />
-                      <MoveRight size={18} className="me-2 self-center" />
-                      <DynamicFormField
-                        dynamicField={{
-                          name: `dailySchedule.${dayIndex}.scheduleTimings.${timingIndex}.endTime`,
-                          type: "time",
-                          placeholder: "Select End Time",
-                          required: true,
-                          className: "flex-1 !w-[125.69px]",
-                        }}
-                      />
-                      <Button
-                        type="button"
-                        variant='ghost'
-                        className="btn btn-danger"
-                        onClick={() => handleRemoveTimeSlot(dayIndex, timingIndex)}
-                      >
-                        <Trash size={18} className='cursor-pointer' />
-                      </Button>
-                    </div>
-                  ))}
+                  ?.length > 0 ? (
+                  form
+                    .getValues(`dailySchedule.${dayIndex}.scheduleTimings`)
+                    .map((_, timingIndex) => (
+                      <div key={timingIndex} className="flex items-end gap-2 my-2">
+                        <Input
+                          type="time"
+                          name={`dailySchedule.${dayIndex}.scheduleTimings.${timingIndex}.startTime`}
+                          required={true}
+                          style={{ width: '125.69px' }}
+                          onChange={(e) => handleTimeChange(dayIndex, timingIndex, 'startTime', e.target.value)}
+                        />
+                        <MoveRight size={18} className="me-2 self-center" />
+                        <Input
+                          type="time"
+                          name={`dailySchedule.${dayIndex}.scheduleTimings.${timingIndex}.endTime`}
+                          required={true}
+                          style={{ width: '125.69px' }}
+                          onChange={(e) => handleTimeChange(dayIndex, timingIndex, 'endTime', e.target.value)}
+                        />
+                        <Button
+                          type="button"
+                          variant='ghost'
+                          className="btn btn-danger"
+                          onClick={() => handleRemoveTimeSlot(dayIndex, timingIndex)}
+                        >
+                          <Trash size={18} className='cursor-pointer' />
+                        </Button>
+                      </div>
+                    ))
+                ) : (
+                  <div className="flex justify-center items-center h-24">
+                    <p>No Timeslot</p>
+                  </div>
+                )
+                }
               </TabsContent>
             ))}
           </Tabs>
@@ -226,6 +256,10 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
 
     return fields;
   }, [item, activeDay, formState]);
+
+  useEffect(() => {
+    console.log('🌺 formState: ', formState)
+  }, [formState])
 
   return (
     <DynamicFormSheet
