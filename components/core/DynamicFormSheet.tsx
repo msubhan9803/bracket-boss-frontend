@@ -1,4 +1,6 @@
-import { useForm } from "react-hook-form";
+import { useForm, UseFormReturn, SubmitHandler } from "react-hook-form";
+import { ZodType } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Sheet,
   SheetContent,
@@ -22,9 +24,12 @@ type Props<T extends { [key: string]: any }> = {
   description?: string;
   submitButtonLabel?: string;
   cancelButtonLabel?: string;
-  onSubmit: (values: T) => any | Promise<any>;
+  onSubmit: SubmitHandler<T>;
   fixedFooter?: boolean;
   formGridCols?: string;
+  formState?: UseFormReturn<T>;
+  validationSchema?: ZodType<T>;
+  children?: React.ReactNode;
 };
 
 const DynamicFormSheet = <T extends { [key: string]: any }>({
@@ -38,16 +43,22 @@ const DynamicFormSheet = <T extends { [key: string]: any }>({
   cancelButtonLabel,
   onSubmit,
   fixedFooter,
-  formGridCols
+  formGridCols,
+  formState,
+  validationSchema,
+  children
 }: Props<T>) => {
-  const form = useForm<T>({
+  const internalForm = useForm<T>({
+    resolver: validationSchema ? zodResolver(validationSchema) : undefined,
     mode: "onBlur",
   });
+
+  const form = formState || internalForm;
 
   const handleClose = () => {
     setIsOpen(false);
     form.reset();
-  }
+  };
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -56,11 +67,13 @@ const DynamicFormSheet = <T extends { [key: string]: any }>({
           <LoadingSpinner />
         </SheetContent>
       ) : (
-        <SheetContent className="w-screen md:max-w-md lg:max-w-lg xl:max-w-xl h-screen p-0">
+        <SheetContent className="w-screen md:max-w-md lg:max-w-lg xl:max-w-xl h-screen p-0" onInteractOutside={event => event.preventDefault()}>
           <SheetHeader className="text-left h-20 flex flex-col justify-center px-5 border-b">
             <SheetTitle>{title}</SheetTitle>
             {description && <SheetDescription>{description}</SheetDescription>}
           </SheetHeader>
+
+          {children && <div className="px-5 py-4">{children}</div>}
 
           <FormWrapper
             gridCols={formGridCols ? formGridCols : undefined}
@@ -71,34 +84,32 @@ const DynamicFormSheet = <T extends { [key: string]: any }>({
             submitButtonLabel={!fixedFooter ? submitButtonLabel : undefined}
           />
 
-          {
-            fixedFooter && (
-              <SheetFooter className="px-5 border-t">
-                <Button
-                  absoluteLoaderPosition
-                  loading={form.formState.isSubmitting}
-                  disabled={form.formState.isSubmitting}
-                  type='button'
-                  className='w-full mt-4 font-bold'
-                  onClick={handleClose}
-                  variant='secondary'
-                >
-                  {cancelButtonLabel || 'Cancel'}
-                </Button>
+          {fixedFooter && (
+            <SheetFooter className="px-5 border-t">
+              <Button
+                absoluteLoaderPosition
+                loading={form.formState.isSubmitting}
+                disabled={form.formState.isSubmitting}
+                type="button"
+                className="w-full mt-4 font-bold"
+                onClick={handleClose}
+                variant="secondary"
+              >
+                {cancelButtonLabel || "Cancel"}
+              </Button>
 
-                <Button
-                  absoluteLoaderPosition
-                  loading={form.formState.isSubmitting}
-                  disabled={form.formState.isSubmitting}
-                  type='button'
-                  className='w-full mt-4 font-bold'
-                  onClick={form.handleSubmit(onSubmit)}
-                >
-                  {submitButtonLabel || 'Submit'}
-                </Button>
-              </SheetFooter>
-            )
-          }
+              <Button
+                absoluteLoaderPosition
+                loading={form.formState.isSubmitting}
+                disabled={form.formState.isSubmitting}
+                type="button"
+                className="w-full mt-4 font-bold"
+                onClick={form.handleSubmit(onSubmit)}
+              >
+                {submitButtonLabel || "Submit"}
+              </Button>
+            </SheetFooter>
+          )}
         </SheetContent>
       )}
     </Sheet>
