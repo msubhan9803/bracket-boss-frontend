@@ -6,7 +6,6 @@ import DynamicFormSheet from '../core/DynamicFormSheet'
 import { Court } from '@/graphql/generated/graphql'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Button } from "../ui/button";
-import DynamicFormField from "../core/DynamicFormField";
 import { MoveRight, Trash } from "lucide-react";
 import { Input } from "../ui/input";
 
@@ -46,10 +45,18 @@ const DAYS_OF_WEEK = [
 ];
 
 const validationSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  location: z.string().min(1, "Location is required"),
-  courtLength: z.number().min(1, "Must be greater than 0"),
-  courtWidth: z.number().min(1, "Must be greater than 0"),
+  name: z.string().min(1, { message: "Name is required" }),
+  location: z.string().min(1, { message: "Location is required" }),
+  courtLength: z
+    .number({
+      invalid_type_error: "Court length is required",
+    })
+    .min(1, { message: "Court length must be greater than 0" }),
+  courtWidth: z
+    .number({
+      invalid_type_error: "Court width is required",
+    })
+    .min(1, { message: "Court width must be greater than 0" }),
 });
 
 const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: ManageCourtDrawerProps) => {
@@ -71,9 +78,6 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
     name: `dailySchedule`,
   });
   const formState = form.watch();
-  const activeDayIndex = useMemo(() => scheduleFields.findIndex(
-    (field) => field.day === activeDay
-  ), [scheduleFields, activeDay]);
 
   const handleAddTimeSlot = (dayIndex: number) => {
     const currentDaySchedule = formState.dailySchedule.find((_, index) => index === dayIndex)?.scheduleTimings || [];
