@@ -84,34 +84,38 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
   };
 
   const handleTimeChange = (dayIndex: number, timingIndex: number, field: 'startTime' | 'endTime', value: string) => {
-    const updatedSchedule = formState.dailySchedule.map((day, dIndex) => {
+    const updatedSchedule = [];
+    for (let dIndex = 0; dIndex < formState.dailySchedule.length; dIndex++) {
       if (dIndex === dayIndex) {
-        const updatedTimings = day.scheduleTimings.map((timing, tIndex) => {
+        const updatedTimings = [];
+        for (let tIndex = 0; tIndex < formState.dailySchedule[dIndex].scheduleTimings.length; tIndex++) {
           if (tIndex === timingIndex) {
-            return { ...timing, [field]: value };
+            updatedTimings.push({ ...formState.dailySchedule[dIndex].scheduleTimings[tIndex], [field]: value });
+          } else {
+            updatedTimings.push(formState.dailySchedule[dIndex].scheduleTimings[tIndex]);
           }
-          return timing;
-        });
-        return { ...day, scheduleTimings: updatedTimings };
+        }
+        updatedSchedule.push({ ...formState.dailySchedule[dIndex], scheduleTimings: updatedTimings });
+      } else {
+        updatedSchedule.push(formState.dailySchedule[dIndex]);
       }
-      return day;
-    });
+    }
 
     form.setValue('dailySchedule', updatedSchedule);
   };
 
   const handleRemoveTimeSlot = (dayIndex: number, timingIndex: number) => {
-    debugger
     const currentDaySchedule = formState.dailySchedule.find((_, index) => index === dayIndex)?.scheduleTimings;
     const updatedSchedule = currentDaySchedule?.filter((_, i) => i !== timingIndex);
 
-    let updatedDailySchedule = formState.dailySchedule.map((day, dIndex) => {
-        if (dIndex === dayIndex) {
-          return { ...day, scheduleTimings: updatedSchedule };
-        }
-        return day;
+    let updatedDailySchedule = [];
+    for (let dIndex = 0; dIndex < formState.dailySchedule.length; dIndex++) {
+      if (dIndex === dayIndex) {
+        updatedDailySchedule.push({ ...formState.dailySchedule[dIndex], scheduleTimings: updatedSchedule });
+      } else {
+        updatedDailySchedule.push(formState.dailySchedule[dIndex]);
       }
-    );
+    }
 
     form.setValue(`dailySchedule`, updatedDailySchedule as DailySchedule[]);
   };
@@ -209,43 +213,44 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
                   </Button>
                 </div>
 
-                {form
-                  .getValues(`dailySchedule.${dayIndex}.scheduleTimings`)
-                  ?.length > 0 ? (
-                  form
-                    .getValues(`dailySchedule.${dayIndex}.scheduleTimings`)
-                    .map((_, timingIndex) => (
-                      <div key={timingIndex} className="flex items-end gap-2 my-2">
-                        <Input
-                          type="time"
-                          name={`dailySchedule.${dayIndex}.scheduleTimings.${timingIndex}.startTime`}
-                          required={true}
-                          style={{ width: '125.69px' }}
-                          onChange={(e) => handleTimeChange(dayIndex, timingIndex, 'startTime', e.target.value)}
-                        />
-                        <MoveRight size={18} className="me-2 self-center" />
-                        <Input
-                          type="time"
-                          name={`dailySchedule.${dayIndex}.scheduleTimings.${timingIndex}.endTime`}
-                          required={true}
-                          style={{ width: '125.69px' }}
-                          onChange={(e) => handleTimeChange(dayIndex, timingIndex, 'endTime', e.target.value)}
-                        />
-                        <Button
-                          type="button"
-                          variant='ghost'
-                          className="btn btn-danger"
-                          onClick={() => handleRemoveTimeSlot(dayIndex, timingIndex)}
-                        >
-                          <Trash size={18} className='cursor-pointer' />
-                        </Button>
-                      </div>
-                    ))
-                ) : (
-                  <div className="flex justify-center items-center h-24">
-                    <p>No Timeslot</p>
-                  </div>
-                )
+                {
+                  formState.dailySchedule[dayIndex]?.scheduleTimings
+                    ?.length > 0 ? (
+                    formState.dailySchedule[dayIndex]?.scheduleTimings
+                      .map((_, timingIndex) => (
+                        <div key={timingIndex} className="flex items-end gap-2 my-2">
+                          <Input
+                            type="time"
+                            name={formState.dailySchedule[dayIndex]?.scheduleTimings[timingIndex].startTime}
+                            required={true}
+                            style={{ width: '125.69px' }}
+                            value={formState.dailySchedule[dayIndex]?.scheduleTimings[timingIndex].startTime}
+                            onChange={(e) => handleTimeChange(dayIndex, timingIndex, 'startTime', e.target.value)}
+                          />
+                          <MoveRight size={18} className="me-2 self-center" />
+                          <Input
+                            type="time"
+                            name={formState.dailySchedule[dayIndex]?.scheduleTimings[timingIndex].endTime}
+                            required={true}
+                            style={{ width: '125.69px' }}
+                            value={formState.dailySchedule[dayIndex]?.scheduleTimings[timingIndex].endTime}
+                            onChange={(e) => handleTimeChange(dayIndex, timingIndex, 'endTime', e.target.value)}
+                          />
+                          <Button
+                            type="button"
+                            variant='ghost'
+                            className="btn btn-danger"
+                            onClick={() => handleRemoveTimeSlot(dayIndex, timingIndex)}
+                          >
+                            <Trash size={18} className='cursor-pointer' />
+                          </Button>
+                        </div>
+                      ))
+                  ) : (
+                    <div className="flex justify-center items-center h-24">
+                      <p>No Timeslot</p>
+                    </div>
+                  )
                 }
               </TabsContent>
             ))}
@@ -256,10 +261,6 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
 
     return fields;
   }, [item, activeDay, formState]);
-
-  useEffect(() => {
-    console.log('🌺 formState: ', formState)
-  }, [formState])
 
   return (
     <DynamicFormSheet
