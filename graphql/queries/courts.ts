@@ -22,6 +22,8 @@ export const GET_ALL_COURTS = graphql(`
         club {
           name
         }
+        courtLength
+        courtWidth
       }
       totalRecords
     }

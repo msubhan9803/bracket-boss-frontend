@@ -53,20 +53,19 @@ const CourtListTable = () => {
   }
 
   const handleEdit = async (courtId: number, values: any) => {
-    console.log('🌺 Submitting values: ', courtId, values);
-    // await updateCourtMutation.mutateAsync({
-    //   ...values,
-    //   dailySchedule: values.dailySchedule.map((schedule: any) => ({
-    //     day: schedule.day,
-    //     scheduleTimings: schedule.scheduleTimings.map((timing: any) => ({
-    //       startTime: timing.startTime,
-    //       endTime: timing.endTime,
-    //     })),
-    //   })),
-    //   courtId: courtId as number,
-    // });
-    // refetchCourtList();
-    // setEditModalOpen(false);
+    await updateCourtMutation.mutateAsync({
+      ...values,
+      dailySchedule: values.dailySchedule.map((schedule: any) => ({
+        day: schedule.day,
+        scheduleTimings: schedule.scheduleTimings.map((timing: any) => ({
+          startTime: timing.startTime,
+          endTime: timing.endTime,
+        })),
+      })),
+      courtId: courtId as number,
+    });
+    refetchCourtList();
+    setEditModalOpen(false);
   }
 
   const courtList = useMemo<Partial<Court>[]>(

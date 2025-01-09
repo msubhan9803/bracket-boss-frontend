@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Button } from "../ui/button";
 import { MoveRight, Trash } from "lucide-react";
 import { Input } from "../ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 type ManageCourtDrawerProps = {
   editModalOpen: boolean
@@ -30,8 +31,8 @@ type DailySchedule = {
 type FormData = {
   name: string;
   location: string;
-  courtLength: number;
-  courtWidth: number;
+  courtLength: number | null;
+  courtWidth: number | null;
   dailySchedule: DailySchedule[];
 };
 
@@ -63,11 +64,12 @@ const validationSchema = z.object({
 const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item, submitButtonLoading }: ManageCourtDrawerProps) => {
   const [activeDay, setActiveDay] = useState(DAYS_OF_WEEK[0]);
   const form = useForm<FormData>({
+    resolver: zodResolver(validationSchema),
     defaultValues: {
       name: item?.name || "",
       location: item?.location || "",
-      courtLength: item?.courtLength || 0,
-      courtWidth: item?.courtWidth || 0,
+      courtLength: item?.courtLength || null,
+      courtWidth: item?.courtWidth || null,
       dailySchedule: DAYS_OF_WEEK.map((day) => ({
         day,
         scheduleTimings: [],
@@ -248,7 +250,7 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item, su
   }, [item, activeDay, formState]);
 
   useEffect(() => {
-    console.log('🌺 formState: ', formState.courtLength)
+    console.log('🌺 formState: ', formState)
   }, [formState])
 
   return (
@@ -257,9 +259,10 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item, su
       setIsOpen={setEditModalOpen}
       title="Update Court"
       description="Update court details."
+      formState={form}
       fields={formFields}
-      onSubmit={() => onUpdate(item.id, formState)}
       validationSchema={validationSchema}
+      onSubmit={() => onUpdate(item.id, formState)}
       submitButtonLabel="Save Changes"
       submitButtonLoading={submitButtonLoading}
       fixedFooter
