@@ -13,3 +13,17 @@ export const CREATE_COURT = graphql(`
     }
   }
 `);
+
+export const UPDATE_COURT = graphql(`
+  mutation UpdateCourt($input: UpdateCourtInputDto!) {
+    updateCourt(input: $input) {
+        id
+        location
+        name
+        club {
+          id
+          name
+        }
+    }
+  }
+`);

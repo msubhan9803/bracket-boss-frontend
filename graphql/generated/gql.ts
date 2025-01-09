@@ -22,6 +22,7 @@ const documents = {
     "\n  mutation ResetPassword($newPassword: String!) {\n    resetPassword(newPassword: $newPassword) {\n      message\n    }\n  }\n": types.ResetPasswordDocument,
     "\n  mutation CreateClub($input: CreateClubInputDto!) {\n    createClub(input: $input) {\n      club {\n        id\n        logo\n        name\n        description\n        createdDate\n        updatedDate\n        users {\n          id\n          name\n          email\n        }\n      }\n      message\n    }\n  }\n": types.CreateClubDocument,
     "\n  mutation CreateCourt($input: CreateCourtInputDto!) {\n    createCourt(input: $input) {\n      id\n      location\n      name\n      club {\n        id\n        name\n      }\n    }\n  }\n": types.CreateCourtDocument,
+    "\n  mutation UpdateCourt($input: UpdateCourtInputDto!) {\n    updateCourt(input: $input) {\n        id\n        location\n        name\n        club {\n          id\n          name\n        }\n    }\n  }\n": types.UpdateCourtDocument,
     "\n  mutation UploadFile($file: Upload!) {\n    uploadFile(file: $file) {\n      url\n    }\n  }\n": types.UploadFileDocument,
     "\n  mutation CreateSchedule($input: CreateScheduleInputDto!) {\n    createSchedule(input: $input) {\n      schedule {\n        tournament {\n          id\n          name\n        }\n        tournamentRounds {\n          id\n          roundNumber\n          roundFormat {\n            name\n          }\n        }\n        matches {\n          id\n          homeTeam {\n            name\n          }\n          awayTeam {\n            name\n          }\n          statuses {\n            status\n          }\n          courts {\n            name\n          }\n        }\n        teams {\n          name\n        }\n      }\n    }\n  }\n": types.CreateScheduleDocument,
     "\n  mutation DeleteSchedule($input: DeleteScheduleInputDto!) {\n    deleteSchedule(input: $input) {\n      message\n    }\n  }\n": types.DeleteScheduleDocument,
@@ -99,6 +100,10 @@ export function graphql(source: "\n  mutation CreateClub($input: CreateClubInput
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation CreateCourt($input: CreateCourtInputDto!) {\n    createCourt(input: $input) {\n      id\n      location\n      name\n      club {\n        id\n        name\n      }\n    }\n  }\n"): (typeof documents)["\n  mutation CreateCourt($input: CreateCourtInputDto!) {\n    createCourt(input: $input) {\n      id\n      location\n      name\n      club {\n        id\n        name\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation UpdateCourt($input: UpdateCourtInputDto!) {\n    updateCourt(input: $input) {\n        id\n        location\n        name\n        club {\n          id\n          name\n        }\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateCourt($input: UpdateCourtInputDto!) {\n    updateCourt(input: $input) {\n        id\n        location\n        name\n        club {\n          id\n          name\n        }\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

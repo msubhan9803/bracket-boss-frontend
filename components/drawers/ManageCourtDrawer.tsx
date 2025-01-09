@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { useForm, useFieldArray } from "react-hook-form";
 import { DynamicFormField as DynamicFormFieldType } from '@/global'
@@ -13,7 +13,8 @@ type ManageCourtDrawerProps = {
   editModalOpen: boolean
   setEditModalOpen: any
   onUpdate: (id: number, data: any) => any
-  item: Partial<Court | any>
+  item: Partial<Court>
+  submitButtonLoading: boolean
 }
 
 type ScheduleTiming = {
@@ -59,7 +60,7 @@ const validationSchema = z.object({
     .min(1, { message: "Court width must be greater than 0" }),
 });
 
-const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: ManageCourtDrawerProps) => {
+const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item, submitButtonLoading }: ManageCourtDrawerProps) => {
   const [activeDay, setActiveDay] = useState(DAYS_OF_WEEK[0]);
   const form = useForm<FormData>({
     defaultValues: {
@@ -136,6 +137,7 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
         type: "number",
         placeholder: "e.g. 10",
         suffixRender: <p>feet</p>,
+        defaultValue: item?.courtLength || '',
         className: 'col-span-2 lg:col-span-1',
       },
       {
@@ -144,6 +146,7 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
         type: "number",
         placeholder: "e.g. 10",
         suffixRender: <p>feet</p>,
+        defaultValue: item?.courtWidth || '',
         className: 'col-span-2 lg:col-span-1',
       },
       {
@@ -244,6 +247,10 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
     return fields;
   }, [item, activeDay, formState]);
 
+  useEffect(() => {
+    console.log('🌺 formState: ', formState.courtLength)
+  }, [formState])
+
   return (
     <DynamicFormSheet
       isOpen={editModalOpen}
@@ -254,6 +261,7 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
       onSubmit={() => onUpdate(item.id, formState)}
       validationSchema={validationSchema}
       submitButtonLabel="Save Changes"
+      submitButtonLoading={submitButtonLoading}
       fixedFooter
       formGridCols="grid-cols-2"
     />

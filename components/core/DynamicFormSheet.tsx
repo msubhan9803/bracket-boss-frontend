@@ -30,6 +30,7 @@ type Props<T extends { [key: string]: any }> = {
   formState?: UseFormReturn<T>;
   validationSchema?: ZodType<T>;
   children?: React.ReactNode;
+  submitButtonLoading?: boolean;
 };
 
 const DynamicFormSheet = <T extends { [key: string]: any }>({
@@ -46,7 +47,8 @@ const DynamicFormSheet = <T extends { [key: string]: any }>({
   formGridCols,
   formState,
   validationSchema,
-  children
+  children,
+  submitButtonLoading
 }: Props<T>) => {
   const internalForm = useForm<T>({
     resolver: validationSchema ? zodResolver(validationSchema) : undefined,
@@ -88,8 +90,7 @@ const DynamicFormSheet = <T extends { [key: string]: any }>({
             <SheetFooter className="px-5 border-t">
               <Button
                 absoluteLoaderPosition
-                loading={form.formState.isSubmitting}
-                disabled={form.formState.isSubmitting}
+                disabled={submitButtonLoading}
                 type="button"
                 className="w-full mt-4 font-bold"
                 onClick={handleClose}
@@ -100,8 +101,8 @@ const DynamicFormSheet = <T extends { [key: string]: any }>({
 
               <Button
                 absoluteLoaderPosition
-                loading={form.formState.isSubmitting}
-                disabled={form.formState.isSubmitting}
+                loading={submitButtonLoading}
+                disabled={submitButtonLoading}
                 type="button"
                 className="w-full mt-4 font-bold"
                 onClick={form.handleSubmit(onSubmit)}

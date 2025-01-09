@@ -24,6 +24,7 @@ import useCourts from "@/hooks/court/useCourts";
 import FilterComponent from "@/components/core/FilterComponent";
 import AddCourtButton from "../mutation-buttons/AddCourtButton";
 import ManageCourtDrawer from "../drawers/ManageCourtDrawer";
+import useCourtOperations from "@/hooks/court/useCourtOperations";
 
 const CourtListTable = () => {
   const [page, setPage] = useState(1);
@@ -44,6 +45,8 @@ const CourtListTable = () => {
   const { courtListFetched, totalRecords, loadingOrder, refetchCourtList } =
     useCourts(page, pageSize, filterBy, filter, sort);
 
+  const { updateCourtMutation } = useCourtOperations();
+
   const handleEditOpen = (court: Partial<Court>) => {
     setCurrentEditingCourt(court)
     setEditModalOpen(true)
@@ -51,7 +54,19 @@ const CourtListTable = () => {
 
   const handleEdit = async (courtId: number, values: any) => {
     console.log('🌺 Submitting values: ', courtId, values);
-    setEditModalOpen(!editModalOpen)
+    // await updateCourtMutation.mutateAsync({
+    //   ...values,
+    //   dailySchedule: values.dailySchedule.map((schedule: any) => ({
+    //     day: schedule.day,
+    //     scheduleTimings: schedule.scheduleTimings.map((timing: any) => ({
+    //       startTime: timing.startTime,
+    //       endTime: timing.endTime,
+    //     })),
+    //   })),
+    //   courtId: courtId as number,
+    // });
+    // refetchCourtList();
+    // setEditModalOpen(false);
   }
 
   const courtList = useMemo<Partial<Court>[]>(
@@ -203,7 +218,7 @@ const CourtListTable = () => {
         </TableFooter>
       </Table>
 
-      {editModalOpen && <ManageCourtDrawer editModalOpen={editModalOpen} setEditModalOpen={setEditModalOpen} item={currentEditingCourt as Partial<Court>} onUpdate={handleEdit} />}
+      {editModalOpen && <ManageCourtDrawer editModalOpen={editModalOpen} setEditModalOpen={setEditModalOpen} item={currentEditingCourt as Partial<Court>} onUpdate={handleEdit} submitButtonLoading={updateCourtMutation.isPending} />}
     </div>
   );
 };
