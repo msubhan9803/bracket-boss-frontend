@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { z } from "zod";
 import { useForm, useFieldArray } from "react-hook-form";
 import { DynamicFormField as DynamicFormFieldType } from '@/global'
@@ -12,7 +12,7 @@ import { Input } from "../ui/input";
 type ManageCourtDrawerProps = {
   editModalOpen: boolean
   setEditModalOpen: any
-  onUpdate: (id: string, data: any) => any
+  onUpdate: (id: number, data: any) => any
   item: Partial<Court | any>
 }
 
@@ -73,55 +73,33 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
       })),
     },
   });
-  const { fields: scheduleFields, append, remove } = useFieldArray({
+  const dailyScheduleHandler = useFieldArray({
     control: form.control,
     name: `dailySchedule`,
   });
+  const { fields: scheduleFields } = dailyScheduleHandler;
+
   const formState = form.watch();
+  const activeDayIndex = useMemo(() => scheduleFields.findIndex(
+    (field) => field.day === activeDay
+  ), [scheduleFields, activeDay]);
 
-  const handleAddTimeSlot = (dayIndex: number) => {
-    const currentDaySchedule = formState.dailySchedule.find((_, index) => index === dayIndex)?.scheduleTimings || [];
-    form.setValue(`dailySchedule.${dayIndex}.scheduleTimings`, [
-      ...currentDaySchedule,
-      { startTime: "", endTime: "" },
-    ]);
+  const scheduleTimingHandler = useFieldArray({
+    control: form.control,
+    name: `dailySchedule.${activeDayIndex}.scheduleTimings`,
+  });
+  const { fields: scheduleTimings, append: appendTiming, remove: removeTiming, update: updateTiming } = scheduleTimingHandler;
+
+  const handleAddTimeSlot = () => {
+    appendTiming({ startTime: "", endTime: "" });
   };
 
-  const handleTimeChange = (dayIndex: number, timingIndex: number, field: 'startTime' | 'endTime', value: string) => {
-    const updatedSchedule = [];
-    for (let dIndex = 0; dIndex < formState.dailySchedule.length; dIndex++) {
-      if (dIndex === dayIndex) {
-        const updatedTimings = [];
-        for (let tIndex = 0; tIndex < formState.dailySchedule[dIndex].scheduleTimings.length; tIndex++) {
-          if (tIndex === timingIndex) {
-            updatedTimings.push({ ...formState.dailySchedule[dIndex].scheduleTimings[tIndex], [field]: value });
-          } else {
-            updatedTimings.push(formState.dailySchedule[dIndex].scheduleTimings[tIndex]);
-          }
-        }
-        updatedSchedule.push({ ...formState.dailySchedule[dIndex], scheduleTimings: updatedTimings });
-      } else {
-        updatedSchedule.push(formState.dailySchedule[dIndex]);
-      }
-    }
-
-    form.setValue('dailySchedule', updatedSchedule);
+  const handleUpdateTimeSlot = (timingIndex: number, field: 'startTime' | 'endTime', value: string) => {
+    updateTiming(timingIndex, { ...scheduleTimings[timingIndex], [field]: value });
   };
 
-  const handleRemoveTimeSlot = (dayIndex: number, timingIndex: number) => {
-    const currentDaySchedule = formState.dailySchedule.find((_, index) => index === dayIndex)?.scheduleTimings;
-    const updatedSchedule = currentDaySchedule?.filter((_, i) => i !== timingIndex);
-
-    let updatedDailySchedule = [];
-    for (let dIndex = 0; dIndex < formState.dailySchedule.length; dIndex++) {
-      if (dIndex === dayIndex) {
-        updatedDailySchedule.push({ ...formState.dailySchedule[dIndex], scheduleTimings: updatedSchedule });
-      } else {
-        updatedDailySchedule.push(formState.dailySchedule[dIndex]);
-      }
-    }
-
-    form.setValue(`dailySchedule`, updatedDailySchedule as DailySchedule[]);
+  const handleRemoveTimeSlot = (timingIndex: number) => {
+    removeTiming(timingIndex);
   };
 
   const formFields = useMemo(() => {
@@ -211,7 +189,7 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
                     absoluteLoaderPosition
                     type="button"
                     className="font-bold"
-                    onClick={() => handleAddTimeSlot(dayIndex)}
+                    onClick={handleAddTimeSlot}
                   >
                     Add Time Slot
                   </Button>
@@ -229,7 +207,7 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
                             required={true}
                             style={{ width: '125.69px' }}
                             value={formState.dailySchedule[dayIndex]?.scheduleTimings[timingIndex].startTime}
-                            onChange={(e) => handleTimeChange(dayIndex, timingIndex, 'startTime', e.target.value)}
+                            onChange={(e) => handleUpdateTimeSlot(timingIndex, 'startTime', e.target.value)}
                           />
                           <MoveRight size={18} className="me-2 self-center" />
                           <Input
@@ -238,13 +216,13 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
                             required={true}
                             style={{ width: '125.69px' }}
                             value={formState.dailySchedule[dayIndex]?.scheduleTimings[timingIndex].endTime}
-                            onChange={(e) => handleTimeChange(dayIndex, timingIndex, 'endTime', e.target.value)}
+                            onChange={(e) => handleUpdateTimeSlot(timingIndex, 'endTime', e.target.value)}
                           />
                           <Button
                             type="button"
                             variant='ghost'
                             className="btn btn-danger"
-                            onClick={() => handleRemoveTimeSlot(dayIndex, timingIndex)}
+                            onClick={() => handleRemoveTimeSlot(timingIndex)}
                           >
                             <Trash size={18} className='cursor-pointer' />
                           </Button>
@@ -273,7 +251,7 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item }: 
       title="Update Court"
       description="Update court details."
       fields={formFields}
-      onSubmit={(values) => onUpdate(item.id, values)}
+      onSubmit={() => onUpdate(item.id, formState)}
       validationSchema={validationSchema}
       submitButtonLabel="Save Changes"
       fixedFooter

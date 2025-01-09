@@ -49,8 +49,8 @@ const CourtListTable = () => {
     setEditModalOpen(true)
   }
 
-  const handleEdit = async (values: any) => {
-    // Call mutation here
+  const handleEdit = async (courtId: number, values: any) => {
+    console.log('🌺 Submitting values: ', courtId, values);
     setEditModalOpen(!editModalOpen)
   }
 
