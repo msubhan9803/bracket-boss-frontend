@@ -63,6 +63,21 @@ const validationSchema = z.object({
 
 const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item, submitButtonLoading }: ManageCourtDrawerProps) => {
   const [activeDay, setActiveDay] = useState(DAYS_OF_WEEK[0]);
+
+  const populateDailySchedule = () => {
+    const dailySchedule = DAYS_OF_WEEK.map((day) => ({
+      day,
+      scheduleTimings: item.courtSchedules
+        ?.filter(schedule => schedule.day.name === day)
+        .map(schedule => ({
+          startTime: schedule.timeSlot.startTime.slice(0, 5),
+          endTime: schedule.timeSlot.endTime.slice(0, 5),
+          id: schedule.id,
+        })) || [],
+    }));
+    return dailySchedule;
+  };
+
   const form = useForm<FormData>({
     resolver: zodResolver(validationSchema),
     defaultValues: {
@@ -70,10 +85,7 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item, su
       location: item?.location || "",
       courtLength: item?.courtLength || null,
       courtWidth: item?.courtWidth || null,
-      dailySchedule: DAYS_OF_WEEK.map((day) => ({
-        day,
-        scheduleTimings: [],
-      })),
+      dailySchedule: populateDailySchedule(),
     },
   });
   const dailyScheduleHandler = useFieldArray({

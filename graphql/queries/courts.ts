@@ -24,6 +24,16 @@ export const GET_ALL_COURTS = graphql(`
         }
         courtLength
         courtWidth
+        courtSchedules {
+          id
+          day {
+            name
+          }
+          timeSlot {
+            startTime
+            endTime
+          }
+        }
       }
       totalRecords
     }

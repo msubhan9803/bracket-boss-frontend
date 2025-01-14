@@ -108,6 +108,10 @@ const CourtListTable = () => {
     refetchCourtList();
   }, [pageSize, sort, filterBy, filter, page]);
 
+  useEffect(() => {
+    console.log('🌺 Court List: ', courtList)
+  }, [courtList])
+
   return (
     <div className="rounded-md border">
       <Table>
