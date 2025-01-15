@@ -19,6 +19,7 @@ type ManageCourtDrawerProps = {
 }
 
 type ScheduleTiming = {
+  id?: number;
   startTime: string;
   endTime: string;
 };
@@ -69,11 +70,18 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item, su
       day,
       scheduleTimings: item.courtSchedules
         ?.filter(schedule => schedule.day.name === day)
-        .map(schedule => ({
-          startTime: schedule.timeSlot.startTime.slice(0, 5),
-          endTime: schedule.timeSlot.endTime.slice(0, 5),
-          id: schedule.id,
-        })) || [],
+        .map(schedule => {
+          const timing: ScheduleTiming = {
+            startTime: schedule.timeSlot.startTime.slice(0, 5),
+            endTime: schedule.timeSlot.endTime.slice(0, 5),
+          };
+          if (typeof schedule.id === 'number') {
+            debugger
+            timing.id = schedule.id;
+          }
+
+          return timing;
+        }) || [],
     }));
     return dailySchedule;
   };
@@ -91,6 +99,7 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item, su
   const dailyScheduleHandler = useFieldArray({
     control: form.control,
     name: `dailySchedule`,
+    keyName: 'uid'
   });
   const { fields: scheduleFields } = dailyScheduleHandler;
 
@@ -102,6 +111,7 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item, su
   const scheduleTimingHandler = useFieldArray({
     control: form.control,
     name: `dailySchedule.${activeDayIndex}.scheduleTimings`,
+    keyName: 'uid'
   });
   const { fields: scheduleTimings, append: appendTiming, remove: removeTiming, update: updateTiming } = scheduleTimingHandler;
 

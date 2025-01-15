@@ -57,16 +57,22 @@ const CourtListTable = () => {
       ...values,
       dailySchedule: values.dailySchedule.map((schedule: any) => ({
         day: schedule.day,
-        scheduleTimings: schedule.scheduleTimings.map((timing: any) => ({
-          startTime: timing.startTime,
-          endTime: timing.endTime,
-        })),
+        scheduleTimings: schedule.scheduleTimings.map((timing: any) => {
+          const timingData: any = {
+            startTime: timing.startTime,
+            endTime: timing.endTime,
+          };
+          if (typeof timing.id === 'number') {
+            timingData.id = timing.id;
+          }
+          return timingData;
+        }),
       })),
       courtId: courtId as number,
     });
     refetchCourtList();
     setEditModalOpen(false);
-  }
+  };
 
   const courtList = useMemo<Partial<Court>[]>(
     () => [...courtListFetched],
