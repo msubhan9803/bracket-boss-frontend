@@ -73,7 +73,7 @@ export type CourtSchedule = {
   createdAt: Scalars['DateTime']['output'];
   day: Day;
   id: Scalars['Float']['output'];
-  timeSlot: TimeSlots;
+  timeSlot: TimeSlot;
   updatedAt: Scalars['DateTime']['output'];
 };
 
@@ -620,6 +620,7 @@ export type ScheduleDto = {
 
 export type ScheduleTimingInputDto = {
   endTime: Scalars['String']['input'];
+  id?: InputMaybe<Scalars['Float']['input']>;
   startTime: Scalars['String']['input'];
 };
 
@@ -724,8 +725,8 @@ export type TeamType = {
   players: Array<User>;
 };
 
-export type TimeSlots = {
-  __typename?: 'TimeSlots';
+export type TimeSlot = {
+  __typename?: 'TimeSlot';
   createdAt: Scalars['DateTime']['output'];
   endTime: Scalars['String']['output'];
   id: Scalars['Float']['output'];
@@ -1041,7 +1042,7 @@ export type GetAllCourtsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllCourtsQuery = { __typename?: 'Query', getAllCourts: { __typename?: 'CourtListResponse', totalRecords: number, courts: Array<{ __typename?: 'Court', id: any, name: string, location: string, courtLength: number, courtWidth: number, club: { __typename?: 'Club', name: string }, courtSchedules: Array<{ __typename?: 'CourtSchedule', id: number, day: { __typename?: 'Day', name: DayName }, timeSlot: { __typename?: 'TimeSlots', startTime: string, endTime: string } }> }> } };
+export type GetAllCourtsQuery = { __typename?: 'Query', getAllCourts: { __typename?: 'CourtListResponse', totalRecords: number, courts: Array<{ __typename?: 'Court', id: any, name: string, location: string, courtLength: number, courtWidth: number, club: { __typename?: 'Club', name: string }, courtSchedules: Array<{ __typename?: 'CourtSchedule', id: number, day: { __typename?: 'Day', name: DayName }, timeSlot: { __typename?: 'TimeSlot', startTime: string, endTime: string } }> }> } };
 
 export type GetAllFormatsQueryVariables = Exact<{ [key: string]: never; }>;
 

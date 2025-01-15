@@ -19,8 +19,16 @@ const AddCourtButton: React.FC<AddCourtButtonButtonProps> = ({
   const { createCourtMutation } = useCourtOperations();
   const clubId = useSelector((state: RootState) => state.user.clubId);
 
-  const formFields: DynamicFormField<CreateCourtInputDto>[] = useMemo(
+  const formFields: DynamicFormField<any>[] = useMemo(
     () => [
+      {
+        type: "render",
+        className: "col-span-2",
+        isVisible: true,
+        render: () => (
+          <h1 className='text-lg font-bold'>Court Details</h1>
+        ),
+      },
       {
         label: "Name",
         name: "name",
@@ -28,6 +36,7 @@ const AddCourtButton: React.FC<AddCourtButtonButtonProps> = ({
         placeholder: "Tournament Name",
         required: true,
         defaultValue: "",
+        className: 'col-span-2',
       },
       {
         label: "Location",
@@ -36,6 +45,40 @@ const AddCourtButton: React.FC<AddCourtButtonButtonProps> = ({
         placeholder: "Court Location",
         required: true,
         defaultValue: "",
+        className: 'col-span-2',
+      },
+      {
+        label: "Court Length",
+        name: "courtLength",
+        type: "number",
+        placeholder: "e.g. 10",
+        suffixRender: <p>feet</p>,
+        defaultValue: '',
+        className: 'col-span-2 lg:col-span-1',
+      },
+      {
+        label: "Court Width",
+        name: "courtWidth",
+        type: "number",
+        placeholder: "e.g. 10",
+        suffixRender: <p>feet</p>,
+        className: 'col-span-2 lg:col-span-1',
+      },
+      {
+        type: "render",
+        className: "col-span-2 my-2",
+        isVisible: true,
+        render: () => (
+          <hr />
+        ),
+      },
+      {
+        type: "render",
+        className: "col-span-2",
+        isVisible: true,
+        render: () => (
+          <h1 className='text-lg font-bold'>Court Timings</h1>
+        ),
       },
     ],
     []
@@ -61,8 +104,10 @@ const AddCourtButton: React.FC<AddCourtButtonButtonProps> = ({
         fields={formFields}
         title="Create Court"
         description="Creates a new court for this club"
-        submitButtonLabel="Submit"
+        submitButtonLabel="Save Changes"
         onSubmit={handleCreating}
+        fixedFooter
+        formGridCols="grid-cols-2"
       />
     </Fragment>
   );

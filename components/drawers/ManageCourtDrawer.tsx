@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { z } from "zod";
-import { useForm, useFieldArray } from "react-hook-form";
 import { DynamicFormField as DynamicFormFieldType } from '@/global'
 import DynamicFormSheet from '../core/DynamicFormSheet'
 import { Court } from '@/graphql/generated/graphql'
@@ -8,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { Button } from "../ui/button";
 import { MoveRight, Trash } from "lucide-react";
 import { Input } from "../ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useCourtDrawer } from "@/hooks/court/useCourtDrawer";
 
 type ManageCourtDrawerProps = {
   editModalOpen: boolean
@@ -17,35 +16,6 @@ type ManageCourtDrawerProps = {
   item: Partial<Court>
   submitButtonLoading: boolean
 }
-
-type ScheduleTiming = {
-  id?: number;
-  startTime: string;
-  endTime: string;
-};
-
-type DailySchedule = {
-  day: string;
-  scheduleTimings: ScheduleTiming[];
-};
-
-type FormData = {
-  name: string;
-  location: string;
-  courtLength: number | null;
-  courtWidth: number | null;
-  dailySchedule: DailySchedule[];
-};
-
-const DAYS_OF_WEEK = [
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
-  "saturday",
-  "sunday",
-];
 
 const validationSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
@@ -63,69 +33,16 @@ const validationSchema = z.object({
 });
 
 const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item, submitButtonLoading }: ManageCourtDrawerProps) => {
-  const [activeDay, setActiveDay] = useState(DAYS_OF_WEEK[0]);
-
-  const populateDailySchedule = () => {
-    const dailySchedule = DAYS_OF_WEEK.map((day) => ({
-      day,
-      scheduleTimings: item.courtSchedules
-        ?.filter(schedule => schedule.day.name === day)
-        .map(schedule => {
-          const timing: ScheduleTiming = {
-            startTime: schedule.timeSlot.startTime.slice(0, 5),
-            endTime: schedule.timeSlot.endTime.slice(0, 5),
-          };
-          if (typeof schedule.id === 'number') {
-            debugger
-            timing.id = schedule.id;
-          }
-
-          return timing;
-        }) || [],
-    }));
-    return dailySchedule;
-  };
-
-  const form = useForm<FormData>({
-    resolver: zodResolver(validationSchema),
-    defaultValues: {
-      name: item?.name || "",
-      location: item?.location || "",
-      courtLength: item?.courtLength || null,
-      courtWidth: item?.courtWidth || null,
-      dailySchedule: populateDailySchedule(),
-    },
-  });
-  const dailyScheduleHandler = useFieldArray({
-    control: form.control,
-    name: `dailySchedule`,
-    keyName: 'uid'
-  });
-  const { fields: scheduleFields } = dailyScheduleHandler;
-
-  const formState = form.watch();
-  const activeDayIndex = useMemo(() => scheduleFields.findIndex(
-    (field) => field.day === activeDay
-  ), [scheduleFields, activeDay]);
-
-  const scheduleTimingHandler = useFieldArray({
-    control: form.control,
-    name: `dailySchedule.${activeDayIndex}.scheduleTimings`,
-    keyName: 'uid'
-  });
-  const { fields: scheduleTimings, append: appendTiming, remove: removeTiming, update: updateTiming } = scheduleTimingHandler;
-
-  const handleAddTimeSlot = () => {
-    appendTiming({ startTime: "", endTime: "" });
-  };
-
-  const handleUpdateTimeSlot = (timingIndex: number, field: 'startTime' | 'endTime', value: string) => {
-    updateTiming(timingIndex, { ...scheduleTimings[timingIndex], [field]: value });
-  };
-
-  const handleRemoveTimeSlot = (timingIndex: number) => {
-    removeTiming(timingIndex);
-  };
+  const {
+    form,
+    formState,
+    activeDay,
+    setActiveDay,
+    scheduleFields,
+    handleAddTimeSlot,
+    handleUpdateTimeSlot,
+    handleRemoveTimeSlot,
+  } = useCourtDrawer(item);
 
   const formFields = useMemo(() => {
     const fields: DynamicFormFieldType<any>[] = [
@@ -270,10 +187,6 @@ const ManageCourtDrawer = ({ editModalOpen, setEditModalOpen, onUpdate, item, su
 
     return fields;
   }, [item, activeDay, formState]);
-
-  useEffect(() => {
-    console.log('🌺 formState: ', formState)
-  }, [formState])
 
   return (
     <DynamicFormSheet
