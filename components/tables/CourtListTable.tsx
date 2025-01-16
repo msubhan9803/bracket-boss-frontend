@@ -25,8 +25,11 @@ import FilterComponent from "@/components/core/FilterComponent";
 import AddCourtButton from "../mutation-buttons/AddCourtButton";
 import ManageCourtDrawer from "../drawers/ManageCourtDrawer";
 import useCourtOperations from "@/hooks/court/useCourtOperations";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const CourtListTable = () => {
+  const clubId = useSelector((state: RootState) => state.user.clubId) as number;
   const [page, setPage] = useState(1);
   const pageSizes = [5, 10, 25];
   const [pageSize, setPageSize] = useState(pageSizes[0]);
@@ -45,16 +48,17 @@ const CourtListTable = () => {
   const { courtListFetched, totalRecords, loadingOrder, refetchCourtList } =
     useCourts(page, pageSize, filterBy, filter, sort);
 
-  const { updateCourtMutation } = useCourtOperations();
+  const { upsertCourtMutation } = useCourtOperations();
 
   const handleEditOpen = (court: Partial<Court>) => {
     setCurrentEditingCourt(court)
     setEditModalOpen(true)
   }
 
-  const handleEdit = async (courtId: number, values: any) => {
-    await updateCourtMutation.mutateAsync({
+  const handleEdit = async (courtId: number | undefined, values: any) => {
+    await upsertCourtMutation.mutateAsync({
       ...values,
+      clubId,
       dailySchedule: values.dailySchedule.map((schedule: any) => ({
         day: schedule.day,
         scheduleTimings: schedule.scheduleTimings.map((timing: any) => {
@@ -62,13 +66,13 @@ const CourtListTable = () => {
             startTime: timing.startTime,
             endTime: timing.endTime,
           };
-          if (typeof timing.id === 'number') {
+          if (typeof timing.id === "number") {
             timingData.id = timing.id;
           }
           return timingData;
         }),
       })),
-      courtId: courtId as number,
+      courtId: courtId ?? undefined,
     });
     refetchCourtList();
     setEditModalOpen(false);
@@ -113,10 +117,6 @@ const CourtListTable = () => {
   useEffect(() => {
     refetchCourtList();
   }, [pageSize, sort, filterBy, filter, page]);
-
-  useEffect(() => {
-    console.log('🌺 Court List: ', courtList)
-  }, [courtList])
 
   return (
     <div className="rounded-md border">
@@ -227,7 +227,7 @@ const CourtListTable = () => {
         </TableFooter>
       </Table>
 
-      {editModalOpen && <ManageCourtDrawer editModalOpen={editModalOpen} setEditModalOpen={setEditModalOpen} item={currentEditingCourt as Partial<Court>} onUpdate={handleEdit} submitButtonLoading={updateCourtMutation.isPending} />}
+      {editModalOpen && <ManageCourtDrawer editModalOpen={editModalOpen} setEditModalOpen={setEditModalOpen} item={currentEditingCourt as Partial<Court>} onUpdate={handleEdit} submitButtonLoading={upsertCourtMutation.isPending} />}
     </div>
   );
 };

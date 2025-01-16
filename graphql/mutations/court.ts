@@ -1,8 +1,8 @@
 import { graphql } from "../generated";
 
-export const CREATE_COURT = graphql(`
-  mutation CreateCourt($input: CreateCourtInputDto!) {
-    createCourt(input: $input) {
+export const UPSERT_COURT = graphql(`
+  mutation UpsertCourt($input: UpsertCourtInputDto!) {
+    upsertCourt(input: $input) {
       id
       location
       name
@@ -10,20 +10,6 @@ export const CREATE_COURT = graphql(`
         id
         name
       }
-    }
-  }
-`);
-
-export const UPDATE_COURT = graphql(`
-  mutation UpdateCourt($input: UpdateCourtInputDto!) {
-    updateCourt(input: $input) {
-        id
-        location
-        name
-        club {
-          id
-          name
-        }
     }
   }
 `);

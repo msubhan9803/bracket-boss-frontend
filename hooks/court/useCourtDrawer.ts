@@ -14,7 +14,7 @@ type DailySchedule = {
   scheduleTimings: ScheduleTiming[];
 };
 
-type FormData = {
+export type FormData = {
   name: string;
   location: string;
   courtLength: number | null;
@@ -47,13 +47,22 @@ const validationSchema = z.object({
     .min(1, { message: "Court width must be greater than 0" }),
 });
 
-export const useCourtDrawer = (item: Partial<{ courtSchedules: any[], name: string, location: string, courtLength: number, courtWidth: number }>) => {
+export const useCourtDrawer = (
+  item?: Partial<{ courtSchedules: any[], name: string, location: string, courtLength: number, courtWidth: number }>
+) => {
   const [activeDay, setActiveDay] = useState<string>(DAYS_OF_WEEK[0]);
 
   const populateDailySchedule = (): DailySchedule[] => {
+    if (!item) {
+      return DAYS_OF_WEEK.map((day) => ({
+        day,
+        scheduleTimings: [],
+      }));
+    }
+
     return DAYS_OF_WEEK.map((day) => ({
       day,
-      scheduleTimings: item.courtSchedules
+      scheduleTimings: item?.courtSchedules
         ?.filter((schedule: any) => schedule.day.name === day)
         .map((schedule: any) => {
           const timing: ScheduleTiming = {
@@ -106,7 +115,7 @@ export const useCourtDrawer = (item: Partial<{ courtSchedules: any[], name: stri
     append({ startTime: "", endTime: "" });
   };
 
-  const handleUpdateTimeSlot = (timingIndex: number, field: 'startTime' | 'endTime', value: string) => {
+  const handleUpdateTimeSlot = (timingIndex: number, field: "startTime" | "endTime", value: string) => {
     update(timingIndex, { ...scheduleTimings[timingIndex], [field]: value });
   };
 
