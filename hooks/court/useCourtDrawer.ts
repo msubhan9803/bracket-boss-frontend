@@ -73,7 +73,8 @@ export const useCourtDrawer = (
             timing.id = schedule.id;
           }
           return timing;
-        }) || [],
+        })
+        .sort((a: ScheduleTiming, b: ScheduleTiming) => a.startTime.localeCompare(b.startTime)) || [],
     }));
   };
 
