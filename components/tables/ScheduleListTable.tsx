@@ -115,7 +115,7 @@ const ScheduleListTable = () => {
       tournamentId,
     })
 
-    if (data.getScheduleOfTournament.schedule.tournamentRounds.length > 0) {
+    if (data?.getScheduleOfTournament && data?.getScheduleOfTournament.schedule.tournamentRounds.length > 0) {
       router.push(`${PageUrls.SCHEDULING_MANAGEMENT}/${tournamentId}/${PageNames.SCHEDULE_EDITOR}`)
     } else {
       router.push(`${PageUrls.SCHEDULING_MANAGEMENT}/${tournamentId}/${PageNames.SCHEDULE_PREPARATION}`)

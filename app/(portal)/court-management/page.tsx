@@ -2,7 +2,7 @@ import PageTitle from "@/components/PageTitle";
 import CourtListTable from "@/components/tables/CourtListTable";
 import { PageUrls } from "@/lib/app-types";
 
-export default async function TournamentManagement() {
+export default async function CourtManagement() {
   return (
     <>
       <PageTitle

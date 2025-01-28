@@ -114,6 +114,14 @@ const AddTournamentButton: React.FC<AddTournamentButtonProps> = ({
           })),
           defaultValue: "",
         },
+        {
+          label: "Best of rounds",
+          name: "bestOfRounds" as keyof CreateTournamentInputDto,
+          type: "number",
+          placeholder: "e.g. 3 or 5",
+          required: true,
+          defaultValue: "",
+        },
       ];
 
       if (

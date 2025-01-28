@@ -26,9 +26,6 @@ export const CREATE_SCHEDULE = graphql(`
           statuses {
             status
           }
-          courts {
-            name
-          }
         }
         teams {
           name

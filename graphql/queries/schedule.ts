@@ -39,9 +39,6 @@ query GetScheduleOfTournament($input: GetScheduleOfTournamentInput!) {
           homeTeam {
             name
           }
-          courts {
-            name
-          }
           matchRounds {
             matchRoundNumber
             startTime
