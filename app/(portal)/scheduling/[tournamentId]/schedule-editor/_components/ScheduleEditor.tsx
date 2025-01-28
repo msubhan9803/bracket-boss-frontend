@@ -9,7 +9,9 @@ import { MatchType, TeamType, Tournament } from "@/graphql/generated/graphql";
 import { PageNames, PageUrls } from "@/lib/app-types";
 import PageTitle from "@/components/PageTitle";
 import { Button } from "@/components/ui/button";
-import useGetScheduleOfTournament, { CreatedMatchType } from "@/hooks/schedule/useGetScheduleOfTournament";
+import useGetScheduleOfTournament, {
+  CreatedMatchType,
+} from "@/hooks/schedule/useGetScheduleOfTournament";
 import useScheduleCreation from "@/hooks/schedule/useScheduleCreation";
 import useDeleteCreation from "@/hooks/schedule/useDeleteCreation";
 import { setScheduleOfTorunamentInput } from "@/redux/slices/schedule.slice";
@@ -27,6 +29,8 @@ type Props = {
   tournamentDetails: Tournament;
 };
 
+type Match = MatchType | CreatedMatchType;
+
 export default function ScheduleEditor({ tournamentDetails }: Props) {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -35,17 +39,23 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
   );
   const clubId = useSelector((state: RootState) => state.user.clubId);
   const params = useParams();
-  const [deleteScheduleOpen, setDeleteScheduleOpen] = useState(false)
+  const [deleteScheduleOpen, setDeleteScheduleOpen] = useState(false);
 
-  const { createdMatches, useGetScheduleOfTournamentRefetch, isLoading: createdMatchesLoading } =
-    useGetScheduleOfTournament(parseInt(params.tournamentId as string));
-  const { matches: fetchedMatches, refetchSchedules, loadingSchedule } =
-    useGetSchedulePreperationDataOfTournament(
-      tournamentId as number,
-      userIds,
-    );
+  const {
+    createdMatches,
+    useGetScheduleOfTournamentRefetch,
+    isLoading: createdMatchesLoading,
+  } = useGetScheduleOfTournament(parseInt(params.tournamentId as string));
+  const {
+    matches: fetchedMatches,
+    refetchSchedules,
+    loadingSchedule,
+  } = useGetSchedulePreperationDataOfTournament(
+    tournamentId as number,
+    userIds
+  );
 
-  const [matches, setMatches] = useState<MatchType[] | CreatedMatchType[]>([]);
+  const [matches, setMatches] = useState<Match[]>([]);
   const [activeTab, setActiveTab] = useState<"matches" | "teams">("matches");
 
   const doesCreatedMatchesExist = useMemo(
@@ -74,7 +84,7 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
     if (createdMatches?.length > 0) {
       setMatches(createdMatches);
     } else if (fetchedMatches?.length > 0) {
-      setMatches(fetchedMatches);
+      setMatches(fetchedMatches as any);
     } else {
       setMatches([]);
     }
@@ -98,7 +108,12 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
     return Object.values(uniqueTeamsMap);
   }, [matches]);
 
-  const { onDragEnd } = useScheduleDragAndDrop({ matches, setMatches, activeTab, allTeams });
+  const { onDragEnd } = useScheduleDragAndDrop({
+    matches,
+    setMatches,
+    activeTab,
+    allTeams,
+  });
 
   const handleScheduleCreation = async () => {
     await createScheduleMutation.mutateAsync({
@@ -110,7 +125,7 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
           name: team.name,
           userIds: team.players.map((player) => player.id),
         })),
-      }))
+      })),
     });
     await useGetScheduleOfTournamentRefetch();
     await refetchSchedules();
@@ -118,13 +133,15 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
 
   const handleScheduleDelete = async () => {
     await deleteScheduleMutation.mutateAsync({
-      tournamentId: parseInt(params.tournamentId as string)
+      tournamentId: parseInt(params.tournamentId as string),
     });
-    setDeleteScheduleOpen(false)
-    dispatch(setScheduleOfTorunamentInput({
-      tournamentId: null,
-      userIds: [],
-    }));
+    setDeleteScheduleOpen(false);
+    dispatch(
+      setScheduleOfTorunamentInput({
+        tournamentId: null,
+        userIds: [],
+      })
+    );
     await useGetScheduleOfTournamentRefetch();
     await refetchSchedules();
   };
@@ -145,7 +162,7 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
                 {tournamentDetails.name}
               </h1>
 
-              <Badge className="my-2" variant='secondary'>
+              <Badge className="my-2" variant="secondary">
                 {`${toTitleCase(tournamentDetails.format.name)} - ${toTitleCase(
                   tournamentDetails.teamGenerationType.name
                 )}`}
@@ -166,70 +183,88 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
 
         <div className="space-x-2 my-2 lg:my-0 flex items-center">
           {showDeleteButton && (
-            <Button variant='secondary' onClick={() => setDeleteScheduleOpen(!deleteScheduleOpen)} loading={deleteScheduleMutation.isPending}>
+            <Button
+              variant="secondary"
+              onClick={() => setDeleteScheduleOpen(!deleteScheduleOpen)}
+              loading={deleteScheduleMutation.isPending}
+            >
               Delete Schedule
             </Button>
           )}
 
           {showCreateButton && (
-            <Button onClick={handleScheduleCreation} loading={createScheduleMutation.isPending}>
+            <Button
+              onClick={handleScheduleCreation}
+              loading={createScheduleMutation.isPending}
+            >
               Create Schedule
             </Button>
           )}
         </div>
       </div>
 
-      {(createdMatchesLoading || loadingSchedule) && (
+      {createdMatchesLoading || loadingSchedule ? (
         <div className="flex-1 w-full flex items-center justify-center my-auto">
           <LoadingSpinner />
         </div>
+      ) : (
+        <>
+          {!doesCreatedMatchesExist &&
+            !doesFetchedMatchesExist &&
+            !(createdMatchesLoading || loadingSchedule) && (
+              <div className="flex-1 w-full flex items-center justify-center my-auto">
+                <div className="flex flex-col items-center gap-y-4">
+                  <h2 className="text-primary text-2xl">No schedule found</h2>
+                  <Button onClick={goToScheduleEditorScreen}>
+                    Go back to select users
+                  </Button>
+
+                  <div className="flex items-center my-2">
+                    <div className="border-t border-1 border-gray-600 flex-grow w-8"></div>
+                    <div className="px-3 text-gray-400 text-sm">OR</div>
+                    <div className="border-t border-1 border-gray-600 flex-grow w-8"></div>
+                  </div>
+
+                  <ImportScheduleDataButton />
+                </div>
+              </div>
+            )}
+
+          {showMatches && (
+            <Tabs
+              value={activeTab}
+              onValueChange={(val: any) =>
+                setActiveTab(val as "matches" | "teams")
+              }
+            >
+              <TabsList>
+                <TabsTrigger value="matches">Matches</TabsTrigger>
+                <TabsTrigger value="teams">Teams</TabsTrigger>
+              </TabsList>
+              <TabsContent value="matches">
+                <DragDropContext onDragEnd={onDragEnd}>
+                  <MatchesContainer matches={matches as CreatedMatchType[]} />
+                </DragDropContext>
+              </TabsContent>
+              <TabsContent value="teams">
+                <DragDropContext onDragEnd={onDragEnd}>
+                  <TeamsGlobalContainer teams={allTeams} />
+                </DragDropContext>
+              </TabsContent>
+            </Tabs>
+          )}
+
+          <Dialog
+            open={deleteScheduleOpen}
+            onOpenChange={setDeleteScheduleOpen}
+            title="Do you want to delete this schedule?"
+            description="This action cannot be undone. This will permanently delete this item."
+            onConfirm={handleScheduleDelete}
+            onCancel={() => setDeleteScheduleOpen(false)}
+            confirmLoading={deleteScheduleMutation.isPending}
+          />
+        </>
       )}
-
-      {!doesCreatedMatchesExist && !doesFetchedMatchesExist && !(createdMatchesLoading || loadingSchedule) && (
-        <div className="flex-1 w-full flex items-center justify-center my-auto">
-          <div className="flex flex-col items-center gap-y-4">
-            <h2 className="text-primary text-2xl">No schedule found</h2>
-            <Button onClick={goToScheduleEditorScreen}>Go back to select users</Button>
-
-            <div className="flex items-center my-2">
-              <div className="border-t border-1 border-gray-600 flex-grow w-8"></div>
-              <div className="px-3 text-gray-400 text-sm">OR</div>
-              <div className="border-t border-1 border-gray-600 flex-grow w-8"></div>
-            </div>
-
-            <ImportScheduleDataButton />
-          </div>
-        </div>
-      )}
-
-      {showMatches && (
-        <Tabs value={activeTab} onValueChange={(val: any) => setActiveTab(val as "matches" | "teams")}>
-          <TabsList>
-            <TabsTrigger value="matches">Matches</TabsTrigger>
-            <TabsTrigger value="teams">Teams</TabsTrigger>
-          </TabsList>
-          <TabsContent value="matches">
-            <DragDropContext onDragEnd={onDragEnd}>
-              <MatchesContainer matches={matches as MatchType[]} />
-            </DragDropContext>
-          </TabsContent>
-          <TabsContent value="teams">
-            <DragDropContext onDragEnd={onDragEnd}>
-              <TeamsGlobalContainer teams={allTeams} />
-            </DragDropContext>
-          </TabsContent>
-        </Tabs>
-      )}
-
-      <Dialog
-        open={deleteScheduleOpen}
-        onOpenChange={setDeleteScheduleOpen}
-        title="Do you want to delete this schedule?"
-        description="This action cannot be undone. This will permanently delete this item."
-        onConfirm={handleScheduleDelete}
-        onCancel={() => setDeleteScheduleOpen(false)}
-        confirmLoading={deleteScheduleMutation.isPending}
-      />
     </>
   );
 }

@@ -4,20 +4,18 @@ import { GET_SCHEDULE_OF_TOURNAMENT } from "@/graphql/queries/schedule";
 import { graphqlRequestHandler } from "@/lib/graphql-client";
 import { getScheduleOfTournament } from "@/server-requests/schedule.server-request";
 import { useMemo } from "react";
+import { MatchType } from "@/graphql/generated/graphql";
 
 export enum USE_SCHEDULE_OF_TOURNAMENT {
   GET_SCHEDULE_OF_TOURNAMENT_QUERY = "GET_SCHEDULE_OF_TOURNAMENT_QUERY",
   GET_SCHEDULE_OF_TOURNAMENT = "GET_SCHEDULE_OF_TOURNAMENT",
 }
 
-export type CreatedMatchType = {
-  name: string;
-  teams: {
-    name: string;
-    players: {
-      name: string;
-    }[] | undefined;
-  }[];
+export interface CreatedMatchType extends MatchType {
+  courtName: string;
+  schedule: Date;
+  startTime: string;
+  endTime: string;
 }
 
 export default function useGetScheduleOfTournament(tournamentId?: number) {
@@ -55,7 +53,11 @@ export default function useGetScheduleOfTournament(tournamentId?: number) {
           name: match.homeTeam.name,
           players: match.homeTeam.users?.map((user) => ({ name: user?.name })),
         }
-      ]
+      ],
+      courtName: match.courtSchedule?.court.name,
+      schedule: match.matchDate,
+      startTime: match.courtSchedule?.timeSlot.startTime,
+      endTime: match.courtSchedule?.timeSlot.endTime,
     };
   }) as CreatedMatchType[], [data]);
 

@@ -1,7 +1,9 @@
 import { graphql } from "../generated";
 
 export const GET_SCHEDULE_OF_TOURNAMENT_INPUT = graphql(`
-  query GetSchedulePreperationDataOfTournament($input: GetSchedulePreperationDataOfTournamentInput!) {
+  query GetSchedulePreperationDataOfTournament(
+    $input: GetSchedulePreperationDataOfTournamentInput!
+  ) {
     getSchedulePreperationDataOfTournament(input: $input) {
       matches {
         name
@@ -18,55 +20,37 @@ export const GET_SCHEDULE_OF_TOURNAMENT_INPUT = graphql(`
 `);
 
 export const GET_SCHEDULE_OF_TOURNAMENT = graphql(`
-query GetScheduleOfTournament($input: GetScheduleOfTournamentInput!) {
-  getScheduleOfTournament(input: $input) {
-    schedule {
-      tournament {
-        id
-        name
-        description
-      }
-      tournamentRounds {
-        id
-        roundNumber
-        roundFormat {
-          name
-        }
+  query GetScheduleOfTournament($input: GetScheduleOfTournamentInput!) {
+    getScheduleOfTournament(input: $input) {
+      schedule {
         matches {
           awayTeam {
             name
+            users {
+              name
+            }
           }
           homeTeam {
             name
-          }
-          matchRounds {
-            matchRoundNumber
-            startTime
-            endTime
-            matchRoundScores {
-              id
-              score
+            users {
+              name
             }
           }
-        }
-      }
-      matches {
-        awayTeam {
-          name
-          users {
-            id
-            name
+          courtSchedule {
+            day {
+              name
+            }
+            timeSlot {
+              startTime
+              endTime
+            }
+            court {
+              name
+            }
           }
-        }
-        homeTeam {
-          name
-          users {
-            id
-            name
-          }
+          matchDate
         }
       }
     }
   }
-}
 `);

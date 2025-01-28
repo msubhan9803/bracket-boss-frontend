@@ -1,11 +1,11 @@
 "use client";
 import React from "react";
 import { Droppable, Draggable } from "@hello-pangea/dnd";
-import { MatchType } from "@/graphql/generated/graphql";
 import MatchCard from "./MatchCard";
+import { CreatedMatchType } from "@/hooks/schedule/useGetScheduleOfTournament";
 
 type MatchesContainerProps = {
-    matches: MatchType[];
+    matches: CreatedMatchType[];
 };
 
 export default function MatchesContainer({ matches }: MatchesContainerProps) {
