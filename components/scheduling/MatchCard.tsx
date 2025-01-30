@@ -25,7 +25,7 @@ export default function MatchCard({ match, matchIndex }: MatchCardProps) {
         {match?.schedule && (
           <h4 className="font-bold flex items-center gap-2 text-sm">
             <BsCalendarDate className="text-primary text-xl" />
-            {moment(match?.schedule).format("MMMM Do YYYY")}
+            {moment(match?.schedule).format("ddd, MMM Do, YYYY")}
           </h4>
         )}
         {match?.startTime && match?.endTime && (
