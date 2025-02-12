@@ -39,7 +39,7 @@ export default function SchedulePreparation({ tournamentId, users }: Props) {
   return (
     <>
       <div className="flex justify-between items-center mt-3 mb-4">
-        <h2 className="text-2xl font-bold">Select Users</h2>
+        <h2 className="text-2xl font-bold">Select Players</h2>
 
         <div className="space-x-2">
           <ImportScheduleDataButton />
