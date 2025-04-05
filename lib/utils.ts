@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { headers } from "next/headers";
+// import { headers } from "next/headers";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -16,12 +16,12 @@ export function toSlug(text: string): string {
     .replace(/-+$/, "");
 }
 
-export function getSearchParam(paramName: string): string | null {
-  const headersList = headers();
-  const referer = headersList.get("referer") || "";
-  const url = new URL(referer);
-  return url.searchParams.get(paramName);
-}
+// export function getSearchParam(paramName: string): string | null {
+//   const headersList = headers();
+//   const referer = headersList.get("referer") || "";
+//   const url = new URL(referer);
+//   return url.searchParams.get(paramName);
+// }
 
 export function formatNumber(value: number): string {
   return new Intl.NumberFormat("en-US", {

@@ -64,7 +64,7 @@ export default function useGetScheduleOfTournament(tournamentId?: number) {
   return {
     createdMatches,
     getScheduleOfTournamentMutation,
-    useGetScheduleOfTournamentRefetch: refetch,
+    getScheduleOfTournamentRefetch: refetch,
     isLoading
   };
 }

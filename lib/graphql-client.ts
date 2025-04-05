@@ -93,7 +93,7 @@ export const graphqlRequestHandler = async <
   query,
   variables,
   options,
-}: GraphQLRequestHandlerOptions<T, V>): Promise<T> => {
+}: GraphQLRequestHandlerOptions<T, V>): Promise<T | undefined> => {
   const gql = await graphqlServer(options ?? {});
 
   try {

@@ -43,7 +43,7 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
 
   const {
     createdMatches,
-    useGetScheduleOfTournamentRefetch,
+    getScheduleOfTournamentRefetch,
     isLoading: createdMatchesLoading,
   } = useGetScheduleOfTournament(parseInt(params.tournamentId as string));
   const {
@@ -127,7 +127,7 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
         })),
       })),
     });
-    await useGetScheduleOfTournamentRefetch();
+    await getScheduleOfTournamentRefetch();
     await refetchSchedules();
   };
 
@@ -142,7 +142,7 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
         userIds: [],
       })
     );
-    await useGetScheduleOfTournamentRefetch();
+    await getScheduleOfTournamentRefetch();
     await refetchSchedules();
   };
 

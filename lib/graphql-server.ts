@@ -38,4 +38,5 @@ export const graphqlRequestHandlerServer = async <
   } catch (err) {
     handleGraphQLErrors(err);
   }
+  throw new Error("GraphQL request failed and no data was returned.");
 };

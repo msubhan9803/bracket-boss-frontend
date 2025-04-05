@@ -58,8 +58,12 @@ export default function useAuth() {
         variables: { input: variables },
       }),
     onSuccess: (res) => {
-      setAuthToken(res.login.authTokens);
-      setUser(res.login.user as UserCookie);
+      if (res && res.login) {
+        setAuthToken(res.login.authTokens);
+        setUser(res.login.user as UserCookie);
+      } else {
+        toast.error("Unexpected response format");
+      }
     },
     onError: (error) => {
       toast.error(error.message);
@@ -82,11 +86,16 @@ export default function useAuth() {
 
   const registerUserMutation = useMutation({
     mutationKey: [USE_AUTH_KEY.REGISTER_USER],
-    mutationFn: (variables: RegisterInputDto) =>
-      graphqlRequestHandler({
+    mutationFn: async (variables: RegisterInputDto) => {
+      const response = await graphqlRequestHandler({
         query: REGISTER_USER,
         variables: { input: variables },
-      }),
+      });
+      if (!response || !response.register) {
+        throw new Error("Invalid response from server");
+      }
+      return response as RegisterMutation;
+    },
     onSuccess: async (
       data: RegisterMutation,
       { email, password }: RegisterInputDto
@@ -113,8 +122,12 @@ export default function useAuth() {
         variables: { input: variables },
       }),
     onSuccess: (res) => {
-      toast.success(res.verifyEmail.message);
-      router.push(ONBOARDING_STEPS.STEP_2);
+      if (res?.verifyEmail?.message) {
+        toast.success(res.verifyEmail.message);
+        router.push(ONBOARDING_STEPS.STEP_2);
+      } else {
+        toast.error("Unexpected response format");
+      }
     },
     onError: (error) => {
       toast.error(error.message);
@@ -129,7 +142,7 @@ export default function useAuth() {
         variables: { input: variables },
       }),
     onSuccess: (res) => {
-      const selectedRole = res.updateUserRole.userRoleClub.role;
+      const selectedRole = res?.updateUserRole?.userRoleClub?.role;
 
       if (selectedRole?.id === PredefinedSystemRoles.clubOwner) {
         router.push(ONBOARDING_STEPS.STEP_3_CLUB);
@@ -168,7 +181,7 @@ export default function useAuth() {
         variables,
       }),
     onSuccess: (res, variables) => {
-      toast.success(res.sendForgotPasswordEmail.message);
+      toast.success(res?.sendForgotPasswordEmail?.message || "Operation successful");
       router.push(`${FORGOT_PASSWORD_STEPS.STEP_2}?email=${variables.email}`);
     },
     onError: (error) => {
@@ -184,13 +197,17 @@ export default function useAuth() {
         variables,
       }),
     onSuccess: (res) => {
-      toast.success(res.verifyOtp.message);
+      toast.success(res?.verifyOtp?.message || "Operation successful");
       // setCustomCookie(CustomCookies.RESET_PASSWWORD_TOKEN, res.verifyOtp.token);
-      setAuthToken({
-        accessToken: res.verifyOtp.token,
-        refreshToken: "",
-        expiresIn: 0,
-      });
+      if (res?.verifyOtp?.token) {
+        setAuthToken({
+          accessToken: res.verifyOtp.token,
+          refreshToken: "",
+          expiresIn: 0,
+        });
+      } else {
+        toast.error("Invalid response: Token is missing");
+      }
       router.push(FORGOT_PASSWORD_STEPS.STEP_3);
     },
     onError: (error) => {
@@ -206,7 +223,7 @@ export default function useAuth() {
         variables,
       }),
     onSuccess: (res) => {
-      toast.success(res.resetPassword.message);
+      toast.success(res?.resetPassword?.message || "Password reset successful");
       clearAllCookies();
       router.push(PageUrls.LOGIN);
     },

@@ -55,12 +55,20 @@ const ImportScheduleDataButton: React.FC = () => {
 
   const handleDownloadUserData = async () => {
     const data = await downloadUserDataForScheduleMutation.mutateAsync();
-    downloadXLSX(data.downloadUserDataForSchedule, 'user_data_template.xlsx');
+    if (data?.downloadUserDataForSchedule) {
+      downloadXLSX(data.downloadUserDataForSchedule, 'user_data_template.xlsx');
+    } else {
+      console.error("Failed to download user data: data is undefined");
+    }
   }
 
   const handleDownloadEmptyScheduleTemplate = async () => {
     const data = await downloadEmptyScheduleTemplateMutation.mutateAsync();
-    downloadXLSX(data.downloadEmptyScheduleTemplate, 'empty-schedule-template.xlsx');
+    if (data?.downloadEmptyScheduleTemplate) {
+      downloadXLSX(data.downloadEmptyScheduleTemplate, 'empty-schedule-template.xlsx');
+    } else {
+      console.error("Failed to download empty schedule template: data is undefined");
+    }
   }
 
   const onSubmit = async (values: FormData) => {
