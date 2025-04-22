@@ -24,19 +24,19 @@ const AddTournamentButton: React.FC<AddTournamentButtonProps> = ({
   refetchTournamentList,
 }) => {
   const [showModal, setShowModal] = useState(false);
-  const clubId = useSelector((state: RootState) => state.user.clubId);
+  // const clubId = useSelector((state: RootState) => state.user.clubId);
 
   const form = useForm<CreateTournamentInputDto>({
     mode: "onBlur",
   });
 
-  const formatId = form.watch("formatId");
+  const poolPlayFormatId = form.watch("poolPlayFormatId");
   const teamGenerationTypeId = form.watch("teamGenerationTypeId");
 
   const { createTournamentMutation } = useTournamentOperations();
   const { formats } = useFormats();
   const { teamGenerationTypes } = useTeamGenerationTypeByFormat({
-    formatId,
+    poolPlayFormatId,
   });
 
   const selectedTeamGenerationType = useMemo(
@@ -91,8 +91,20 @@ const AddTournamentButton: React.FC<AddTournamentButtonProps> = ({
           defaultValue: false,
         },
         {
-          label: "Format",
-          name: "formatId" as keyof CreateTournamentInputDto,
+          label: "Pool Play Format",
+          name: "poolPlayFormatId" as keyof CreateTournamentInputDto,
+          type: "select",
+          placeholder: "Select format",
+          required: true,
+          options: formats?.map((format) => ({
+            label: toTitleCase(format.name),
+            value: format.id.toString(),
+          })),
+          defaultValue: "",
+        },
+        {
+          label: "Play Off Format",
+          name: "playOffFormatId" as keyof CreateTournamentInputDto,
           type: "select",
           placeholder: "Select format",
           required: true,
@@ -116,7 +128,7 @@ const AddTournamentButton: React.FC<AddTournamentButtonProps> = ({
         },
         {
           label: "Best of rounds",
-          name: "bestOfRounds" as keyof CreateTournamentInputDto,
+          name: "matchBestOfRounds" as keyof CreateTournamentInputDto,
           type: "number",
           placeholder: "e.g. 3 or 5",
           required: true,
@@ -147,8 +159,8 @@ const AddTournamentButton: React.FC<AddTournamentButtonProps> = ({
   const handleCreating = async (input: CreateTournamentInputDto) => {
     await createTournamentMutation.mutateAsync({
       ...input,
-      clubId: clubId as number,
-      formatId: parseInt(input.formatId.toString()),
+      poolPlayFormatId: parseInt(input.poolPlayFormatId.toString()),
+      playOffFormatId: parseInt(input.playOffFormatId.toString()),
       teamGenerationTypeId: parseInt(input.teamGenerationTypeId.toString()),
     });
     setShowModal(false);
