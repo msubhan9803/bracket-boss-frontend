@@ -7,19 +7,19 @@ export enum USE_BRACKET_KEY {
 }
 
 export default function useTeamGenerationTypeByFormat({
-  formatId,
+  poolPlayFormatId,
 }: {
-  formatId: number;
+  poolPlayFormatId: number;
 }) {
   const {
     data: teamGenerationTypes,
     isLoading,
     error,
   } = useQuery({
-    queryKey: [USE_BRACKET_KEY.GET_ALL_TEAM_GENERATION_TYPES, formatId],
+    queryKey: [USE_BRACKET_KEY.GET_ALL_TEAM_GENERATION_TYPES, poolPlayFormatId],
     queryFn: () =>
-      getAllTeamGenerationTypesByFormatId(parseInt(formatId as any)),
-    enabled: !!formatId,
+      getAllTeamGenerationTypesByFormatId(parseInt(poolPlayFormatId as any)),
+    enabled: !!poolPlayFormatId,
   });
 
   const teamGenerationTypesMemo = useMemo(

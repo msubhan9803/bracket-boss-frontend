@@ -8,13 +8,6 @@ export const CREATE_SCHEDULE = graphql(`
           id
           name
         }
-        tournamentRounds {
-          id
-          roundNumber
-          roundFormat {
-            name
-          }
-        }
         matches {
           id
           homeTeam {

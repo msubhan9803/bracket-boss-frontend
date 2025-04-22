@@ -25,13 +25,13 @@ export const GET_ALL_TOURNAMENTS = graphql(`
         isPrivate
         created_at
         updated_at
-        format {
+        poolPlayFormat {
+          name
+        }
+        playOffFormat {
           name
         }
         teamGenerationType {
-          name
-        }
-        club {
           name
         }
         sport {
@@ -69,7 +69,10 @@ export const GET_TOURNAMENT_BY_ID = graphql(`
       name
       start_date
       updated_at
-      format {
+      poolPlayFormat {
+        name
+      }
+      playOffFormat {
         name
       }
       teamGenerationType {
