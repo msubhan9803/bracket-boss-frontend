@@ -99,12 +99,7 @@ const TournamentListTable = () => {
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-
-  useEffect(() => {
-    console.log('🌺🌺🌺 tournamentListFetched: ', tournamentListFetched)
-  }, [tournamentListFetched])
   
-
   useEffect(() => {
     refetchTournamentList();
   }, [pageSize, sort, filterBy, filter, page]);

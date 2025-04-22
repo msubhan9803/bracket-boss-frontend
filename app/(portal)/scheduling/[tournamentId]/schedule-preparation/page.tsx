@@ -27,7 +27,7 @@ const ScheduleDetails: NextPage<PageProps> = async ({ params }) => {
             </h1>
 
             <Badge className="my-2" variant='secondary'>
-              {`${toTitleCase(tournamentDetails.format.name)} - ${toTitleCase(
+              {`${toTitleCase(tournamentDetails.playOffFormat.name)} - ${toTitleCase(
                 tournamentDetails.teamGenerationType.name
               )}`}
             </Badge>

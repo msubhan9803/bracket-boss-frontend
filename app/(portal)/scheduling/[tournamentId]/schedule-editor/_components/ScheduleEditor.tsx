@@ -163,7 +163,7 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
               </h1>
 
               <Badge className="my-2" variant="secondary">
-                {`${toTitleCase(tournamentDetails.format.name)} - ${toTitleCase(
+                Pool Play: {`${toTitleCase(tournamentDetails.poolPlayFormat.name)} - ${toTitleCase(
                   tournamentDetails.teamGenerationType.name
                 )}`}
               </Badge>
