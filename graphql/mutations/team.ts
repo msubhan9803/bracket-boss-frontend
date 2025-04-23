@@ -10,9 +10,6 @@ export const CREATE_TEAM = graphql(`
       tournament {
         id
       }
-      club {
-        id
-      }
     }
   }
 `);

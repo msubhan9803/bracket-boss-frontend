@@ -16,9 +16,7 @@ export const CREATE_SCHEDULE = graphql(`
           awayTeam {
             name
           }
-          statuses {
-            status
-          }
+          status
         }
         teams {
           name

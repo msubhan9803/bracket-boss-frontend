@@ -117,10 +117,10 @@ export default function ScheduleEditor({ tournamentDetails }: Props) {
 
   const handleScheduleCreation = async () => {
     await createScheduleMutation.mutateAsync({
-      clubId: clubId as number,
       tournamentId: parseInt(params.tournamentId as string),
-      matches: (fetchedMatches as MatchType[]).map((match) => ({
+      matches: (fetchedMatches as MatchType[]).map((match, index) => ({
         matchDate: new Date(),
+        title: `Match-${index}`,
         teams: match.teams.map((team) => ({
           name: team.name,
           userIds: team.players.map((player) => player.id),
