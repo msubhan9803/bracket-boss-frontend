@@ -242,49 +242,12 @@ export type MatchInput = {
 
 export type MatchRound = {
   __typename?: 'MatchRound';
-  club: Club;
   created_at: Scalars['DateTime']['output'];
-  endTime: Scalars['DateTime']['output'];
   id: Scalars['CustomID']['output'];
   match: Match;
   matchRoundNumber: Scalars['Float']['output'];
-  matchRoundScores: Array<MatchRoundScore>;
-  startTime: Scalars['DateTime']['output'];
-  statuses: Array<MatchRoundStatus>;
-  tournament: Tournament;
-  updated_at: Scalars['DateTime']['output'];
-  winnerTeam?: Maybe<Team>;
-};
-
-export type MatchRoundScore = {
-  __typename?: 'MatchRoundScore';
-  club: Club;
-  created_at: Scalars['DateTime']['output'];
-  id: Scalars['CustomID']['output'];
-  matchRound: MatchRound;
-  player: User;
-  score: Scalars['Float']['output'];
-  team: Team;
-  tournament: Tournament;
   updated_at: Scalars['DateTime']['output'];
 };
-
-export type MatchRoundStatus = {
-  __typename?: 'MatchRoundStatus';
-  created_at: Scalars['DateTime']['output'];
-  id: Scalars['CustomID']['output'];
-  matchRounds: Array<MatchRound>;
-  status: MatchRoundStatusTypes;
-  updated_at: Scalars['DateTime']['output'];
-};
-
-export enum MatchRoundStatusTypes {
-  Completed = 'completed',
-  InProgress = 'in_progress',
-  NotStarted = 'not_started',
-  Paused = 'paused',
-  Void = 'void'
-}
 
 export enum MatchStatusTypes {
   Completed = 'completed',
