@@ -9,8 +9,6 @@ import {
 } from "@/graphql/generated/graphql";
 import { Button } from "@/components/ui/button";
 import { toTitleCase } from "@/lib/utils";
-import { RootState } from "@/redux/store";
-import { useSelector } from "react-redux";
 import useTeamOperations from "@/hooks/team/useTeamOperations";
 
 interface AddTeamButtonProps {
@@ -26,7 +24,6 @@ const AddTeamButton: React.FC<AddTeamButtonProps> = ({
 }) => {
   const [showModal, setShowModal] = useState(false);
   const { createTeamMutation } = useTeamOperations();
-  const clubId = useSelector((state: RootState) => state.user.clubId) as number;
 
   const formFields: DynamicFormField<CreateTeamInputDto>[] = useMemo(
     () => [
@@ -70,7 +67,6 @@ const AddTeamButton: React.FC<AddTeamButtonProps> = ({
     await createTeamMutation.mutateAsync({
       ...input,
       tournamentId: parseInt(input.tournamentId.toString()),
-      clubId,
       userIds: input.userIds.map((id) => parseInt(id.toString())),
     });
     setShowModal(false);
