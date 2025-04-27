@@ -1,54 +1,36 @@
 import { graphql } from "../generated";
 
-export const GET_SCHEDULE_OF_TOURNAMENT_INPUT = graphql(`
-  query GetSchedulePreperationDataOfTournament(
-    $input: GetSchedulePreperationDataOfTournamentInput!
-  ) {
-    getSchedulePreperationDataOfTournament(input: $input) {
-      matches {
-        name
-        teams {
-          name
-          players {
-            id
-            name
-          }
-        }
-      }
-    }
-  }
-`);
-
 export const GET_SCHEDULE_OF_TOURNAMENT = graphql(`
   query GetScheduleOfTournament($input: GetScheduleOfTournamentInput!) {
     getScheduleOfTournament(input: $input) {
-      schedule {
-        matches {
-          awayTeam {
-            name
-            users {
+      id
+      name
+      order
+      pools {
+        id
+        name
+        order
+        rounds {
+          id
+          name
+          order
+          matches {
+            id
+            title
+            homeTeam {
               name
+            }
+            awayTeam {
+              name
+            }
+            winnerTeam {
+              name
+            }
+            matchRounds {
+              id
+              matchRoundNumber
             }
           }
-          homeTeam {
-            name
-            users {
-              name
-            }
-          }
-          courtSchedule {
-            day {
-              name
-            }
-            timeSlot {
-              startTime
-              endTime
-            }
-            court {
-              name
-            }
-          }
-          matchDate
         }
       }
     }

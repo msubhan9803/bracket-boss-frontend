@@ -1,25 +1,19 @@
 import { graphql } from "../generated";
 
 export const CREATE_SCHEDULE = graphql(`
-  mutation CreateSchedule($input: CreateScheduleInputDto!) {
-    createSchedule(input: $input) {
-      schedule {
-        tournament {
+  mutation CreateSchedule($tournamentId: Float!) {
+    createSchedule(tournamentId: $tournamentId) {
+      id
+      name
+      pools {
+        name
+        rounds {
           id
           name
-        }
-        matches {
-          id
-          homeTeam {
-            name
+          matches {
+            id
+            title
           }
-          awayTeam {
-            name
-          }
-          status
-        }
-        teams {
-          name
         }
       }
     }
