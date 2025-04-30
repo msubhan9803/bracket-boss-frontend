@@ -1,5 +1,9 @@
 import { graphqlRequestHandlerServer } from "@/lib/graphql-server";
-import { GET_ALL_TEAMS } from "@/graphql/queries/teams";
+import {
+  GET_ALL_TEAMS,
+  GET_ALL_TEAMS_BY_TOURNAMENTID,
+} from "@/graphql/queries/teams";
+import { Team } from "@/graphql/generated/graphql";
 
 type GetAllTeamsParams = {
   page: number;
@@ -32,4 +36,16 @@ export const getAllTeams = async ({
   });
 
   return data?.getAllTeams;
+};
+
+export const getAllTeamsByTournamentId = async (tournamentId: number) => {
+  const data = await graphqlRequestHandlerServer({
+    query: GET_ALL_TEAMS_BY_TOURNAMENTID,
+    options: { isServer: true },
+    variables: {
+      tournamentId,
+    },
+  });
+
+  return data?.getAllTeamsByTournamentId.teams as Team[];
 };

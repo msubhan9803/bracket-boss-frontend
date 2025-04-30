@@ -13,3 +13,18 @@ export const CREATE_TEAM = graphql(`
     }
   }
 `);
+
+export const CREATE_TOURNAMENT_TEAM = graphql(`
+  mutation CreateTournamentTeam($input: CreateTournamentTeamsInputDto!) {
+    createTournamentTeam(input: $input) {
+      id
+      name
+      statusInTournament
+      createdDate
+      updatedDate
+      users {
+        name
+      }
+    }
+  }
+`);

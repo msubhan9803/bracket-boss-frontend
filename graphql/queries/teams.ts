@@ -29,3 +29,19 @@ export const GET_ALL_TEAMS = graphql(`
     }
   }
 `);
+
+export const GET_ALL_TEAMS_BY_TOURNAMENTID = graphql(`
+  query GetAllTeamsByTournamentId($tournamentId: Float!) {
+    getAllTeamsByTournamentId(tournamentId: $tournamentId) {
+      teams {
+        id
+        name
+        users {
+          isEmailVerified
+          name
+        }
+        statusInTournament
+      }
+    }
+  }
+`);

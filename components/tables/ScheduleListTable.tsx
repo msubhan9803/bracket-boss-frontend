@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/table";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import moment from "moment";
-import { useRouter } from 'next/navigation'
 import { Tournament } from "@/graphql/generated/graphql";
 import SkeletonLoader from "@/components/ui/skeleton";
 import Pagination from "@/components/ui/pagination";
@@ -25,15 +24,13 @@ import { useTable } from "@/hooks/shared/useTable";
 import useTournaments from "@/hooks/tournament/useTournaments";
 import FilterComponent from "@/components/core/FilterComponent";
 import { toTitleCase } from "@/lib/utils";
-import { PageNames, PageUrls } from "@/lib/app-types";
-import { Button } from "../ui/button";
-import useGetScheduleOfTournament from "@/hooks/schedule/useGetScheduleOfTournament";
+import { PageUrls } from "@/lib/app-types";
 import { setScheduleOfTorunamentInput } from "@/redux/slices/schedule.slice";
 import { useDispatch } from "react-redux";
+import Link from "next/link";
 
 const ScheduleListTable = () => {
   const dispatch = useDispatch();
-  const router = useRouter()
   const [page, setPage] = useState(1);
   const pageSizes = [5, 10, 25];
   const [pageSize, setPageSize] = useState(pageSizes[0]);
@@ -46,8 +43,6 @@ const ScheduleListTable = () => {
     sort,
     setSort
   );
-
-  const { getScheduleOfTournamentMutation } = useGetScheduleOfTournament();
 
   const {
     tournamentListFetched,
@@ -100,28 +95,15 @@ const ScheduleListTable = () => {
       accessorKey: "actions",
       header: "Actions",
       cell: ({ row }) => (
-        <Button
-          className="flex gap-2 cursor-pointer !hover:text-primary"
-          variant='link'
-          onClick={() => handleViewSchedule(row.original.id)}
+        <Link
+          className="hover:text-primary"
+          href={`${PageUrls.SCHEDULING_MANAGEMENT}/${row.original.id}`}
         >
           View Schedule
-        </Button>
+        </Link>
       ),
     },
   ];
-
-  const handleViewSchedule = async (tournamentId: number) => {
-    const data = await getScheduleOfTournamentMutation.mutateAsync({
-      tournamentId,
-    })
-
-    if (data?.getScheduleOfTournament && data?.getScheduleOfTournament.schedule.matches.length > 0) {
-      router.push(`${PageUrls.SCHEDULING_MANAGEMENT}/${tournamentId}/${PageNames.SCHEDULE_EDITOR}`)
-    } else {
-      router.push(`${PageUrls.SCHEDULING_MANAGEMENT}/${tournamentId}/${PageNames.SCHEDULE_PREPARATION}`)
-    }
-  }
 
   const table = useReactTable({
     data: tournamentList,
@@ -134,11 +116,13 @@ const ScheduleListTable = () => {
   }, [pageSize, sort, filterBy, filter, page]);
 
   useEffect(() => {
-    dispatch(setScheduleOfTorunamentInput({
-      tournamentId: null,
-      userIds: [],
-    }));
-  }, [])
+    dispatch(
+      setScheduleOfTorunamentInput({
+        tournamentId: null,
+        userIds: [],
+      })
+    );
+  }, []);
 
   return (
     <div className="rounded-md border">
@@ -178,9 +162,9 @@ const ScheduleListTable = () => {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
 
                       {sort.field === header.column.id &&
                         (sort.direction === "asc" ? (

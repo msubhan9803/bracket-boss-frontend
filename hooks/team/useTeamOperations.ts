@@ -7,6 +7,7 @@ import { CREATE_TEAM } from "@/graphql/mutations/team";
 
 export enum USE_TEAM_OPERATIONS_KEY {
   CREATE_TEAM = "CREATE_TEAM",
+  CREATE_TOURNAMENT_TEAM = "CREATE_TOURNAMENT_TEAM",
 }
 
 export default function useTeamOperations() {
@@ -26,6 +27,6 @@ export default function useTeamOperations() {
   });
 
   return {
-    createTeamMutation,
+    createTeamMutation
   };
 }
