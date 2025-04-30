@@ -1,26 +1,24 @@
 "use client";
-import React, { useState } from "react";
-import ImportScheduleDataButton from "@/components/mutation-buttons/ImportScheduleDataButton";
-import UserSelectionTable from "@/components/tables/UserSelectionTable";
-import { Button } from "@/components/ui/button";
+import React, { useMemo, useState } from "react";
 import { Team, User } from "@/graphql/generated/graphql";
 import useScheduleCreation from "@/hooks/schedule/useScheduleCreation";
-import TeamCard from "@/components/scheduling/TeamCard";
+import SelectPlayers from "@/components/scheduling/team-management/SelectPlayers";
+import useTeamsByTournamentId from "@/hooks/team/useTeamsByTournamentId";
+import ExistingTeams from "@/components/scheduling/team-management/ExistingTeams";
 
 type Props = {
   tournamentId: string;
   users: User[];
-  teams: Team[];
 };
 
-export default function SchedulePreparation({
-  tournamentId,
-  users,
-  teams,
-}: Props) {
+export default function TeamContent({ tournamentId, users }: Props) {
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
   const { createTournamentTeamMutation } = useScheduleCreation();
-  const [doesTeamExists, setDoesTeamExists] = useState(teams.length > 0);
+  const { teamsByTournament, loadingTeamsByTournament, refetchTeamList } = useTeamsByTournamentId(parseInt(tournamentId));
+  const doesTeamExists = useMemo(
+    () => teamsByTournament.length > 0,
+    [teamsByTournament]
+  );
 
   const handleUsersSelection = (userIds: number[]) => {
     setSelectedUsers(userIds);
@@ -31,13 +29,13 @@ export default function SchedulePreparation({
       tournamentId: parseInt(tournamentId.toString()),
       users: selectedUsers,
     });
-    setDoesTeamExists(true);
+    refetchTeamList();
   };
 
   return (
     <div>
       {doesTeamExists ? (
-        <ExistingPlayers teams={teams} />
+        <ExistingTeams isLoading={loadingTeamsByTournament}  teams={teamsByTournament} />
       ) : (
         <SelectPlayers
           selectedUsers={selectedUsers}
@@ -48,63 +46,5 @@ export default function SchedulePreparation({
         />
       )}
     </div>
-  );
-}
-
-function SelectPlayers({
-  selectedUsers,
-  doesTeamExists,
-  handleCreateTeams,
-  handleUsersSelection,
-  users,
-}: {
-  selectedUsers: any;
-  doesTeamExists: any;
-  handleCreateTeams: any;
-  handleUsersSelection: any;
-  users: any;
-}) {
-  return (
-    <>
-      <div className="flex justify-between items-center mt-3 mb-4">
-        <h2 className="text-2xl font-bold">
-          Select Players{" "}
-          {selectedUsers.length > 0 ? `(${selectedUsers.length})` : ""}
-        </h2>
-
-        {!doesTeamExists && (
-          <div className="space-x-2">
-            <ImportScheduleDataButton />
-            <Button
-              disabled={selectedUsers.length === 0}
-              onClick={handleCreateTeams}
-            >
-              Create Teams
-            </Button>
-          </div>
-        )}
-      </div>
-
-      <UserSelectionTable
-        users={users}
-        handleUsersSelection={handleUsersSelection}
-      />
-    </>
-  );
-}
-
-function ExistingPlayers({ teams }: { teams: Team[] }) {
-  return (
-    <>
-      <div className="flex justify-between items-center mt-3 mb-4">
-        <h2 className="text-2xl font-bold">Teams</h2>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 my-12">
-        {teams.map((team, teamIndex) => (
-          <TeamCard team={team} teamIndex={teamIndex} />
-        ))}
-      </div>
-    </>
   );
 }

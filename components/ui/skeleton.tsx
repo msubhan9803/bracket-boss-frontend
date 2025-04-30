@@ -1,57 +1,110 @@
-import { cn } from '@/lib/utils'
-import React from 'react'
+"use client";
+import { cn } from "@/lib/utils";
+import React from "react";
 
 interface SkeletonProps {
-  type?: 'basic' | 'itemCard' | 'avatar'
-  height?: string
-  width?: string
-  className?: string
+  type?: "basic" | "itemCard" | "avatar" | "teamCard";
+  height?: string;
+  width?: string;
+  className?: string;
 }
 
-const SkeletonLoader: React.FC<SkeletonProps> = ({ type = 'basic', height = '2.5', width = '48', className }) => {
-  const commonClasses = 'bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse'
+const SkeletonLoader: React.FC<SkeletonProps> = ({
+  type = "basic",
+  height = "2.5",
+  width = "48",
+  className,
+}) => {
+  const commonClasses =
+    "bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse";
 
-  if (type === 'itemCard') {
+  if (type === "itemCard") {
     return (
-      <div role='status' className='w-full p-4 border border-gray-200 rounded shadow dark:border-gray-700 animate-pulse'>
-        {/* <div className='flex items-center justify-center h-48 mb-4 bg-gray-300 dark:bg-gray-700'>
-          <svg className='w-10 h-10 text-gray-200 dark:text-gray-600' aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='currentColor' viewBox='0 0 16 20'>
-            <path d='M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM10.5 6a1.5 1.5 0 1 1 0 2.999A1.5 1.5 0 0 1 10.5 6Zm2.221 10.515a1 1 0 0 1-.858.485h-8a1 1 0 0 1-.9-1.43L5.6 10.039a.978.978 0 0 1 .936-.57 1 1 0 0 1 .9.632l1.181 2.981.541-1a.945.945 0 0 1 .883-.522 1 1 0 0 1 .879.529l1.832 3.438a1 1 0 0 1-.031.988Z' />
-            <path d='M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z' />
-          </svg>
-        </div> */}
+      <div
+        role="status"
+        className="w-full p-4 border border-gray-200 rounded shadow dark:border-gray-700 animate-pulse"
+      >
         <div className={`${commonClasses} h-2.5 w-48 mb-4`}></div>
         <div className={`${commonClasses} h-2 bg-gray-200 mb-2.5`}></div>
         <div className={`${commonClasses} h-2 bg-gray-200 mb-2.5`}></div>
         <div className={`${commonClasses} h-2 bg-gray-200`}></div>
-        <div className='flex items-center mt-4'>
+        <div className="flex items-center mt-4">
           <div>
             <div className={`${commonClasses} h-2.5 w-32 mb-2`}></div>
             <div className={`${commonClasses} h-2 w-48`}></div>
           </div>
         </div>
-        <span className='sr-only'>Loading...</span>
+        <span className="sr-only">Loading...</span>
       </div>
-    )
+    );
   }
 
-  if (type === 'avatar') {
+  if (type === "avatar") {
     return (
-      <div role='status' className='flex items-center space-x-4 animate-pulse'>
-        <div className={`bg-gray-200 dark:bg-gray-700 rounded-full ${height} ${width}`}></div>
-        <div className='flex-1 space-y-4'>
+      <div role="status" className="flex items-center space-x-4 animate-pulse">
+        <div
+          className={`bg-gray-200 dark:bg-gray-700 rounded-full ${height} ${width}`}
+        ></div>
+        <div className="flex-1 space-y-4">
           <div className={`${commonClasses} h-2.5 w-32`}></div>
           <div className={`${commonClasses} h-2 w-48`}></div>
         </div>
       </div>
-    )
+    );
+  }
+
+  if (type === "teamCard") {
+    return (
+      <div
+        role="status"
+        className="w-full rounded-2xl shadow-sm animate-pulse border border-border bg-background"
+      >
+        <div className="p-4 space-y-3">
+          <div className="flex items-center space-x-3">
+            <div className="rounded-full bg-gray-200 dark:bg-gray-700 h-9 w-9" />
+            <div className="flex-1 space-y-2">
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded-full w-3/4" />
+            </div>
+            <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded-full w-20" />
+          </div>
+          <div>
+            <h4 className="text-sm font-semibold text-muted-foreground mb-1">
+              Members
+            </h4>
+            <div className="h-[150px] w-full rounded-md border border-border bg-muted/20 overflow-hidden">
+              <div className="p-2 space-y-2">
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <div key={index} className="flex items-center space-x-3">
+                    <div className="rounded-full bg-gray-200 dark:bg-gray-700 h-7 w-7" />
+                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full w-1/2" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="h-px bg-gray-200 dark:bg-gray-700" />
+          <div className="text-xs text-muted-foreground">
+            Team ID:{" "}
+            <span className="font-mono bg-gray-200 dark:bg-gray-700 rounded-md inline-block w-16 h-3" />
+          </div>
+        </div>
+        <span className="sr-only">Loading team card...</span>
+      </div>
+    );
   }
 
   return (
-    <div role='status' className='max-w-sm animate-pulse'>
-      <div className={cn('bg-gray-200 rounded-full dark:bg-gray-700 mb-4', `h-${height}`, `w-${width}`, className)}></div>
+    <div role="status" className="max-w-sm animate-pulse">
+      <div
+        className={cn(
+          "bg-gray-200 rounded-full dark:bg-gray-700 mb-4",
+          `h-${height}`,
+          `w-${width}`,
+          className
+        )}
+      ></div>
     </div>
-  )
-}
+  );
+};
 
-export default SkeletonLoader
+export default SkeletonLoader;

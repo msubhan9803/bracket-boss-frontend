@@ -41,7 +41,7 @@ export const getAllTeams = async ({
 export const getAllTeamsByTournamentId = async (tournamentId: number) => {
   const data = await graphqlRequestHandlerServer({
     query: GET_ALL_TEAMS_BY_TOURNAMENTID,
-    options: { isServer: true },
+    options: { isServer: window === undefined },
     variables: {
       tournamentId,
     },

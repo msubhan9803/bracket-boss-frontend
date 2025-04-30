@@ -30,7 +30,7 @@ const ScheduleDetails: NextPage<PageProps> = async ({ params }) => {
     {
       value: "team",
       label: "Team",
-      content: <Team tournamentId={params.tournamentId} users={users} teams={teams} />,
+      content: <Team tournamentId={params.tournamentId} users={users} />,
     },
     { value: "scheduling", label: "Scheduling", content: <Scheduling /> },
     { value: "scoring", label: "Scoring", content: <Scoring /> },
