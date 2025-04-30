@@ -6,7 +6,7 @@ export enum USE_TEAMS_KEY {
   GET_ALL_TEAMS_BY_TOURNAMENTID = "GET_ALL_TEAMS_BY_TOURNAMENTID",
 }
 
-export default function useTeamsByTournamentId(tournamentId: number) {
+export default function useTeamsByTournamentId(tournamentId: number, enabled: boolean = true) {
   const {
     data,
     isLoading,
@@ -14,6 +14,7 @@ export default function useTeamsByTournamentId(tournamentId: number) {
   } = useQuery({
     queryKey: [USE_TEAMS_KEY.GET_ALL_TEAMS_BY_TOURNAMENTID, tournamentId],
     queryFn: () => getAllTeamsByTournamentId(tournamentId),
+    enabled
   });
 
   return {

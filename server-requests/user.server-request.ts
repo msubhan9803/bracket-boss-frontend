@@ -77,7 +77,7 @@ export const getPermissionsByRoleId = async (roleId: number) => {
   const data = await graphqlRequestHandlerServer({
     query: GET_PERMISSIONS_BY_ROLEID,
     variables: { roleId },
-    options: { isServer: window === undefined },
+    options: { isServer: typeof window === "undefined" },
   });
 
   return data?.getPermissionsByRoleId;

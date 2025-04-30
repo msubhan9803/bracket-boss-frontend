@@ -4,7 +4,7 @@ import { Get_All_Team_Generation_Types_By_Format_Id } from "@/graphql/queries/te
 export const getAllTeamGenerationTypesByFormatId = async (formatId: number) => {
   const data = await graphqlRequestHandlerServer({
     query: Get_All_Team_Generation_Types_By_Format_Id,
-    options: { isServer: window === undefined },
+    options: { isServer: typeof window === "undefined" },
     variables: { formatId },
   });
 

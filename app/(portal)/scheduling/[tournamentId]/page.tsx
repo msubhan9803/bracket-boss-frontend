@@ -22,9 +22,6 @@ const ScheduleDetails: NextPage<PageProps> = async ({ params }) => {
   const tournamentDetails = await getSingleTournament(
     parseInt(params.tournamentId)
   );
-  const teams = await getAllTeamsByTournamentId(
-    parseInt(params.tournamentId)
-  );
 
   const tabs = [
     {

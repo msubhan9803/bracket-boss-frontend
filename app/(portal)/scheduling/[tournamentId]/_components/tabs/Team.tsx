@@ -5,6 +5,7 @@ import useScheduleCreation from "@/hooks/schedule/useScheduleCreation";
 import SelectPlayers from "@/components/scheduling/team-management/SelectPlayers";
 import useTeamsByTournamentId from "@/hooks/team/useTeamsByTournamentId";
 import ExistingTeams from "@/components/scheduling/team-management/ExistingTeams";
+import LoadingSpinner from "@/components/core/LoadingSpinner";
 
 type Props = {
   tournamentId: string;
@@ -14,7 +15,8 @@ type Props = {
 export default function TeamContent({ tournamentId, users }: Props) {
   const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
   const { createTournamentTeamMutation } = useScheduleCreation();
-  const { teamsByTournament, loadingTeamsByTournament, refetchTeamList } = useTeamsByTournamentId(parseInt(tournamentId));
+  const { teamsByTournament, loadingTeamsByTournament, refetchTeamList } =
+    useTeamsByTournamentId(parseInt(tournamentId));
   const doesTeamExists = useMemo(
     () => teamsByTournament.length > 0,
     [teamsByTournament]
@@ -32,10 +34,17 @@ export default function TeamContent({ tournamentId, users }: Props) {
     refetchTeamList();
   };
 
+  if (loadingTeamsByTournament) {
+    return <LoadingSpinner className="my-36" />;
+  }
+
   return (
     <div>
       {doesTeamExists ? (
-        <ExistingTeams isLoading={loadingTeamsByTournament}  teams={teamsByTournament} />
+        <ExistingTeams
+          isLoading={loadingTeamsByTournament}
+          teams={teamsByTournament}
+        />
       ) : (
         <SelectPlayers
           selectedUsers={selectedUsers}

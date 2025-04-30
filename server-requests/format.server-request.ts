@@ -4,7 +4,7 @@ import { GET_ALL_FORMATS } from "@/graphql/queries/formats";
 export const getAllFormats = async () => {
   const data = await graphqlRequestHandlerServer({
     query: GET_ALL_FORMATS,
-    options: { isServer: window === undefined },
+    options: { isServer: typeof window === "undefined" },
   });
 
   return data?.getAllFormats;

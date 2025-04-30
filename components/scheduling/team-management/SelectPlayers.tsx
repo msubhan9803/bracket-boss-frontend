@@ -1,7 +1,7 @@
 import ImportScheduleDataButton from "@/components/mutation-buttons/ImportScheduleDataButton";
 import UserSelectionTable from "@/components/tables/UserSelectionTable";
+import { Button } from "@/components/ui/button";
 import { User } from "@/graphql/generated/graphql";
-import { Button } from "@tremor/react";
 
 type SelectPlayersProps = {
   selectedUsers: number[];
