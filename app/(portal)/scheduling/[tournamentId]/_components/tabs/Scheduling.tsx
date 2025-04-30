@@ -1,8 +1,12 @@
 "use client";
 import ImportScheduleDataButton from "@/components/mutation-buttons/ImportScheduleDataButton";
 import { Button } from "@/components/ui/button";
+import { CreateScheduleMutation } from "@/graphql/generated/graphql";
+import useLevelsByTournament from "@/hooks/level/useLevelsByTournament";
 import useGetScheduleOfTournament from "@/hooks/schedule/useGetScheduleOfTournament";
 import useScheduleCreation from "@/hooks/schedule/useScheduleCreation";
+import { UseMutationResult } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 type Props = {
   tournamentId: string;
@@ -11,7 +15,7 @@ type Props = {
 export default function Scheduling({ tournamentId }: Props) {
   const { schedule, scheduleLoading, scheduleRefetch } =
     useGetScheduleOfTournament(parseInt(tournamentId));
-  console.log("schedule: ", schedule);
+  const { levels, loadingLevels } = useLevelsByTournament(tournamentId);
 
   const { createScheduleMutation } = useScheduleCreation();
 
@@ -22,6 +26,32 @@ export default function Scheduling({ tournamentId }: Props) {
     scheduleRefetch();
   };
 
+  useEffect(() => {
+    console.log("🎯 levels: ", levels);
+  }, [levels]);
+
+  return (
+    <EmptySchedule
+      handleScheduleCreation={handleScheduleCreation}
+      createScheduleMutation={createScheduleMutation}
+    />
+  );
+}
+
+function EmptySchedule({
+  handleScheduleCreation,
+  createScheduleMutation,
+}: {
+  handleScheduleCreation: () => Promise<void>;
+  createScheduleMutation: UseMutationResult<
+    CreateScheduleMutation | undefined,
+    Error,
+    {
+      tournamentId: number;
+    },
+    unknown
+  >;
+}) {
   return (
     <div className="flex-1 w-full flex items-center justify-center my-auto">
       <div className="flex flex-col items-center gap-y-4">
