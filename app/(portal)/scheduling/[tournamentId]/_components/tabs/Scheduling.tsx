@@ -1,21 +1,25 @@
 "use client";
 import ImportScheduleDataButton from "@/components/mutation-buttons/ImportScheduleDataButton";
 import { Button } from "@/components/ui/button";
-import { CreateScheduleMutation } from "@/graphql/generated/graphql";
+import { CreateScheduleMutation, Level } from "@/graphql/generated/graphql";
 import useLevelsByTournament from "@/hooks/level/useLevelsByTournament";
+import usePoolsByLevel from "@/hooks/pool/usePoolsByLevel";
 import useGetScheduleOfTournament from "@/hooks/schedule/useGetScheduleOfTournament";
 import useScheduleCreation from "@/hooks/schedule/useScheduleCreation";
 import { UseMutationResult } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type Props = {
   tournamentId: string;
 };
 
 export default function Scheduling({ tournamentId }: Props) {
+  const [selectedLevel, setSelectedLevel] = useState<Level>();
+
   const { schedule, scheduleLoading, scheduleRefetch } =
     useGetScheduleOfTournament(parseInt(tournamentId));
-  const { levels, loadingLevels } = useLevelsByTournament(tournamentId);
+  const { levels } = useLevelsByTournament(tournamentId);
+  const { pools } = usePoolsByLevel(selectedLevel?.id);
 
   const { createScheduleMutation } = useScheduleCreation();
 
@@ -28,7 +32,13 @@ export default function Scheduling({ tournamentId }: Props) {
 
   useEffect(() => {
     console.log("🎯 levels: ", levels);
+
+    if (levels.length > 0) setSelectedLevel(levels[0]);
   }, [levels]);
+
+  useEffect(() => {
+    console.log("🎱 pools: ", pools);
+  }, [pools]);
 
   return (
     <EmptySchedule
