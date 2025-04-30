@@ -14,6 +14,7 @@ export const GET_SCHEDULE_OF_TOURNAMENT = graphql(`
           id
           name
           order
+          status
           matches {
             id
             title
@@ -29,6 +30,24 @@ export const GET_SCHEDULE_OF_TOURNAMENT = graphql(`
             matchRounds {
               id
               matchRoundNumber
+            }
+            matchCourtSchedule {
+              matchDate
+              courtSchedule {
+                day {
+                  name
+                }
+                timeSlot {
+                  startTime
+                  endTime
+                }
+                court {
+                  name
+                  club {
+                    name
+                  }
+                }
+              }
             }
           }
         }

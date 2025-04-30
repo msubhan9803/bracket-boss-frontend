@@ -1,6 +1,7 @@
-"use client"
+"use client";
 import ImportScheduleDataButton from "@/components/mutation-buttons/ImportScheduleDataButton";
 import { Button } from "@/components/ui/button";
+import useGetScheduleOfTournament from "@/hooks/schedule/useGetScheduleOfTournament";
 import useScheduleCreation from "@/hooks/schedule/useScheduleCreation";
 
 type Props = {
@@ -8,12 +9,17 @@ type Props = {
 };
 
 export default function Scheduling({ tournamentId }: Props) {
+  const { schedule, scheduleLoading, scheduleRefetch } =
+    useGetScheduleOfTournament(parseInt(tournamentId));
+  console.log("schedule: ", schedule);
+
   const { createScheduleMutation } = useScheduleCreation();
 
   const handleScheduleCreation = async () => {
     await createScheduleMutation.mutateAsync({
       tournamentId: parseInt(tournamentId as string),
     });
+    scheduleRefetch();
   };
 
   return (
