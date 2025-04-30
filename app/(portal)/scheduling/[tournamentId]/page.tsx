@@ -28,7 +28,7 @@ const ScheduleDetails: NextPage<PageProps> = async ({ params }) => {
       label: "Team",
       content: <Team tournamentId={params.tournamentId} users={users} />,
     },
-    { value: "scheduling", label: "Scheduling", content: <Scheduling /> },
+    { value: "scheduling", label: "Scheduling", content: <Scheduling tournamentId={params.tournamentId} /> },
     { value: "scoring", label: "Scoring", content: <Scoring /> },
     { value: "standing", label: "Standing", content: <Standings /> },
   ];
@@ -61,8 +61,11 @@ const ScheduleDetails: NextPage<PageProps> = async ({ params }) => {
         ]}
       />
 
-      <Tabs defaultValue={tabs[0].value} className="w-full">
-        <TabsList className="mx-auto">
+      <Tabs
+        defaultValue={tabs[0].value}
+        className="w-full flex-1 flex flex-col"
+      >
+        <TabsList className=" self-start">
           {tabs.map((tab) => (
             <TabsTrigger key={tab.value} value={tab.value}>
               {tab.label}
@@ -71,7 +74,11 @@ const ScheduleDetails: NextPage<PageProps> = async ({ params }) => {
         </TabsList>
 
         {tabs.map((tab) => (
-          <TabsContent key={tab.value} value={tab.value} className="my-8 min-h-[560px]">
+          <TabsContent
+            key={tab.value}
+            value={tab.value}
+            className="flex-1 flex flex-col my-8"
+          >
             {tab.content}
           </TabsContent>
         ))}
