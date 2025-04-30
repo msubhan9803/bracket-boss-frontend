@@ -13,7 +13,6 @@ import { toTitleCase } from "@/lib/utils";
 import Footer from "./_components/Footer";
 import { getSingleTournament } from "@/server-requests/tournament.server-request";
 import { Badge } from "@/components/ui/badge";
-import { getAllTeamsByTournamentId } from "@/server-requests/team.server-request";
 
 const ScheduleDetails: NextPage<PageProps> = async ({ params }) => {
   const users = await getAllUsersWithoutPagination(
