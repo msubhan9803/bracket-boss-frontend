@@ -5,8 +5,10 @@ import {
   CreateScheduleMutation,
   Level,
   Pool,
+  Round,
 } from "@/graphql/generated/graphql";
 import useLevelsByTournament from "@/hooks/level/useLevelsByTournament";
+import useMatchesByRoundId from "@/hooks/match/useMatchesByRoundId";
 import usePoolsByLevel from "@/hooks/pool/usePoolsByLevel";
 import useRoundsByPool from "@/hooks/round/useRoundsByPool";
 import useGetScheduleOfTournament from "@/hooks/schedule/useGetScheduleOfTournament";
@@ -21,6 +23,7 @@ type Props = {
 export default function Scheduling({ tournamentId }: Props) {
   const [selectedLevel, setSelectedLevel] = useState<Level>();
   const [selectedPool, setSelectedPool] = useState<Pool>();
+  const [selectedRoundId, setSelectedRoundId] = useState<Round>()
 
   const { schedule, scheduleLoading, scheduleRefetch } =
     useGetScheduleOfTournament(parseInt(tournamentId));
@@ -28,6 +31,9 @@ export default function Scheduling({ tournamentId }: Props) {
   const { pools } = usePoolsByLevel(selectedLevel?.id);
   const { rounds } = useRoundsByPool({
     poolId: selectedPool?.id as string,
+  });
+  const { matches } = useMatchesByRoundId({
+    roundId: selectedRoundId?.id as string,
   });
 
   const { createScheduleMutation } = useScheduleCreation();
@@ -50,10 +56,16 @@ export default function Scheduling({ tournamentId }: Props) {
 
     if (pools.length > 0) setSelectedPool(pools[0]);
   }, [pools]);
-
+  
   useEffect(() => {
     console.log("📍 rounds: ", rounds);
+
+    if (rounds.length > 0) setSelectedRoundId(rounds[0]);
   }, [rounds]);
+
+  useEffect(() => {
+    console.log("📍 matches: ", matches);
+  }, [matches]);
 
   return (
     <EmptySchedule
