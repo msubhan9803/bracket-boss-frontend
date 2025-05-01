@@ -79,6 +79,7 @@ export const GET_TOURNAMENT_BY_ID = graphql(`
         name
       }
       splitSwitchGroupBy
+      status
     }
   }
 `);

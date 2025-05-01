@@ -2,10 +2,6 @@
 
 import React, { useMemo, useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { PageUrls } from "@/lib/app-types";
-import PageTitle from "@/components/PageTitle";
-import { toTitleCase } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 import { Tournament, User } from "@/graphql/generated/graphql";
 import Scheduling from "./tabs/Scheduling";
 import Scoring from "./tabs/Scoring";
@@ -39,7 +35,7 @@ export default function TournamentScheduleTabs({ initialState }: Props) {
       case "scheduling":
         return <Scheduling tournamentId={tournamentId} />;
       case "scoring":
-        return <Scoring />;
+        return <Scoring tournamentDetails={tournamentDetails} />;
       case "standing":
         return <Standings />;
       default:
