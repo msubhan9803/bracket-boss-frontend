@@ -10,7 +10,6 @@ import { PageUrls, PredefinedSystemRoles } from "@/lib/app-types";
 import { getAllUsersWithoutPagination } from "@/server-requests/user.server-request";
 import PageTitle from "@/components/PageTitle";
 import { toTitleCase } from "@/lib/utils";
-import Footer from "./_components/Footer";
 import { getSingleTournament } from "@/server-requests/tournament.server-request";
 import { Badge } from "@/components/ui/badge";
 
