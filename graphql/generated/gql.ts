@@ -31,6 +31,7 @@ const documents = {
     "\n  mutation CreateTeam($input: CreateTeamInputDto!) {\n    createTeam(input: $input) {\n      createdDate\n      id\n      name\n      updatedDate\n      tournament {\n        id\n      }\n    }\n  }\n": types.CreateTeamDocument,
     "\n  mutation CreateTournamentTeam($input: CreateTournamentTeamsInputDto!) {\n    createTournamentTeam(input: $input) {\n      id\n      name\n      statusInTournament\n      createdDate\n      updatedDate\n      users {\n        name\n      }\n    }\n  }\n": types.CreateTournamentTeamDocument,
     "\n  mutation CreateTournament($input: CreateTournamentInputDto!) {\n    createTournament(input: $input) {\n      created_at\n      description\n      end_date\n      id\n      isPrivate\n      name\n      start_date\n      updated_at\n    }\n  }\n": types.CreateTournamentDocument,
+    "\n  mutation StartTournament($tournamentId: Float!) {\n    startTournament(tournamentId: $tournamentId) {\n      id\n      name\n      status\n    }\n  }\n": types.StartTournamentDocument,
     "\n  mutation UpdateUserRole($input: UpdateUserRoleDto!) {\n    updateUserRole(input: $input) {\n      message\n      userRoleClub {\n        created_at\n        id\n        role {\n          id\n        }\n        updated_at\n      }\n    }\n  }\n": types.UpdateUserRoleDocument,
     "\n  mutation UpdateUserClub($input: UpdateUserClubDto!) {\n    updateUserClub(input: $input) {\n      message\n      user {\n        id\n        email\n        name\n      }\n    }\n  }\n": types.UpdateUserClubDocument,
     "\n  query GetAllClubs {\n    getAllClubs {\n      createdDate\n      description\n      id\n      logo\n      name\n      slug\n      updatedDate\n    }\n  }\n": types.GetAllClubsDocument,
@@ -140,6 +141,10 @@ export function graphql(source: "\n  mutation CreateTournamentTeam($input: Creat
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation CreateTournament($input: CreateTournamentInputDto!) {\n    createTournament(input: $input) {\n      created_at\n      description\n      end_date\n      id\n      isPrivate\n      name\n      start_date\n      updated_at\n    }\n  }\n"): (typeof documents)["\n  mutation CreateTournament($input: CreateTournamentInputDto!) {\n    createTournament(input: $input) {\n      created_at\n      description\n      end_date\n      id\n      isPrivate\n      name\n      start_date\n      updated_at\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation StartTournament($tournamentId: Float!) {\n    startTournament(tournamentId: $tournamentId) {\n      id\n      name\n      status\n    }\n  }\n"): (typeof documents)["\n  mutation StartTournament($tournamentId: Float!) {\n    startTournament(tournamentId: $tournamentId) {\n      id\n      name\n      status\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -2,11 +2,12 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { graphqlRequestHandler } from "@/lib/graphql-client";
-import { CREATE_TOURNAMENT } from "@/graphql/mutations/tournament";
+import { CREATE_TOURNAMENT, START_TOURNAMENT } from "@/graphql/mutations/tournament";
 import { CreateTournamentInputDto } from "@/graphql/generated/graphql";
 
 export enum USE_TOURNAMENT_OPERATIONS_KEY {
   CREATE_TOURNAMENT = "CREATE_TOURNAMENT",
+  START_TOURNAMENT = "START_TOURNAMENT",
 }
 
 export default function useTournamentOperations() {
@@ -25,7 +26,23 @@ export default function useTournamentOperations() {
     },
   });
 
+  const startTournamentMutation = useMutation({
+    mutationKey: [USE_TOURNAMENT_OPERATIONS_KEY.START_TOURNAMENT],
+    mutationFn: async (tournamentId: number) =>
+      graphqlRequestHandler({
+        query: START_TOURNAMENT,
+        variables: { tournamentId },
+      }),
+    onSuccess: () => {
+      toast.success("Tournament started successfully");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
   return {
     createTournamentMutation,
+    startTournamentMutation
   };
 }

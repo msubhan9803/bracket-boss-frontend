@@ -1,16 +1,16 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import useScheduleCreation from "@/hooks/schedule/useScheduleCreation";
+import useTournamentOperations from "@/hooks/tournament/useTournamentOperations";
 
 type Props = {
   tournamentId: string;
 };
 
 export default function EmptyScoring({ tournamentId }: Props) {
-  const { createScheduleMutation } = useScheduleCreation();
+  const { startTournamentMutation } = useTournamentOperations();
 
   const handleStartTournament = async () => {
-    // tournamentId
+    await startTournamentMutation.mutateAsync(parseInt(tournamentId as string));
   };
 
   return (
@@ -20,7 +20,7 @@ export default function EmptyScoring({ tournamentId }: Props) {
 
         <Button
           onClick={handleStartTournament}
-          loading={createScheduleMutation.isPending}
+          loading={startTournamentMutation.isPending}
         >
           Start Tournament
         </Button>

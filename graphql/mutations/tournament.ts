@@ -14,3 +14,13 @@ export const CREATE_TOURNAMENT = graphql(`
     }
   }
 `);
+
+export const START_TOURNAMENT = graphql(`
+  mutation StartTournament($tournamentId: Float!) {
+    startTournament(tournamentId: $tournamentId) {
+      id
+      name
+      status
+    }
+  }
+`);
