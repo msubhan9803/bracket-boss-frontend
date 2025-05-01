@@ -27,13 +27,15 @@ export default function Scheduling({ tournamentId }: Props) {
 
   const { schedule, scheduleLoading, scheduleRefetch } =
     useGetScheduleOfTournament(parseInt(tournamentId));
-  const { levels } = useLevelsByTournament(tournamentId);
-  const { pools } = usePoolsByLevel(selectedLevel?.id);
+  const { levels } = useLevelsByTournament({ tournamentId, enabled: !!tournamentId });
+  const { pools } = usePoolsByLevel({ levelId: selectedLevel?.id, enabled: !!selectedLevel?.id });
   const { rounds } = useRoundsByPool({
     poolId: selectedPool?.id as string,
+    enabled: !!selectedPool?.id
   });
   const { matches } = useMatchesByRoundId({
     roundId: selectedRoundId?.id as string,
+    enabled: !!selectedRoundId?.id
   });
 
   const { createScheduleMutation } = useScheduleCreation();

@@ -6,7 +6,7 @@ export enum USE_LEVELS_BY_TOURNAMENT {
   GET_LEVELS_BY_TOURNAMENT = "GET_LEVELS_BY_TOURNAMENT",
 }
 
-export default function useLevelsByTournament(tournamentId: string) {
+export default function useLevelsByTournament({ tournamentId, enabled = true }: { tournamentId: string; enabled?: boolean; }) {
   const {
     data,
     isLoading,
@@ -14,7 +14,7 @@ export default function useLevelsByTournament(tournamentId: string) {
   } = useQuery({
     queryKey: [USE_LEVELS_BY_TOURNAMENT.GET_LEVELS_BY_TOURNAMENT, tournamentId],
     queryFn: () => getLevelsByTournament(parseInt(tournamentId)),
-    enabled: !!tournamentId
+    enabled
   });
 
   return {

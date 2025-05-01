@@ -6,7 +6,13 @@ export enum USE_POOLS_BY_LEVEL {
   GET_POOLS_BY_LEVEL = "GET_POOLS_BY_LEVEL",
 }
 
-export default function usePoolsByLevel(levelId: string) {
+export default function usePoolsByLevel({
+  levelId,
+  enabled = true,
+}: {
+  levelId: string;
+  enabled?: boolean;
+}) {
   const {
     data,
     isLoading,
@@ -14,11 +20,11 @@ export default function usePoolsByLevel(levelId: string) {
   } = useQuery({
     queryKey: [USE_POOLS_BY_LEVEL.GET_POOLS_BY_LEVEL, levelId],
     queryFn: () => getPoolsByLevel(parseInt(levelId)),
-    enabled: !!levelId
+    enabled,
   });
 
   return {
-    pools: data || [] as Pool[],
+    pools: data || ([] as Pool[]),
     loadingPools: isLoading,
     refetchPools,
   };
