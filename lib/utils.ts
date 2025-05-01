@@ -65,3 +65,10 @@ export const downloadXLSX = (base64Data: string, fileName: string) => {
   link.click();
   window.URL.revokeObjectURL(link.href);
 };
+
+export function convertSnakeCaseToTitleCase(text: string): string {
+  return text
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}

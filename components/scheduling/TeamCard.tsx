@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import React from "react";
+import { convertSnakeCaseToTitleCase } from "@/lib/utils";
 
 type TeamCardProps = {
   team: Team;
@@ -49,10 +50,7 @@ export default function TeamCard({ team, teamIndex }: TeamCardProps) {
               title={team.statusInTournament}
               className={`ml-auto text-xs px-2 py-1 rounded-md ${statusBadgeVariants[team.statusInTournament]}`}
             >
-              {team.statusInTournament
-                .split("_")
-                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(" ")}
+              {convertSnakeCaseToTitleCase(team.statusInTournament)}
             </Badge>
           )}
         </CardTitle>

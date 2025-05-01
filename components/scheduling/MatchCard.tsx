@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { convertSnakeCaseToTitleCase } from "@/lib/utils";
 
 type MatchCardProps = {
   match: Match;
@@ -71,8 +72,8 @@ export default function MatchCard({ match, matchIndex }: MatchCardProps) {
           <div className="">
             {match.title}
           </div>
-          <Badge className={`${getStatusBadgeVariant(matchStatus)} text-white`}>
-            {matchStatus}
+          <Badge className={`${getStatusBadgeVariant(matchStatus)} text-white rounded-md`}>
+            {convertSnakeCaseToTitleCase(matchStatus)}
           </Badge>
         </CardTitle>
       </CardHeader>
