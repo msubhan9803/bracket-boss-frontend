@@ -1,17 +1,13 @@
 import React from "react";
 import { NextPage } from "next";
 import { PageProps } from "@/global";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import Scheduling from "./_components/tabs/Scheduling";
-import Scoring from "./_components/tabs/Scoring";
-import Standings from "./_components/tabs/Standings";
-import Team from "./_components/tabs/Team";
 import { PageUrls, PredefinedSystemRoles } from "@/lib/app-types";
 import { getAllUsersWithoutPagination } from "@/server-requests/user.server-request";
 import PageTitle from "@/components/PageTitle";
 import { toTitleCase } from "@/lib/utils";
 import { getSingleTournament } from "@/server-requests/tournament.server-request";
 import { Badge } from "@/components/ui/badge";
+import TournamentScheduleTabs from "./_components/TournamentScheduleTabs";
 
 const ScheduleDetails: NextPage<PageProps> = async ({ params }) => {
   const users = await getAllUsersWithoutPagination(
@@ -20,17 +16,6 @@ const ScheduleDetails: NextPage<PageProps> = async ({ params }) => {
   const tournamentDetails = await getSingleTournament(
     parseInt(params.tournamentId)
   );
-
-  const tabs = [
-    {
-      value: "team",
-      label: "Team",
-      content: <Team tournamentId={params.tournamentId} users={users} />,
-    },
-    { value: "scheduling", label: "Scheduling", content: <Scheduling tournamentId={params.tournamentId} /> },
-    { value: "scoring", label: "Scoring", content: <Scoring /> },
-    { value: "standing", label: "Standing", content: <Standings /> },
-  ];
 
   return (
     <>
@@ -60,30 +45,12 @@ const ScheduleDetails: NextPage<PageProps> = async ({ params }) => {
         ]}
       />
 
-      <Tabs
-        defaultValue={tabs[0].value}
-        className="w-full flex-1 flex flex-col"
-      >
-        <TabsList className=" self-start">
-          {tabs.map((tab) => (
-            <TabsTrigger key={tab.value} value={tab.value}>
-              {tab.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-
-        {tabs.map((tab) => (
-          <TabsContent
-            key={tab.value}
-            value={tab.value}
-            className="flex-1 flex flex-col my-8"
-          >
-            {tab.content}
-          </TabsContent>
-        ))}
-      </Tabs>
-
-      {/* <Footer /> */}
+      <TournamentScheduleTabs
+        initialState={{
+          users,
+          tournamentDetails,
+        }}
+      />
     </>
   );
 };

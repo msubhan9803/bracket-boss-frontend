@@ -61,7 +61,7 @@ export default function MatchManagement({ tournamentId }: Props) {
   }, [rounds]);
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="space-y-5">
       <h2 className="text-2xl font-bold text-primary">Match Management</h2>
 
       <div className="flex flex-wrap gap-4">
@@ -125,7 +125,7 @@ export default function MatchManagement({ tournamentId }: Props) {
         </Select>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 my-12">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {matches?.length
           ? matches.map((match, index) => (
               <MatchCard key={match.id} match={match} matchIndex={index} />
