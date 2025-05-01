@@ -8,6 +8,27 @@ export const GET_MATCHES_BY_ROUND_ID = graphql(`
       status
       title
       updated_at
+      matchCourtSchedule {
+        matchDate
+        courtSchedule {
+          court {
+            name
+          }
+          timeSlot {
+            startTime
+            endTime
+          }
+          day {
+            name
+          }
+        }
+      }
+      homeTeam {
+        name
+      }
+      awayTeam {
+        name
+      }
     }
   }
 `);
