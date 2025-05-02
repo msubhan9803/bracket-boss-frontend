@@ -3,13 +3,15 @@ import {
   Sheet,
   SheetContent,
   SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
 import LoadingSpinner from "@/components/core/LoadingSpinner";
 import FormWrapper from "./FormWrapper";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { DynamicFormField as DynamicFieldType } from "@/global";
+import { Button } from "../ui/button";
 
 type Props<T extends { [key: string]: any }> = {
   isOpen: boolean;
@@ -19,9 +21,12 @@ type Props<T extends { [key: string]: any }> = {
   title: string;
   description?: string;
   submitButtonLabel?: string;
+  cancelButtonLabel?: string;
   onSubmit: (values: T) => any | Promise<any>;
   setFormState?: Dispatch<SetStateAction<T>>;
   form: UseFormReturn<T>;
+  fixedFooter?: boolean;
+  submitButtonLoading?: boolean;
 };
 
 const DynamicFormSheetWithoutFormContext = <T extends { [key: string]: any }>({
@@ -32,9 +37,17 @@ const DynamicFormSheetWithoutFormContext = <T extends { [key: string]: any }>({
   title,
   description,
   submitButtonLabel,
+  cancelButtonLabel,
   onSubmit,
   form,
+  fixedFooter,
+  submitButtonLoading
 }: Props<T>) => {
+  const handleClose = () => {
+    setIsOpen(false);
+    form.reset();
+  };
+  
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       {isLoading ? (
@@ -52,9 +65,35 @@ const DynamicFormSheetWithoutFormContext = <T extends { [key: string]: any }>({
             form={form}
             fields={fields}
             onSubmit={onSubmit}
-            submitButtonLabel={submitButtonLabel}
             isDrawer
+            submitButtonLabel={!fixedFooter ? submitButtonLabel : undefined}
           />
+
+          {fixedFooter && (
+            <SheetFooter className="px-5 border-t">
+              <Button
+                absoluteLoaderPosition
+                disabled={submitButtonLoading}
+                type="button"
+                className="w-full mt-4 font-bold"
+                onClick={handleClose}
+                variant="secondary"
+              >
+                {cancelButtonLabel || "Cancel"}
+              </Button>
+
+              <Button
+                absoluteLoaderPosition
+                loading={submitButtonLoading}
+                disabled={submitButtonLoading}
+                type="button"
+                className="w-full mt-4 font-bold"
+                onClick={form.handleSubmit(onSubmit)}
+              >
+                {submitButtonLabel || "Submit"}
+              </Button>
+            </SheetFooter>
+          )}
         </SheetContent>
       )}
     </Sheet>

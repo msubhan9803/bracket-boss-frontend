@@ -178,6 +178,7 @@ const FilterScoringMatchesButton: React.FC<FilterScoringMatchesButtonProps> = ({
         description="Filter matches based on the selected criteria"
         submitButtonLabel="Submit"
         onSubmit={handleFiltering}
+        fixedFooter
       />
     </Fragment>
   );
