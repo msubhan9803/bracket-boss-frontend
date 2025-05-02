@@ -1,9 +1,10 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
-import userSlice from "./slices/user.slice";
-import scheduleSlice from "./slices/schedule.slice";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import userSlice from "./slices/user.slice";
+import scheduleSlice from "./slices/schedule.slice";
+import matchFilterSlice from "./slices/matchFilter.slice";
 
 const userPersistConfig = {
   key: "user",
@@ -20,6 +21,7 @@ const schedulePersistConfig = {
 const rootReducer = combineReducers({
   user: persistReducer(userPersistConfig, userSlice),
   schedule: persistReducer(schedulePersistConfig, scheduleSlice),
+  matchFilter: matchFilterSlice,
 });
 
 const persistedReducer = persistReducer(

@@ -15,6 +15,8 @@ import useRoundsByPool from "@/hooks/round/useRoundsByPool";
 import useAllMatchesWithFilters from "@/hooks/match/useAllMatchesWithFilters";
 import useTeamsByTournamentId from "@/hooks/team/useTeamsByTournamentId";
 import { FiXCircle } from "react-icons/fi";
+import { useAppDispatch } from "@/redux/store";
+import { setMatchFilter, matchFilerInitialState } from "@/redux/slices/matchFilter.slice";
 
 interface FilterScoringMatchesButtonProps {
   tournamentId: string;
@@ -23,19 +25,9 @@ interface FilterScoringMatchesButtonProps {
 const FilterScoringMatchesButton: React.FC<FilterScoringMatchesButtonProps> = ({
   tournamentId,
 }) => {
+  const dispatch = useAppDispatch();
   const [showModal, setShowModal] = useState(false);
-  const [filters, setFilters] = useState<FilterMatchesInputDto>({
-    tournamentId: parseInt(tournamentId),
-    levels: [],
-    pools: [],
-    rounds: [],
-    status: [],
-    courts: [],
-    date: "",
-    startTime: "",
-    endTime: "",
-    teams: [],
-  });
+  const [filters, setFilters] = useState<FilterMatchesInputDto>(matchFilerInitialState.filter);
 
   const form = useForm<FilterMatchesInputDto>({
     mode: "onBlur",
@@ -58,17 +50,14 @@ const FilterScoringMatchesButton: React.FC<FilterScoringMatchesButtonProps> = ({
   });
   const { teamsByTournament } = useTeamsByTournamentId(parseInt(tournamentId));
 
-  const { refetchMatches } = useAllMatchesWithFilters(filters, false);
-
-  const handleFiltering = (input: FilterMatchesInputDto) => {
+  const handleFiltering = async (input: FilterMatchesInputDto) => {
     const state = {
       ...input,
       tournamentId: parseInt(tournamentId),
-      levels: [parseInt(level)],
-      pools: [parseInt(pool)],
+      levels: level ? [parseInt(level)] : [],
+      pools: pool ? [parseInt(pool)] : [],
     };
-    setFilters(state);
-    refetchMatches();
+    dispatch(setMatchFilter(state));
   };
 
   const formFields: DynamicFormField<FilterMatchesInputDto>[] = useMemo(() => {
@@ -82,18 +71,7 @@ const FilterScoringMatchesButton: React.FC<FilterScoringMatchesButtonProps> = ({
               variant="secondary"
               className="flex items-center gap-2"
               onClick={() => {
-                const resetValues: FilterMatchesInputDto = {
-                  tournamentId: parseInt(tournamentId),
-                  levels: [],
-                  pools: [],
-                  rounds: [],
-                  status: [],
-                  courts: [],
-                  date: "",
-                  startTime: "",
-                  endTime: "",
-                  teams: [],
-                };
+                const resetValues: FilterMatchesInputDto = matchFilerInitialState.filter;
 
                 form.reset(resetValues);
                 setFilters(resetValues);
@@ -147,14 +125,14 @@ const FilterScoringMatchesButton: React.FC<FilterScoringMatchesButtonProps> = ({
           label: convertSnakeCaseToTitleCase(type),
           value: type,
         })),
-        defaultValue: [],
+        defaultValue: null,
       },
       // courts dropdown
       {
         label: "Match Date",
         name: "date",
         type: "date",
-        defaultValue: "",
+        defaultValue: null,
       },
       {
         label: "Start Time",
@@ -183,6 +161,8 @@ const FilterScoringMatchesButton: React.FC<FilterScoringMatchesButtonProps> = ({
 
     return baseFields;
   }, [levels, pools, rounds, teamsByTournament]);
+
+  useAllMatchesWithFilters(filters);
 
   return (
     <Fragment>

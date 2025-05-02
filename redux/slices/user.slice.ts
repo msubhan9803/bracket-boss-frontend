@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { SliceNamesEnum } from "../types";
 
 interface UserState {
   clubId: number | null;
@@ -13,7 +14,7 @@ const initialState: UserState = {
 };
 
 const userSlice = createSlice({
-  name: "user",
+  name: SliceNamesEnum.user,
   initialState,
   reducers: {
     setClubId(state, action: PayloadAction<number>) {

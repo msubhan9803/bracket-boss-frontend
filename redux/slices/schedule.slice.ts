@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { SliceNamesEnum } from "../types";
 
 interface ScheduleState {
   scheduleOfTorunamentInput: {
@@ -15,7 +16,7 @@ const initialState: ScheduleState = {
 };
 
 const scheduleSlice = createSlice({
-  name: "schedule",
+  name: SliceNamesEnum.schedule,
   initialState,
   reducers: {
     setScheduleOfTorunamentInput(

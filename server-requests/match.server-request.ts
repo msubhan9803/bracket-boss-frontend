@@ -21,6 +21,6 @@ export const getAllMatchesWithFilters = async (values: FilterMatchesInputDto) =>
     variables: { input: values },
   });
 
-  return data;
+  return data.getAllMatchesWithFilters as Match[];
 };
 

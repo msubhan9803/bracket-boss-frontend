@@ -149,11 +149,11 @@ export type DeleteScheduleResponseDto = {
 export type FilterMatchesInputDto = {
   courts?: InputMaybe<Array<Scalars['Float']['input']>>;
   date?: InputMaybe<Scalars['DateTime']['input']>;
-  endTime?: InputMaybe<Scalars['DateTime']['input']>;
+  endTime?: InputMaybe<Scalars['String']['input']>;
   levels?: InputMaybe<Array<Scalars['Float']['input']>>;
   pools?: InputMaybe<Array<Scalars['Float']['input']>>;
   rounds?: InputMaybe<Array<Scalars['Float']['input']>>;
-  startTime?: InputMaybe<Scalars['DateTime']['input']>;
+  startTime?: InputMaybe<Scalars['String']['input']>;
   status?: InputMaybe<Array<MatchStatusTypes>>;
   teams?: InputMaybe<Array<Scalars['Float']['input']>>;
   tournamentId: Scalars['Float']['input'];
