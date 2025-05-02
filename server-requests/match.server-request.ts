@@ -1,5 +1,5 @@
-import { Match } from "@/graphql/generated/graphql";
-import { GET_MATCHES_BY_ROUND_ID } from "@/graphql/queries/matches";
+import { FilterMatchesInputDto, Match } from "@/graphql/generated/graphql";
+import { GET_ALL_MATCHES_WITH_FILTERS, GET_MATCHES_BY_ROUND_ID } from "@/graphql/queries/matches";
 import { graphqlRequestHandlerServer } from "@/lib/graphql-server";
 
 export const getMatchesByRoundId = async (roundId: number) => {
@@ -13,3 +13,14 @@ export const getMatchesByRoundId = async (roundId: number) => {
 
   return data?.getMatchesByRoundId as Match[];
 };
+
+export const getAllMatchesWithFilters = async (values: FilterMatchesInputDto) => {
+  const data = await graphqlRequestHandlerServer({
+    query: GET_ALL_MATCHES_WITH_FILTERS,
+    options: { isServer: true },
+    variables: { input: values },
+  });
+
+  return data;
+};
+

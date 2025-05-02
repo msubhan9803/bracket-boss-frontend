@@ -146,6 +146,19 @@ export type DeleteScheduleResponseDto = {
   message: Scalars['String']['output'];
 };
 
+export type FilterMatchesInputDto = {
+  courts?: InputMaybe<Array<Scalars['Float']['input']>>;
+  date?: InputMaybe<Scalars['DateTime']['input']>;
+  endTime?: InputMaybe<Scalars['DateTime']['input']>;
+  levels?: InputMaybe<Array<Scalars['Float']['input']>>;
+  pools?: InputMaybe<Array<Scalars['Float']['input']>>;
+  rounds?: InputMaybe<Array<Scalars['Float']['input']>>;
+  startTime?: InputMaybe<Scalars['DateTime']['input']>;
+  status?: InputMaybe<Array<MatchStatusTypes>>;
+  teams?: InputMaybe<Array<Scalars['Float']['input']>>;
+  tournamentId: Scalars['Float']['input'];
+};
+
 export type Format = {
   __typename?: 'Format';
   created_at: Scalars['DateTime']['output'];
@@ -180,6 +193,7 @@ export type Level = {
   created_at: Scalars['DateTime']['output'];
   format: Format;
   id: Scalars['CustomID']['output'];
+  matches: Array<Match>;
   name: Scalars['String']['output'];
   order: Scalars['Float']['output'];
   pools: Array<Pool>;
@@ -210,8 +224,10 @@ export type Match = {
   created_at: Scalars['DateTime']['output'];
   homeTeam: Team;
   id: Scalars['CustomID']['output'];
+  level: Level;
   matchCourtSchedule?: Maybe<MatchCourtSchedules>;
   matchRounds: Array<MatchRound>;
+  pool: Pool;
   round: Round;
   status: MatchStatusTypes;
   title: Scalars['String']['output'];
@@ -425,6 +441,7 @@ export type Pool = {
   created_at: Scalars['DateTime']['output'];
   id: Scalars['CustomID']['output'];
   level: Level;
+  matches: Array<Match>;
   name: Scalars['String']['output'];
   order: Scalars['Float']['output'];
   rounds: Array<Round>;
@@ -437,6 +454,7 @@ export type Query = {
   getAllClubs: Array<Club>;
   getAllCourts: CourtListResponse;
   getAllFormats: Array<Format>;
+  getAllMatchesWithFilters: Array<Match>;
   getAllStepsByRole: Array<Step>;
   getAllTeamGenerationTypesByFormatId: Array<TeamGenerationType>;
   getAllTeams: TeamListResponse;
@@ -466,6 +484,11 @@ export type QueryGetAllCourtsArgs = {
   page?: InputMaybe<Scalars['Int']['input']>;
   pageSize?: InputMaybe<Scalars['Int']['input']>;
   sort?: InputMaybe<SortInput>;
+};
+
+
+export type QueryGetAllMatchesWithFiltersArgs = {
+  input: FilterMatchesInputDto;
 };
 
 
@@ -1025,6 +1048,13 @@ export type GetMatchesByRoundIdQueryVariables = Exact<{
 
 export type GetMatchesByRoundIdQuery = { __typename?: 'Query', getMatchesByRoundId: Array<{ __typename?: 'Match', created_at: any, id: any, status: MatchStatusTypes, title: string, updated_at: any, matchCourtSchedule?: { __typename?: 'MatchCourtSchedules', matchDate: any, courtSchedule: { __typename?: 'CourtSchedule', court: { __typename?: 'Court', name: string }, timeSlot: { __typename?: 'TimeSlot', startTime: string, endTime: string }, day: { __typename?: 'Day', name: DayName } } } | null, homeTeam: { __typename?: 'Team', name: string }, awayTeam: { __typename?: 'Team', name: string } }> };
 
+export type GetAllMatchesWithFiltersQueryVariables = Exact<{
+  input: FilterMatchesInputDto;
+}>;
+
+
+export type GetAllMatchesWithFiltersQuery = { __typename?: 'Query', getAllMatchesWithFilters: Array<{ __typename?: 'Match', id: any, title: string, status: MatchStatusTypes, level: { __typename?: 'Level', order: number }, pool: { __typename?: 'Pool', order: number }, round: { __typename?: 'Round', order: number }, homeTeam: { __typename?: 'Team', id: any }, awayTeam: { __typename?: 'Team', id: any } }> };
+
 export type GetPoolsByLevelQueryVariables = Exact<{
   levelId: Scalars['Float']['input'];
 }>;
@@ -1159,6 +1189,7 @@ export const GetAllCourtsDocument = {"kind":"Document","definitions":[{"kind":"O
 export const GetAllFormatsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAllFormats"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getAllFormats"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<GetAllFormatsQuery, GetAllFormatsQueryVariables>;
 export const GetLevelsByTournamentDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetLevelsByTournament"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tournamentId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getLevelsByTournament"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tournamentId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tournamentId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"order"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]}}]} as unknown as DocumentNode<GetLevelsByTournamentQuery, GetLevelsByTournamentQueryVariables>;
 export const GetMatchesByRoundIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetMatchesByRoundId"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"roundId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getMatchesByRoundId"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"roundId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"roundId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}},{"kind":"Field","name":{"kind":"Name","value":"matchCourtSchedule"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"matchDate"}},{"kind":"Field","name":{"kind":"Name","value":"courtSchedule"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"court"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"timeSlot"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startTime"}},{"kind":"Field","name":{"kind":"Name","value":"endTime"}}]}},{"kind":"Field","name":{"kind":"Name","value":"day"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"homeTeam"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"awayTeam"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<GetMatchesByRoundIdQuery, GetMatchesByRoundIdQueryVariables>;
+export const GetAllMatchesWithFiltersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAllMatchesWithFilters"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"FilterMatchesInputDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getAllMatchesWithFilters"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"level"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"order"}}]}},{"kind":"Field","name":{"kind":"Name","value":"pool"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"order"}}]}},{"kind":"Field","name":{"kind":"Name","value":"round"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"order"}}]}},{"kind":"Field","name":{"kind":"Name","value":"homeTeam"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"awayTeam"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<GetAllMatchesWithFiltersQuery, GetAllMatchesWithFiltersQueryVariables>;
 export const GetPoolsByLevelDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetPoolsByLevel"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"levelId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getPoolsByLevel"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"levelId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"levelId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"order"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]}}]} as unknown as DocumentNode<GetPoolsByLevelQuery, GetPoolsByLevelQueryVariables>;
 export const GetRoundsByPoolIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetRoundsByPoolId"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"poolId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getRoundsByPoolId"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"poolId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"poolId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"created_at"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"order"}},{"kind":"Field","name":{"kind":"Name","value":"updated_at"}}]}}]}}]} as unknown as DocumentNode<GetRoundsByPoolIdQuery, GetRoundsByPoolIdQueryVariables>;
 export const GetScheduleOfTournamentDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetScheduleOfTournament"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"GetScheduleOfTournamentInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getScheduleOfTournament"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"order"}},{"kind":"Field","name":{"kind":"Name","value":"pools"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"order"}},{"kind":"Field","name":{"kind":"Name","value":"rounds"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"order"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"matches"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"homeTeam"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"awayTeam"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"winnerTeam"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"matchRounds"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"matchRoundNumber"}}]}},{"kind":"Field","name":{"kind":"Name","value":"matchCourtSchedule"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"matchDate"}},{"kind":"Field","name":{"kind":"Name","value":"courtSchedule"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"day"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"timeSlot"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"startTime"}},{"kind":"Field","name":{"kind":"Name","value":"endTime"}}]}},{"kind":"Field","name":{"kind":"Name","value":"court"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"club"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetScheduleOfTournamentQuery, GetScheduleOfTournamentQueryVariables>;

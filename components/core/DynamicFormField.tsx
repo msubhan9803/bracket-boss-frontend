@@ -19,7 +19,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { MultiSelect, MultiSelectItem } from "@tremor/react";
+import { MultiSelect, MultiSelectItem, SearchSelect, SearchSelectItem } from "@tremor/react";
 import { cn } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import FileUploadInput from "@/components/core/FileUploadInput";
@@ -48,9 +48,7 @@ const DynamicFormField = <T extends { [key: string]: any }>({
 
   if (dynamicField.type === "render") {
     return (
-      <div className={dynamicField.className}>
-        {dynamicField.render()}
-      </div>
+      <div className={dynamicField.className}>{dynamicField.render()}</div>
     );
   }
 
@@ -120,6 +118,35 @@ const DynamicFormField = <T extends { [key: string]: any }>({
     );
   }
 
+  if (dynamicField.type === "search-select") {
+    return (
+      <FormField
+        control={form.control}
+        name={dynamicField.name}
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{dynamicField.label}</FormLabel>
+            <FormControl>
+              <SearchSelect
+                className={cn(getErrorClass(dynamicField.name))}
+                value={field.value}
+                onValueChange={field.onChange}
+                placeholder={dynamicField.placeholder}
+              >
+                {dynamicField.options?.map((option, index) => (
+                  <SearchSelectItem key={index} value={option.value}>
+                    {option.label}
+                  </SearchSelectItem>
+                ))}
+              </SearchSelect>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    );
+  }
+
   if (dynamicField.type === "multi-select") {
     return (
       <FormField
@@ -166,8 +193,12 @@ const DynamicFormField = <T extends { [key: string]: any }>({
                 )}
                 <Input
                   className={cn(
-                    dynamicField.prefixRender ? "rounded-none rounded-e-lg" : "",
-                    dynamicField.suffixRender ? "rounded-none rounded-s-lg" : "",
+                    dynamicField.prefixRender
+                      ? "rounded-none rounded-e-lg"
+                      : "",
+                    dynamicField.suffixRender
+                      ? "rounded-none rounded-s-lg"
+                      : "",
                     getErrorClass(dynamicField.name)
                   )}
                   type={dynamicField.type}
@@ -203,8 +234,12 @@ const DynamicFormField = <T extends { [key: string]: any }>({
                 )}
                 <Input
                   className={cn(
-                    dynamicField.prefixRender ? "rounded-none rounded-e-lg" : "",
-                    dynamicField.suffixRender ? "rounded-none rounded-s-lg" : "",
+                    dynamicField.prefixRender
+                      ? "rounded-none rounded-e-lg"
+                      : "",
+                    dynamicField.suffixRender
+                      ? "rounded-none rounded-s-lg"
+                      : "",
                     getErrorClass(dynamicField.name)
                   )}
                   type={dynamicField.type}
@@ -310,7 +345,6 @@ const DynamicFormField = <T extends { [key: string]: any }>({
                 required={dynamicField.required}
                 className={cn(getErrorClass(dynamicField.name))}
                 placeholder={dynamicField.placeholder}
-                style={{ width: '125.69px' }}
                 {...field}
               />
             </FormControl>

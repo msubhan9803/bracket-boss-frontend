@@ -32,3 +32,28 @@ export const GET_MATCHES_BY_ROUND_ID = graphql(`
     }
   }
 `);
+
+export const GET_ALL_MATCHES_WITH_FILTERS = graphql(`
+  query GetAllMatchesWithFilters($input: FilterMatchesInputDto!) {
+    getAllMatchesWithFilters(input: $input) {
+      id
+      title
+      status
+      level {
+        order
+      }
+      pool {
+        order
+      }
+      round {
+        order
+      }
+      homeTeam {
+        id
+      }
+      awayTeam {
+        id
+      }
+    }
+  }
+`);

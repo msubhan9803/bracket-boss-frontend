@@ -42,6 +42,7 @@ interface BaseInputField<T extends Record<string, any> = void> {
   | "textarea"
   | "email"
   | "select"
+  | "search-select"
   | "switch"
   | "decimal"
   | "multi-select"
