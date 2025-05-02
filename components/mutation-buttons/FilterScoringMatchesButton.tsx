@@ -14,9 +14,12 @@ import usePoolsByLevel from "@/hooks/pool/usePoolsByLevel";
 import useRoundsByPool from "@/hooks/round/useRoundsByPool";
 import useAllMatchesWithFilters from "@/hooks/match/useAllMatchesWithFilters";
 import useTeamsByTournamentId from "@/hooks/team/useTeamsByTournamentId";
-import { FiXCircle } from "react-icons/fi";
+import { FiFilter, FiXCircle } from "react-icons/fi";
 import { useAppDispatch } from "@/redux/store";
-import { setMatchFilter, matchFilerInitialState } from "@/redux/slices/matchFilter.slice";
+import {
+  setMatchFilter,
+  matchFilerInitialState,
+} from "@/redux/slices/matchFilter.slice";
 
 interface FilterScoringMatchesButtonProps {
   tournamentId: string;
@@ -27,7 +30,9 @@ const FilterScoringMatchesButton: React.FC<FilterScoringMatchesButtonProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const [showModal, setShowModal] = useState(false);
-  const [filters, setFilters] = useState<FilterMatchesInputDto>(matchFilerInitialState.filter);
+  const [filters, setFilters] = useState<FilterMatchesInputDto>(
+    matchFilerInitialState.filter
+  );
 
   const form = useForm<FilterMatchesInputDto>({
     mode: "onBlur",
@@ -71,7 +76,8 @@ const FilterScoringMatchesButton: React.FC<FilterScoringMatchesButtonProps> = ({
               variant="secondary"
               className="flex items-center gap-2"
               onClick={() => {
-                const resetValues: FilterMatchesInputDto = matchFilerInitialState.filter;
+                const resetValues: FilterMatchesInputDto =
+                  matchFilerInitialState.filter;
 
                 form.reset(resetValues);
                 setFilters(resetValues);
@@ -167,6 +173,7 @@ const FilterScoringMatchesButton: React.FC<FilterScoringMatchesButtonProps> = ({
   return (
     <Fragment>
       <Button onClick={() => setShowModal(true)} variant="outline">
+        <FiFilter className="h-4 w-4 mr-2" />
         Filter Matches
       </Button>
       <DynamicFormSheetWithoutFormContext

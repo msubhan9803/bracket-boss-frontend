@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { BsCalendarDate, BsClock } from "react-icons/bs";
+import { BsCalendarDate, BsClock, BsLayoutThreeColumns } from "react-icons/bs";
 import moment from "moment";
 import { MdLocationOn } from "react-icons/md";
 import { convertSnakeCaseToTitleCase } from "@/lib/utils";
@@ -31,7 +31,11 @@ const statusBadgeVariants: Record<MatchStatusTypes, string> = {
   [MatchStatusTypes.Void]: "bg-red-500 text-white",
 };
 
-export default function MatchScoreCard({ match, matchIndex = 0 }: MatchScoreCardProps) {
+export default function MatchScoreCard({
+  match,
+  matchIndex = 0,
+}: MatchScoreCardProps) {
+  console.log("match: ", match);
   const [homeScore, setHomeScore] = useState(0);
   const [awayScore, setAwayScore] = useState(0);
 
@@ -76,14 +80,16 @@ export default function MatchScoreCard({ match, matchIndex = 0 }: MatchScoreCard
           <CardTitle className="text-base sm:text-lg font-semibold text-foreground">
             {match.title}
           </CardTitle>
-          <Badge className={`${statusBadgeVariants[matchStatus]} rounded-md text-xs`}>
+          <Badge
+            className={`${statusBadgeVariants[matchStatus]} rounded-md text-xs`}
+          >
             {convertSnakeCaseToTitleCase(matchStatus)}
           </Badge>
         </div>
       </CardHeader>
 
       <CardContent className="p-3 sm:p-4 space-y-4">
-        <div className="text-center py-3 sm:py-4 bg-muted/30 rounded-lg">
+        <div className="text-center py-3 sm:py-4 bg-muted/30 border border-border rounded-lg">
           <div className="flex justify-between items-center px-2 sm:px-6">
             {/* Home Team */}
             <div className="flex flex-col items-center space-y-1 sm:space-y-2">
@@ -155,6 +161,12 @@ export default function MatchScoreCard({ match, matchIndex = 0 }: MatchScoreCard
         </div>
 
         <div className="space-y-2 sm:space-y-3 py-1 sm:py-2">
+          {match.pool.name && match.round.name && (
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <BsLayoutThreeColumns className="text-primary text-base sm:text-lg flex-shrink-0" />
+              <span className="text-xs sm:text-sm">{match.pool.name} - {match.round.name}</span>
+            </div>
+          )}
           {courtName && (
             <div className="flex items-center gap-2 text-muted-foreground">
               <MdLocationOn className="text-primary text-base sm:text-lg flex-shrink-0" />

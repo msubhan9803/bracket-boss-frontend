@@ -62,8 +62,6 @@ export default function MatchManagement({ tournamentId }: Props) {
 
   return (
     <div className="space-y-5">
-      <h2 className="text-2xl font-bold text-primary">Match Management</h2>
-
       <div className="flex flex-wrap gap-4">
         <Select
           onValueChange={(value) => {

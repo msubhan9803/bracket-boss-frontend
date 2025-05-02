@@ -43,9 +43,11 @@ export const GET_ALL_MATCHES_WITH_FILTERS = graphql(`
         order
       }
       pool {
+        name
         order
       }
       round {
+        name
         order
       }
       homeTeam {

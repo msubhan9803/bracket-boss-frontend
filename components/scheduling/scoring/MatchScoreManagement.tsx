@@ -30,11 +30,7 @@ export default function MatchScoreManagement({ tournamentId }: Props) {
   
   return (
     <div className="space-y-5">
-      <div className="flex justify-between gap-4">
-        <h2 className="text-2xl font-bold text-primary">
-          Match Score Management
-        </h2>
-
+      <div className="text-right">
         <FilterScoringMatchesButton tournamentId={tournamentId} />
       </div>
 

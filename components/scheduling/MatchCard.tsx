@@ -79,7 +79,7 @@ export default function MatchCard({ match, matchIndex }: MatchCardProps) {
       </CardHeader>
 
       <CardContent className="p-4 space-y-4">
-        <div className="text-center py-3 bg-muted/30 rounded-lg">
+        <div className="text-center py-3 bg-muted/30 border border-border rounded-lg">
           <h3 className="text-xl font-bold text-foreground">
             {homeTeam?.name ?? "Home Team"}{" "}
             <span className="text-muted-foreground px-2">vs</span>{" "}

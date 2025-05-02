@@ -12,18 +12,14 @@ export default function ExistingTeams({
   isLoading,
 }: ExistingPlayersProps) {
   return (
-    <>
-      <h2 className="text-2xl font-bold mb-4">Teams</h2>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        {isLoading
-          ? Array.from({ length: 5 }).map((_, index) => (
-              <SkeletonLoader key={index} type="teamCard" />
-            ))
-          : teams.map((team, index) => (
-              <TeamCard key={index} team={team} teamIndex={index} />
-            ))}
-      </div>
-    </>
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      {isLoading
+        ? Array.from({ length: 5 }).map((_, index) => (
+            <SkeletonLoader key={index} type="teamCard" />
+          ))
+        : teams.map((team, index) => (
+            <TeamCard key={index} team={team} teamIndex={index} />
+          ))}
+    </div>
   );
 }
