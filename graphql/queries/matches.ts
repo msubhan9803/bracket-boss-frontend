@@ -50,10 +50,41 @@ export const GET_ALL_MATCHES_WITH_FILTERS = graphql(`
       }
       homeTeam {
         id
+        users {
+          id
+          name
+        }
       }
       awayTeam {
         id
+        users {
+          id
+          name
+        }
       }
+      created_at
+      matchRounds {
+        matchRoundNumber
+      }
+      tournament {
+        name
+      }
+      matchCourtSchedule {
+        matchDate
+        courtSchedule {
+          court {
+            name
+          }
+          timeSlot {
+            startTime
+            endTime
+          }
+          day {
+            name
+          }
+        }
+      }
+      updated_at
     }
   }
 `);

@@ -3,9 +3,9 @@ import FilterScoringMatchesButton from "@/components/mutation-buttons/FilterScor
 import { RootState, useAppDispatch } from "@/redux/store";
 import { useSelector } from "react-redux";
 import useAllMatchesWithFilters from "@/hooks/match/useAllMatchesWithFilters";
-import MatchCard from "../MatchCard";
 import { setMatchFilter } from "@/redux/slices/matchFilter.slice";
 import LoadingSpinner from "@/components/core/LoadingSpinner";
+import MatchScoreCard from "../MatchScoreCard";
 
 type Props = {
   tournamentId: string;
@@ -41,7 +41,7 @@ export default function MatchScoreManagement({ tournamentId }: Props) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {matches?.length > 0 &&
           matches.map((match, index) => (
-            <MatchCard key={match.id} match={match} matchIndex={index} />
+            <MatchScoreCard key={match.id} match={match} matchIndex={index} />
           ))}
       </div>
     </div>
