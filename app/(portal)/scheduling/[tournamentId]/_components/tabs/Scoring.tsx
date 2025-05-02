@@ -1,6 +1,6 @@
 import React from "react";
 import EmptyScoring from "@/components/scheduling/scoring/EmptyScoring";
-import { Tournament } from "@/graphql/generated/graphql";
+import { Tournament, TournamentStatusTypesEnum } from "@/graphql/generated/graphql";
 import MatchScoreManagement from "@/components/scheduling/scoring/MatchScoreManagement";
 
 type Props = {
@@ -11,7 +11,7 @@ export default function Scoring({ tournamentDetails }: Props) {
   const tournamentId = tournamentDetails.id;
   const tournamentStatus = tournamentDetails.status;
 
-  if (tournamentStatus) {
+  if (tournamentStatus === TournamentStatusTypesEnum.NotStarted) {
     return <EmptyScoring tournamentId={tournamentId} />;
   }
 
