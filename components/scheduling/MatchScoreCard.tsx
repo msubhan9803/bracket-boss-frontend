@@ -17,23 +17,28 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import useMatchOperations from "@/hooks/match/useMatchOperations";
+import { RefetchOptions, QueryObserverResult } from "@tanstack/react-query";
 
 type MatchScoreCardProps = {
   match: Match;
   matchIndex?: number;
+  refetchMatches: (
+    options?: RefetchOptions
+  ) => Promise<QueryObserverResult<Match[], Error>>;
 };
 
 const statusBadgeVariants: Record<MatchStatusTypes, string> = {
-  [MatchStatusTypes.Completed]: "bg-green-500 text-white",
-  [MatchStatusTypes.InProgress]: "bg-blue-500 text-white",
-  [MatchStatusTypes.NotStarted]: "bg-gray-500 text-white",
-  [MatchStatusTypes.Paused]: "bg-yellow-500 text-white",
-  [MatchStatusTypes.Void]: "bg-red-500 text-white",
+  [MatchStatusTypes.Completed]: "bg-green-500 hover:bg-green-700 text-white",
+  [MatchStatusTypes.InProgress]: "bg-blue-500 hover:bg-blue-700 text-white",
+  [MatchStatusTypes.NotStarted]: "bg-gray-500 hover:bg-gray-700 text-white",
+  [MatchStatusTypes.Paused]: "bg-yellow-500 hover:bg-yellow-700 text-white",
+  [MatchStatusTypes.Void]: "bg-red-500 hover:bg-red-700 text-white",
 };
 
 export default function MatchScoreCard({
   match,
-  matchIndex = 0,
+  refetchMatches,
 }: MatchScoreCardProps) {
   console.log("match: ", match);
   const [homeScore, setHomeScore] = useState(0);
@@ -67,10 +72,17 @@ export default function MatchScoreCard({
     [courtSchedule]
   );
 
+  const { startTournamentMutation } = useMatchOperations();
+
   const handleUpdateScore = () => {
     // In a real application, you would likely send these updated scores
     // to your backend to persist them. For this example, we'll just log them.
     console.log("Updated Score:", homeScore, "-", awayScore);
+  };
+
+  const handleStartTournament = async () => {
+    await startTournamentMutation.mutateAsync(match.id);
+    refetchMatches();
   };
 
   return (
@@ -164,7 +176,9 @@ export default function MatchScoreCard({
           {match.pool.name && match.round.name && (
             <div className="flex items-center gap-2 text-muted-foreground">
               <BsLayoutThreeColumns className="text-primary text-base sm:text-lg flex-shrink-0" />
-              <span className="text-xs sm:text-sm">{match.pool.name} - {match.round.name}</span>
+              <span className="text-xs sm:text-sm">
+                {match.pool.name} - {match.round.name}
+              </span>
             </div>
           )}
           {courtName && (
@@ -197,16 +211,35 @@ export default function MatchScoreCard({
 
       <CardFooter className="pt-0 pb-3 sm:pb-4 px-3 sm:px-4 flex flex-wrap gap-2 justify-end">
         <div className="flex flex-wrap gap-2">
-          {matchStatus !== MatchStatusTypes.Completed && (
-            <Button variant="secondary" size="sm" className="text-xs h-8">
-              {matchStatus === MatchStatusTypes.InProgress
-                ? "End Match"
-                : "Start Match"}
+          {matchStatus !== MatchStatusTypes.InProgress && (
+            <Button
+              variant="secondary"
+              size="sm"
+              className="text-xs h-8"
+              loading={startTournamentMutation.isPending}
+              onClick={handleStartTournament}
+            >
+              Start Match
             </Button>
           )}
-          <Button size="sm" className="text-xs h-8">
-            Update Score
-          </Button>
+
+          {matchStatus === MatchStatusTypes.InProgress && (
+            <Button
+              variant="destructive"
+              size="sm"
+              className="text-xs h-8"
+              loading={startTournamentMutation.isPending}
+              onClick={handleStartTournament}
+            >
+              End Match
+            </Button>
+          )}
+
+          {matchStatus === MatchStatusTypes.InProgress && (
+            <Button size="sm" className="text-xs h-8">
+              Update Score
+            </Button>
+          )}
         </div>
       </CardFooter>
     </Card>

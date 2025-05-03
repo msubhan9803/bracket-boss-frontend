@@ -37,7 +37,7 @@ export default function MatchScoreManagement({ tournamentId }: Props) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {matches?.length > 0 &&
           matches.map((match, index) => (
-            <MatchScoreCard key={match.id} match={match} matchIndex={index} />
+            <MatchScoreCard key={match.id} match={match} matchIndex={index} refetchMatches={refetchMatches} />
           ))}
       </div>
     </div>
