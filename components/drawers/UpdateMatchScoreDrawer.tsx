@@ -25,7 +25,7 @@ const UpdateMatchScoreDrawer = ({
   isLoading,
   description,
 }: UpdateMatchScoreDrawerProps) => {
-  console.log('currentMatchId: ', currentMatchId)
+  console.log("currentMatchId: ", currentMatchId);
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -34,10 +34,7 @@ const UpdateMatchScoreDrawer = ({
           <LoadingSpinner />
         </SheetContent>
       ) : (
-        <SheetContent
-          className="w-screen md:max-w-md lg:max-w-lg xl:max-w-xl h-screen p-0"
-          onInteractOutside={(event) => event.preventDefault()}
-        >
+        <SheetContent className="w-screen md:max-w-md lg:max-w-lg xl:max-w-xl h-screen p-0">
           <SheetHeader className="text-left h-20 flex flex-col justify-center px-5 border-b">
             <SheetTitle>{title}</SheetTitle>
             {description && <SheetDescription>{description}</SheetDescription>}

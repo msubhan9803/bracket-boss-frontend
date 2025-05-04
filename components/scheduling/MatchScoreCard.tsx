@@ -31,8 +31,8 @@ type MatchScoreCardProps = {
 };
 
 const statusBadgeVariants: Record<MatchStatusTypes, string> = {
-  [MatchStatusTypes.Completed]: "bg-green-500 hover:bg-green-700 text-white",
-  [MatchStatusTypes.InProgress]: "bg-blue-500 hover:bg-blue-700 text-white",
+  [MatchStatusTypes.Completed]: "bg-blue-500 hover:bg-blue-700 text-white",
+  [MatchStatusTypes.InProgress]: "bg-green-500 hover:bg-green-700 text-white",
   [MatchStatusTypes.NotStarted]: "bg-gray-500 hover:bg-gray-700 text-white",
   [MatchStatusTypes.Paused]: "bg-yellow-500 hover:bg-yellow-700 text-white",
   [MatchStatusTypes.Void]: "bg-red-500 hover:bg-red-700 text-white",
