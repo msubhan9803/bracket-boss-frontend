@@ -255,6 +255,16 @@ export type MatchRound = {
   updated_at: Scalars['DateTime']['output'];
 };
 
+export type MatchRoundScore = {
+  __typename?: 'MatchRoundScore';
+  awayTeamScore: Scalars['Float']['output'];
+  created_at: Scalars['DateTime']['output'];
+  homeTeamScore: Scalars['Float']['output'];
+  id: Scalars['CustomID']['output'];
+  matchRound: MatchRound;
+  updated_at: Scalars['DateTime']['output'];
+};
+
 export enum MatchRoundStatusTypes {
   Completed = 'completed',
   InProgress = 'in_progress',
@@ -308,6 +318,7 @@ export type Mutation = {
   downloadEmptyScheduleTemplate: Scalars['String']['output'];
   /** Download user data for schedule */
   downloadUserDataForSchedule: Scalars['String']['output'];
+  endMatchRound: MatchRound;
   login: LoginResponseDto;
   refreshToken: RefreshTokenResponseDto;
   register: MessageResponseDto;
@@ -315,6 +326,7 @@ export type Mutation = {
   sendForgotPasswordEmail: MessageResponseDto;
   startMatch: Match;
   startTournament: Tournament;
+  updateScore: MatchRoundScore;
   updateTournament: Tournament;
   updateUserClub: UpdateUserResponseDto;
   updateUserRole: UpdateUserRoleResponseDto;
@@ -360,6 +372,12 @@ export type MutationDeleteScheduleArgs = {
 };
 
 
+export type MutationEndMatchRoundArgs = {
+  matchId: Scalars['Float']['input'];
+  roundId: Scalars['Float']['input'];
+};
+
+
 export type MutationLoginArgs = {
   input: LoginInputDto;
 };
@@ -387,6 +405,14 @@ export type MutationStartMatchArgs = {
 
 export type MutationStartTournamentArgs = {
   tournamentId: Scalars['Float']['input'];
+};
+
+
+export type MutationUpdateScoreArgs = {
+  awayTeamScore: Scalars['Float']['input'];
+  homeTeamScore: Scalars['Float']['input'];
+  matchId: Scalars['Float']['input'];
+  roundId: Scalars['Float']['input'];
 };
 
 

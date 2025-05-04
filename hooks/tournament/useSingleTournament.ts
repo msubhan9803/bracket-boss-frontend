@@ -6,7 +6,7 @@ export enum USE_TOURNAMENT_KEY {
   GET_SINGLE_TOURNAMENT = "GET_SINGLE_TOURNAMENT",
 }
 
-export default function useSingleTournament(tournamentId: string) {
+export default function useSingleTournament(tournamentId: string, enabled = true) {
   const {
     data,
     isLoading,
@@ -14,10 +14,11 @@ export default function useSingleTournament(tournamentId: string) {
   } = useQuery({
     queryKey: [USE_TOURNAMENT_KEY.GET_SINGLE_TOURNAMENT, tournamentId],
     queryFn: () => getSingleTournament(parseInt(tournamentId)),
+    enabled,
   });
 
   return {
-    tournamentListFetched: data as Tournament,
+    tournament: data as Tournament,
     loadingOrder: isLoading,
     refetchTournament,
   };

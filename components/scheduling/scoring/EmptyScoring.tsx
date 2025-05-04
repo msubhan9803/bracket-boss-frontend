@@ -1,16 +1,20 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import useTournamentOperations from "@/hooks/tournament/useTournamentOperations";
+import { Tournament } from "@/graphql/generated/graphql";
+import { RefetchOptions, QueryObserverResult } from "@tanstack/react-query";
 
 type Props = {
   tournamentId: string;
+  onRefetchTournament: (options?: RefetchOptions) => Promise<QueryObserverResult<Tournament, Error>>;
 };
 
-export default function EmptyScoring({ tournamentId }: Props) {
+export default function EmptyScoring({ tournamentId, onRefetchTournament }: Props) {
   const { startTournamentMutation } = useTournamentOperations();
 
   const handleStartTournament = async () => {
     await startTournamentMutation.mutateAsync(parseInt(tournamentId as string));
+    onRefetchTournament();
   };
 
   return (

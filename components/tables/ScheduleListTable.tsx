@@ -96,7 +96,7 @@ const ScheduleListTable = () => {
       header: "Actions",
       cell: ({ row }) => (
         <Link
-          className="hover:text-primary"
+          className="text-primary"
           href={`${PageUrls.SCHEDULING_MANAGEMENT}/${row.original.id}`}
         >
           View Schedule
