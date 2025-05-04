@@ -5,17 +5,7 @@ import TeamAvatars from "./TeamAvatars";
 import ScoreDisplay from "./ScoreDisplay";
 import TeamAvatar from "./TeamAvatar";
 
-const RoundContent = ({
-  round,
-  match,
-  team1Score,
-  team2Score,
-  setTeam1Score,
-  setTeam2Score,
-  onStartRound,
-  onEndRound,
-  onUpdateScore,
-}: {
+interface RoundContentProps {
   round: {
     value: string;
     label: string;
@@ -25,11 +15,23 @@ const RoundContent = ({
   match: Match;
   team1Score: number;
   team2Score: number;
-  setTeam1Score: (score: number) => void;
-  setTeam2Score: (score: number) => void;
+  onTeam1ScoreChange: (score: number) => void;
+  onTeam2ScoreChange: (score: number) => void;
   onStartRound?: (roundId: number) => void;
   onEndRound?: (roundId: number) => void;
-  onUpdateScore?: (roundId: number) => void;
+  onUpdateScore: () => void;
+}
+
+const RoundContent: React.FC<RoundContentProps> = ({
+  round,
+  match,
+  team1Score,
+  team2Score,
+  onTeam1ScoreChange,
+  onTeam2ScoreChange,
+  onStartRound,
+  onEndRound,
+  onUpdateScore,
 }) => {
   const roundStatus = round.status;
   const roundId = round.id;
@@ -56,8 +58,11 @@ const RoundContent = ({
                 <TeamAvatars team={match.homeTeam} />
                 <ScoreDisplay
                   score={team1Score}
-                  onIncrement={() => setTeam1Score(team1Score + 1)}
-                  onDecrement={() => setTeam1Score(Math.max(0, team1Score - 1))}
+                  onIncrement={() => onTeam1ScoreChange(team1Score + 1)}
+                  onDecrement={() =>
+                    onTeam1ScoreChange(Math.max(0, team1Score - 1))
+                  }
+                  onScoreChange={onTeam1ScoreChange}
                 />
               </div>
             </Card>
@@ -67,15 +72,18 @@ const RoundContent = ({
                 <TeamAvatars team={match.awayTeam} variant="secondary" />
                 <ScoreDisplay
                   score={team2Score}
-                  onIncrement={() => setTeam2Score(team2Score + 1)}
-                  onDecrement={() => setTeam2Score(Math.max(0, team2Score - 1))}
+                  onIncrement={() => onTeam2ScoreChange(team2Score + 1)}
+                  onDecrement={() =>
+                    onTeam2ScoreChange(Math.max(0, team2Score - 1))
+                  }
+                  onScoreChange={onTeam2ScoreChange}
                 />
               </div>
             </Card>
           </div>
 
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 mt-8">
-            <RoundActionButton onClick={() => onUpdateScore?.(roundId)}>
+            <RoundActionButton onClick={onUpdateScore}>
               Update Score
             </RoundActionButton>
             <RoundActionButton onClick={() => onEndRound?.(roundId)}>
