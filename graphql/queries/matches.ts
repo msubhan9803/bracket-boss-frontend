@@ -57,10 +57,20 @@ export const GET_MATCH_BY_MATCH_ID = graphql(`
         }
       }
       homeTeam {
+        id
         name
+        users {
+          id
+          name
+        }
       }
       awayTeam {
+        id
         name
+        users {
+          id
+          name
+        }
       }
       matchRounds {
         id
@@ -90,6 +100,7 @@ export const GET_ALL_MATCHES_WITH_FILTERS = graphql(`
       }
       homeTeam {
         id
+        name
         users {
           id
           name
@@ -97,6 +108,7 @@ export const GET_ALL_MATCHES_WITH_FILTERS = graphql(`
       }
       awayTeam {
         id
+        name
         users {
           id
           name

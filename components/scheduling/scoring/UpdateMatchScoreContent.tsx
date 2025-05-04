@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Plus, Minus } from "lucide-react";
 import { MatchRoundStatusTypes } from "@/graphql/generated/graphql";
 
@@ -37,69 +37,52 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({
   onEndMatchRound,
   onStartMatchRound,
 }) => {
-  const [activeTab, setActiveTab] = useState<string>("1");
+  console.log("Match 🔥🔥🔥🔥🔥 ", match);
 
   if (!match) {
     return <div className="p-5">Match data not available</div>;
   }
 
-  const getCurrentRound = (): MatchRound | undefined => {
-    const roundNumber = parseInt(activeTab);
-    return match.matchRounds.find(
-      (round) => round.matchRoundNumber === roundNumber
-    );
-  };
-
-  const currentRound = getCurrentRound();
-  const roundStatus = currentRound?.status || MatchRoundStatusTypes.NotStarted;
-
   const [team1Score, setTeam1Score] = useState<number>(12);
   const [team2Score, setTeam2Score] = useState<number>(2);
 
-  const handleStartRound = () => {
+  // Create tabs configuration based on match rounds
+  const roundTabs = match.matchRounds.map((round) => ({
+    value: round.matchRoundNumber.toString(),
+    label: `Round ${round.matchRoundNumber}`,
+    status: round.status,
+    id: round.id,
+  }));
+
+  // Default to the first round
+  const defaultTab = roundTabs.length > 0 ? roundTabs[0].value : "1";
+
+  const handleStartRound = (roundId: number) => {
     if (onStartMatchRound) onStartMatchRound();
   };
 
-  const handleEndRound = () => {
+  const handleEndRound = (roundId: number) => {
     if (onEndMatchRound) onEndMatchRound();
   };
 
-  const handleUpdateScore = () => {
+  const handleUpdateScore = (roundId: number) => {
     if (onUpdateScore) onUpdateScore();
   };
 
-  return (
-    <div className="flex flex-col h-full">
-      <div className="p-5">
-        <Tabs
-          value={activeTab}
-          onValueChange={setActiveTab}
-          className="w-full mb-6"
-        >
-          <TabsList className="grid grid-cols-3 w-full">
-            {[1, 2, 3].map((roundNum) => (
-              <TabsTrigger
-                key={roundNum}
-                value={roundNum.toString()}
-                className={`${
-                  parseInt(activeTab) === roundNum
-                    ? "bg-green-500 text-white"
-                    : "bg-gray-200"
-                }`}
-              >
-                Round {roundNum}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
+  // Round content component to avoid repetition
+  const RoundContent = ({ round }: { round: (typeof roundTabs)[0] }) => {
+    const roundStatus = round.status;
+    const roundId = round.id;
 
+    return (
+      <>
         {roundStatus === MatchRoundStatusTypes.NotStarted && (
           <div className="flex flex-col items-center justify-center space-y-4 py-20">
             <p className="text-lg font-medium">Round not started yet</p>
             <Button
               variant="default"
               className="bg-green-500 hover:bg-green-600 text-white"
-              onClick={handleStartRound}
+              onClick={() => handleStartRound(roundId)}
             >
               Start Match Round
             </Button>
@@ -124,7 +107,9 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({
                       variant="default"
                       size="icon"
                       className="rounded-full bg-green-500 text-white hover:bg-green-600"
-                      onClick={() => setTeam1Score((prev) => prev - 1)}
+                      onClick={() =>
+                        setTeam1Score((prev) => Math.max(0, prev - 1))
+                      }
                     >
                       <Minus className="h-6 w-6" />
                     </Button>
@@ -158,7 +143,9 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({
                       variant="default"
                       size="icon"
                       className="rounded-full bg-green-500 text-white hover:bg-green-600"
-                      onClick={() => setTeam2Score((prev) => prev - 1)}
+                      onClick={() =>
+                        setTeam2Score((prev) => Math.max(0, prev - 1))
+                      }
                     >
                       <Minus className="h-6 w-6" />
                     </Button>
@@ -182,20 +169,71 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({
               <Button
                 variant="secondary"
                 className="flex-1"
-                onClick={handleUpdateScore}
+                onClick={() => handleUpdateScore(roundId)}
               >
                 Update Score
               </Button>
               <Button
                 variant="secondary"
                 className="flex-1"
-                onClick={handleEndRound}
+                onClick={() => handleEndRound(roundId)}
               >
                 End Match Round
               </Button>
             </div>
           </div>
         )}
+
+        {roundStatus === MatchRoundStatusTypes.Completed && (
+          <div className="flex flex-col items-center justify-center space-y-4 py-20">
+            <p className="text-lg font-medium">Round completed</p>
+            <div className="flex items-center justify-center space-x-8">
+              <div className="text-center">
+                <p className="font-bold">{match.homeTeam.name}</p>
+                <p className="text-3xl font-bold mt-2">{team1Score}</p>
+              </div>
+              <div className="text-xl font-bold">vs</div>
+              <div className="text-center">
+                <p className="font-bold">{match.awayTeam.name}</p>
+                <p className="text-3xl font-bold mt-2">{team2Score}</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </>
+    );
+  };
+
+  return (
+    <div className="flex flex-col h-full">
+      <div className="p-5">
+        <Tabs defaultValue={defaultTab} className="w-full flex flex-col">
+          <TabsList className="self-start">
+            {roundTabs.map((tab) => (
+              <TabsTrigger
+                key={tab.value}
+                value={tab.value}
+                className={`${
+                  tab.status === MatchRoundStatusTypes.InProgress
+                    ? "data-[state=active]:bg-green-500 data-[state=active]:text-white"
+                    : ""
+                }`}
+              >
+                {tab.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+
+          {roundTabs.map((tab) => (
+            <TabsContent
+              key={tab.value}
+              value={tab.value}
+              className="flex-1 flex flex-col mt-6"
+            >
+              <RoundContent round={tab} />
+            </TabsContent>
+          ))}
+        </Tabs>
       </div>
     </div>
   );
