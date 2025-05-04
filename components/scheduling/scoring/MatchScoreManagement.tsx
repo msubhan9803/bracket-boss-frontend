@@ -15,8 +15,7 @@ type Props = {
 export default function MatchScoreManagement({ tournamentId }: Props) {
   const dispatch = useAppDispatch();
   const filters = useSelector((state: RootState) => state.matchFilter.filter);
-  const { matches, loadingMatches, refetchMatches } =
-    useAllMatchesWithFilters(filters);
+  const { matches, loadingMatches, refetchMatches } = useAllMatchesWithFilters();
   const [showUpdateScoreDrawer, setShowUpdateScoreDrawer] = useState(false);
   const [currentMatchId, setCurrentMatchId] = useState<number>()
 

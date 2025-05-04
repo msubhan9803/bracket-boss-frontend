@@ -2,10 +2,12 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { graphqlRequestHandler } from "@/lib/graphql-client";
-import { START_MATCH } from "@/graphql/mutations/match";
+import { START_MATCH, UPDATE_SCORE } from "@/graphql/mutations/match";
+import { UpdateMatchScoreInputDto } from "@/graphql/generated/graphql";
 
 export enum USE_MATCH_OPERATIONS {
   START_MATCH = "START_MATCH",
+  UPDATE_SCORE = "UPDATE_SCORE",
 }
 
 export default function useMatchOperations() {
@@ -24,7 +26,23 @@ export default function useMatchOperations() {
     },
   });
 
+  const updateScoreMutation = useMutation({
+    mutationKey: [USE_MATCH_OPERATIONS.UPDATE_SCORE],
+    mutationFn: async (variables: UpdateMatchScoreInputDto) =>
+      graphqlRequestHandler({
+        query: UPDATE_SCORE,
+        variables: { input: variables },
+      }),
+    onSuccess: () => {
+      toast.success("Match Round score updated");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
   return {
     startTournamentMutation,
+    updateScoreMutation,
   };
 }

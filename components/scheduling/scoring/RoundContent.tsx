@@ -19,7 +19,6 @@ interface RoundContentProps {
   onTeam2ScoreChange: (score: number) => void;
   onStartRound?: (roundId: number) => void;
   onEndRound?: (roundId: number) => void;
-  onUpdateScore: () => void;
 }
 
 const RoundContent: React.FC<RoundContentProps> = ({
@@ -31,7 +30,6 @@ const RoundContent: React.FC<RoundContentProps> = ({
   onTeam2ScoreChange,
   onStartRound,
   onEndRound,
-  onUpdateScore,
 }) => {
   const roundStatus = round.status;
   const roundId = round.id;
@@ -83,9 +81,6 @@ const RoundContent: React.FC<RoundContentProps> = ({
           </div>
 
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 mt-8">
-            <RoundActionButton onClick={onUpdateScore}>
-              Update Score
-            </RoundActionButton>
             <RoundActionButton onClick={() => onEndRound?.(roundId)}>
               End Match Round
             </RoundActionButton>

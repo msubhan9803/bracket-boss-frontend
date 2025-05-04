@@ -168,7 +168,7 @@ const FilterScoringMatchesButton: React.FC<FilterScoringMatchesButtonProps> = ({
     return baseFields;
   }, [levels, pools, rounds, teamsByTournament]);
 
-  useAllMatchesWithFilters(filters);
+  useAllMatchesWithFilters();
 
   return (
     <Fragment>

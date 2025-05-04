@@ -24,6 +24,7 @@ const documents = {
     "\n  mutation UpsertCourt($input: UpsertCourtInputDto!) {\n    upsertCourt(input: $input) {\n      id\n      location\n      name\n      club {\n        id\n        name\n      }\n    }\n  }\n": types.UpsertCourtDocument,
     "\n  mutation UploadFile($file: Upload!) {\n    uploadFile(file: $file) {\n      url\n    }\n  }\n": types.UploadFileDocument,
     "\n  mutation StartMatch($matchId: Float!) {\n    startMatch(matchId: $matchId) {\n      id\n      title\n      status\n    }\n  }\n": types.StartMatchDocument,
+    "\n  mutation UpdateScore($input: UpdateMatchScoreInputDto!) {\n    updateScore(input: $input) {\n      awayTeamScore\n      created_at\n      homeTeamScore\n      id\n      updated_at\n    }\n  }\n": types.UpdateScoreDocument,
     "\n  mutation CreateSchedule($tournamentId: Float!) {\n    createSchedule(tournamentId: $tournamentId) {\n      id\n      name\n      pools {\n        name\n        rounds {\n          id\n          name\n          matches {\n            id\n            title\n          }\n        }\n      }\n    }\n  }\n": types.CreateScheduleDocument,
     "\n  mutation DeleteSchedule($input: DeleteScheduleInputDto!) {\n    deleteSchedule(input: $input) {\n      message\n    }\n  }\n": types.DeleteScheduleDocument,
     "\n  mutation DownloadUserDataForSchedule {\n    downloadUserDataForSchedule\n  }\n": types.DownloadUserDataForScheduleDocument,
@@ -116,6 +117,10 @@ export function graphql(source: "\n  mutation UploadFile($file: Upload!) {\n    
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation StartMatch($matchId: Float!) {\n    startMatch(matchId: $matchId) {\n      id\n      title\n      status\n    }\n  }\n"): (typeof documents)["\n  mutation StartMatch($matchId: Float!) {\n    startMatch(matchId: $matchId) {\n      id\n      title\n      status\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation UpdateScore($input: UpdateMatchScoreInputDto!) {\n    updateScore(input: $input) {\n      awayTeamScore\n      created_at\n      homeTeamScore\n      id\n      updated_at\n    }\n  }\n"): (typeof documents)["\n  mutation UpdateScore($input: UpdateMatchScoreInputDto!) {\n    updateScore(input: $input) {\n      awayTeamScore\n      created_at\n      homeTeamScore\n      id\n      updated_at\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

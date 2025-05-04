@@ -1,51 +1,69 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Match, MatchRoundStatusTypes } from "@/graphql/generated/graphql";
 import { cn } from "@/lib/utils";
 import RoundContent from "./RoundContent";
+import useMatchOperations from "@/hooks/match/useMatchOperations";
+import useAllMatchesWithFilters from "@/hooks/match/useAllMatchesWithFilters";
 
 interface UpdateMatchScoreContentProps {
   match: Match | undefined;
-  onUpdateScore?: (
-    roundId: number,
-    team1Score: number,
-    team2Score: number
-  ) => void;
-  onEndMatchRound?: (roundId: number) => void;
-  onStartMatchRound?: (roundId: number) => void;
 }
 
 const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({
   match,
-  onUpdateScore,
-  onEndMatchRound,
-  onStartMatchRound,
 }) => {
   if (!match) {
     return <div className="p-5">Match data not available</div>;
   }
 
-  const [team1Scores, setTeam1Scores] = useState<Record<number, number>>({});
-  const [team2Scores, setTeam2Scores] = useState<Record<number, number>>({});
+  const [homeTeamScores, setHomeTeamScores] = useState<Record<number, number>>({});
+  const [awayTeamScores, setAwayTeamScores] = useState<Record<number, number>>({});
+
+  const { updateScoreMutation } = useMatchOperations();
+  const { refetchMatches } = useAllMatchesWithFilters();
+
+  const roundTabs = useMemo(() =>
+    match.matchRounds.map((round) => ({
+      value: round.matchRoundNumber.toString(),
+      label: `Round ${round.matchRoundNumber}`,
+      status: round.status,
+      id: round.id,
+    })),
+    [match.matchRounds]
+  );
+
+  const defaultTab = roundTabs.length > 0 ? roundTabs[0].value : "1";
 
   const handleTeam1ScoreChange = (roundId: number, newScore: number) => {
-    setTeam1Scores((prevScores) => ({ ...prevScores, [roundId]: newScore }));
+    setHomeTeamScores((prevScores) => ({ ...prevScores, [roundId]: newScore }));
+    updateScoreMutation.mutate({
+      matchId: match.id,
+      roundId: roundId,
+      homeTeamScore: newScore,
+      awayTeamScore: awayTeamScores[roundId] || 0,
+    });
+    refetchMatches();
   };
 
   const handleTeam2ScoreChange = (roundId: number, newScore: number) => {
-    setTeam2Scores((prevScores) => ({ ...prevScores, [roundId]: newScore }));
+    setAwayTeamScores((prevScores) => ({ ...prevScores, [roundId]: newScore }));
+    updateScoreMutation.mutate({
+      matchId: match.id,
+      roundId: roundId,
+      homeTeamScore: homeTeamScores[roundId] || 0,
+      awayTeamScore: newScore,
+    });
+    refetchMatches();
   };
 
-  // Create tabs configuration based on match rounds
-  const roundTabs = match.matchRounds.map((round) => ({
-    value: round.matchRoundNumber.toString(),
-    label: `Round ${round.matchRoundNumber}`,
-    status: round.status,
-    id: round.id,
-  }));
+  const handleStartRound = (roundId: number) => {
+    console.log("Starting Round.... ", roundId);
+  };
 
-  // Default to the first round
-  const defaultTab = roundTabs.length > 0 ? roundTabs[0].value : "1";
+  const handleEndRound = (roundId: number) => {
+    console.log("Ending Round.... ", roundId);
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -76,23 +94,16 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({
               <RoundContent
                 round={tab}
                 match={match}
-                team1Score={team1Scores[tab.id] || 0}
-                team2Score={team2Scores[tab.id] || 0}
+                team1Score={homeTeamScores[tab.id] || 0}
+                team2Score={awayTeamScores[tab.id] || 0}
                 onTeam1ScoreChange={(newScore) =>
                   handleTeam1ScoreChange(tab.id, newScore)
                 }
                 onTeam2ScoreChange={(newScore) =>
                   handleTeam2ScoreChange(tab.id, newScore)
                 }
-                onStartRound={onStartMatchRound}
-                onEndRound={onEndMatchRound}
-                onUpdateScore={() => {
-                  onUpdateScore?.(
-                    tab.id,
-                    team1Scores[tab.id] || 0,
-                    team2Scores[tab.id] || 0
-                  );
-                }}
+                onStartRound={handleStartRound}
+                onEndRound={handleEndRound}
               />
             </TabsContent>
           ))}

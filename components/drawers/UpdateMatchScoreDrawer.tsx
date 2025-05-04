@@ -12,9 +12,6 @@ type UpdateMatchScoreDrawerProps = {
   title: string;
   description?: string;
   isLoading?: boolean;
-  onUpdateScore?: () => void;
-  onEndMatchRound?: () => void;
-  onStartMatchRound?: () => void;
 };
 
 const UpdateMatchScoreDrawer = ({
@@ -24,9 +21,6 @@ const UpdateMatchScoreDrawer = ({
   title,
   isLoading,
   description,
-  onUpdateScore,
-  onEndMatchRound,
-  onStartMatchRound,
 }: UpdateMatchScoreDrawerProps) => {
   const { match, loadingMatch: isLoadingMatch } = useMatchByMatchId({
     matchId: currentMatchId,
@@ -59,9 +53,6 @@ const UpdateMatchScoreDrawer = ({
     >
       <UpdateMatchScoreContent
         match={match}
-        onUpdateScore={onUpdateScore}
-        onEndMatchRound={onEndMatchRound}
-        onStartMatchRound={onStartMatchRound}
       />
     </DynamicSheet>
   );
