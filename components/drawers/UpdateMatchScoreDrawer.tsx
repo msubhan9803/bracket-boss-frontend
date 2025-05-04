@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import useMatchByMatchId from "@/hooks/match/useMatchByMatchId";
 import { Dispatch, SetStateAction } from "react";
 import UpdateMatchScoreContent from "../scheduling/scoring/UpdateMatchScoreContent";
@@ -26,12 +26,14 @@ const UpdateMatchScoreDrawer = ({
     matchId: currentMatchId,
   });
 
+  console.log('match: ', match)
+
   const showLoading = isLoading || isLoadingMatch;
 
   const handleClose = () => {
     setIsOpen(false);
   };
-
+  
   return (
     <DynamicSheet
       isOpen={isOpen}

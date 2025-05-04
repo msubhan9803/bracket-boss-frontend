@@ -80,6 +80,15 @@ export const GET_MATCH_BY_MATCH_ID = graphql(`
       pool {
         name
       }
+      matchRounds {
+        matchRoundNumber
+        status
+        matchRoundScore {
+          id
+          homeTeamScore
+          awayTeamScore
+        }
+      }
     }
   }
 `);

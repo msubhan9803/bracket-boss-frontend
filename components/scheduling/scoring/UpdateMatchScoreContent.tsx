@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Match, MatchRoundStatusTypes } from "@/graphql/generated/graphql";
 import { cn } from "@/lib/utils";
@@ -33,6 +33,23 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({
 
   const { updateScoreMutation } = useMatchOperations();
   const { refetchMatches } = useAllMatchesWithFilters();
+
+  useEffect(() => {
+    if (match?.matchRounds) {
+      const initialHomeScores: Record<number, number> = {};
+      const initialAwayScores: Record<number, number> = {};
+      match.matchRounds.forEach((round) => {
+        if (round.matchRoundScore) {
+          initialHomeScores[round.id] =
+            round.matchRoundScore.homeTeamScore || 0;
+          initialAwayScores[round.id] =
+            round.matchRoundScore.awayTeamScore || 0;
+        }
+      });
+      setHomeTeamScores(initialHomeScores);
+      setAwayTeamScores(initialAwayScores);
+    }
+  }, [match?.matchRounds]);
 
   const roundTabs = useMemo(
     () =>
