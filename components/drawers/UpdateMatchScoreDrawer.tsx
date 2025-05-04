@@ -6,12 +6,13 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import useMatchByMatchId from "@/hooks/match/useMatchByMatchId";
 import { Dispatch, SetStateAction } from "react";
 
 type UpdateMatchScoreDrawerProps = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  currentMatchId: number | undefined;
+  currentMatchId: number;
   title: string;
   description?: string;
   isLoading?: boolean;
@@ -25,7 +26,8 @@ const UpdateMatchScoreDrawer = ({
   isLoading,
   description,
 }: UpdateMatchScoreDrawerProps) => {
-  console.log("currentMatchId: ", currentMatchId);
+  const { match } = useMatchByMatchId({ matchId: currentMatchId });
+  console.log(match)
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>

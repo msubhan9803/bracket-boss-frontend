@@ -33,6 +33,44 @@ export const GET_MATCHES_BY_ROUND_ID = graphql(`
   }
 `);
 
+export const GET_MATCH_BY_MATCH_ID = graphql(`
+  query GetMatchByMatchId($matchId: Float!) {
+    getMatchByMatchId(matchId: $matchId) {
+      created_at
+      id
+      status
+      title
+      updated_at
+      matchCourtSchedule {
+        matchDate
+        courtSchedule {
+          court {
+            name
+          }
+          timeSlot {
+            startTime
+            endTime
+          }
+          day {
+            name
+          }
+        }
+      }
+      homeTeam {
+        name
+      }
+      awayTeam {
+        name
+      }
+      matchRounds {
+        id
+        matchRoundNumber
+        status
+      }
+    }
+  }
+`);
+
 export const GET_ALL_MATCHES_WITH_FILTERS = graphql(`
   query GetAllMatchesWithFilters($input: FilterMatchesInputDto!) {
     getAllMatchesWithFilters(input: $input) {

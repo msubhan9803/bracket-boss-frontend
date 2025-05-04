@@ -52,7 +52,7 @@ export default function MatchScoreManagement({ tournamentId }: Props) {
           ))}
       </div>
 
-      {showUpdateScoreDrawer && (
+      {showUpdateScoreDrawer && currentMatchId && (
         <UpdateMatchScoreDrawer
           isOpen={showUpdateScoreDrawer}
           setIsOpen={setShowUpdateScoreDrawer}
