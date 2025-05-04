@@ -3,26 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Plus, Minus } from "lucide-react";
-import { MatchRoundStatusTypes } from "@/graphql/generated/graphql";
-
-interface Team {
-  name: string;
-}
-
-interface MatchRound {
-  id: number;
-  matchRoundNumber: number;
-  status: MatchRoundStatusTypes;
-}
-
-interface Match {
-  id: number;
-  status: string;
-  title: string;
-  homeTeam: Team;
-  awayTeam: Team;
-  matchRounds: MatchRound[];
-}
+import { Match, MatchRoundStatusTypes, Team } from "@/graphql/generated/graphql";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface UpdateMatchScoreContentProps {
   match: Match | undefined;
@@ -69,6 +51,50 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({
     if (onUpdateScore) onUpdateScore();
   };
 
+  // Helper component for team user avatars
+  const TeamAvatars = ({ team }: { team: Team }) => {
+    const users = team.users || [];
+
+    return (
+      <div className="flex items-center space-x-3">
+        <div className="flex -space-x-2">
+          {users.length > 0 ? (
+            <>
+              {users.slice(0, 3).map((user) => (
+                <Avatar
+                  key={user.id}
+                  className="border-2 border-white w-10 h-10"
+                >
+                  <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+                    {user.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              ))}
+              {users.length > 3 && (
+                <Avatar className="border-2 border-white w-10 h-10">
+                  <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+                    +{users.length - 3}
+                  </AvatarFallback>
+                </Avatar>
+              )}
+            </>
+          ) : (
+            <div className="w-12 h-12 bg-gray-200 rounded-full overflow-hidden flex items-center justify-center">
+              <span className="text-xs">
+                {team.name.substring(0, 2).toUpperCase()}
+              </span>
+            </div>
+          )}
+        </div>
+        <span className="font-bold text-lg">{team.name}</span>
+      </div>
+    );
+  };
+
   // Round content component to avoid repetition
   const RoundContent = ({ round }: { round: (typeof roundTabs)[0] }) => {
     const roundStatus = round.status;
@@ -94,14 +120,7 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({
             <div className="flex flex-col space-y-4">
               <Card className="p-4 rounded-lg shadow-sm">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-gray-200 rounded-full overflow-hidden flex items-center justify-center">
-                      <span className="text-xs">Team 1</span>
-                    </div>
-                    <span className="font-bold text-lg">
-                      {match.homeTeam.name}
-                    </span>
-                  </div>
+                  <TeamAvatars team={match.homeTeam} />
                   <div className="flex items-center space-x-2">
                     <Button
                       variant="default"
@@ -130,14 +149,7 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({
 
               <Card className="p-4 rounded-lg shadow-sm">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-gray-200 rounded-full overflow-hidden flex items-center justify-center">
-                      <span className="text-xs">Team 2</span>
-                    </div>
-                    <span className="font-bold text-lg">
-                      {match.awayTeam.name}
-                    </span>
-                  </div>
+                  <TeamAvatars team={match.awayTeam} />
                   <div className="flex items-center space-x-2">
                     <Button
                       variant="default"
@@ -189,12 +201,48 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({
             <p className="text-lg font-medium">Round completed</p>
             <div className="flex items-center justify-center space-x-8">
               <div className="text-center">
-                <p className="font-bold">{match.homeTeam.name}</p>
+                <div className="flex flex-col items-center space-y-2">
+                  <div className="flex -space-x-2 justify-center">
+                    {(match.homeTeam.users || []).slice(0, 3).map((user) => (
+                      <Avatar
+                        key={user.id}
+                        className="border-2 border-white w-8 h-8"
+                      >
+                        <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                          {user.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")
+                            .toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                    ))}
+                  </div>
+                  <p className="font-bold">{match.homeTeam.name}</p>
+                </div>
                 <p className="text-3xl font-bold mt-2">{team1Score}</p>
               </div>
               <div className="text-xl font-bold">vs</div>
               <div className="text-center">
-                <p className="font-bold">{match.awayTeam.name}</p>
+                <div className="flex flex-col items-center space-y-2">
+                  <div className="flex -space-x-2 justify-center">
+                    {(match.awayTeam.users || []).slice(0, 3).map((user) => (
+                      <Avatar
+                        key={user.id}
+                        className="border-2 border-white w-8 h-8"
+                      >
+                        <AvatarFallback className="bg-secondary text-secondary-foreground text-xs">
+                          {user.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")
+                            .toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                    ))}
+                  </div>
+                  <p className="font-bold">{match.awayTeam.name}</p>
+                </div>
                 <p className="text-3xl font-bold mt-2">{team2Score}</p>
               </div>
             </div>
