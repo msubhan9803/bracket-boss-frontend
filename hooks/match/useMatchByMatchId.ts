@@ -15,7 +15,7 @@ export default function useMatchByMatchId({
   const {
     data,
     isLoading,
-    refetch: refetchMatches,
+    refetch: refetchMatch,
   } = useQuery({
     queryKey: [USE_MATCH_BY_MATCH_ID.GET_MATCH_BY_MATCH_ID, matchId],
     queryFn: () => getMatchByMatchId(matchId),
@@ -24,7 +24,7 @@ export default function useMatchByMatchId({
 
   return {
     match: data,
-    loadingMatches: isLoading,
-    refetchMatches,
+    loadingMatch: isLoading,
+    refetchMatch,
   };
 }
