@@ -2,11 +2,17 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Team } from "@/graphql/generated/graphql";
 import TeamAvatar from "./TeamAvatar";
 
-const TeamAvatars = ({ team, variant }: { team: Team, variant?: 'primary' | 'secondary'; }) => {
+const TeamAvatars = ({
+  team,
+  variant,
+}: {
+  team: Team;
+  variant?: "primary" | "secondary";
+}) => {
   const users = team.users || [];
 
   return (
-    <div className="flex items-center space-x-3">
+    <div className="flex flex-col items-center md:flex-row md:items-center md:space-x-3">
       <div className="flex -space-x-2">
         {users.length > 0 ? (
           <>
@@ -29,7 +35,7 @@ const TeamAvatars = ({ team, variant }: { team: Team, variant?: 'primary' | 'sec
           </div>
         )}
       </div>
-      <span className="font-bold text-lg">{team.name}</span>
+      <span className="mt-2 md:mt-0 font-bold text-lg">{team.name}</span>
     </div>
   );
 };

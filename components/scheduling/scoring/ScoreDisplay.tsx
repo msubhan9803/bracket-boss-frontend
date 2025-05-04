@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Plus, Minus } from "lucide-react";
 
@@ -11,7 +12,7 @@ const ScoreDisplay = ({
   onDecrement?: () => void;
 }) => {
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center space-x-2 max-md:mx-auto max-md:mt-4">
       {onDecrement && (
         <Button
           variant="default"
