@@ -19,6 +19,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import useMatchOperations from "@/hooks/match/useMatchOperations";
 import { RefetchOptions, QueryObserverResult } from "@tanstack/react-query";
+import TeamAvatar from "./scoring/TeamAvatar";
 
 type MatchScoreCardProps = {
   match: Match;
@@ -42,7 +43,7 @@ export default function MatchScoreCard({
   match,
   refetchMatches,
   setCurrentMatchId,
-  setShowUpdateScoreDrawer
+  setShowUpdateScoreDrawer,
 }: MatchScoreCardProps) {
   const [homeScore, setHomeScore] = useState(0);
   const [awayScore, setAwayScore] = useState(0);
@@ -109,18 +110,7 @@ export default function MatchScoreCard({
             <div className="flex flex-col items-center space-y-1 sm:space-y-2">
               <div className="flex -space-x-1 sm:-space-x-2">
                 {homeTeamUsers.slice(0, 3).map((user) => (
-                  <Avatar
-                    key={user.id}
-                    className="border-2 border-white w-8 h-8 sm:w-10 sm:h-10"
-                  >
-                    <AvatarFallback className="bg-primary text-primary-foreground text-xs sm:text-sm">
-                      {user.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")
-                        .toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
+                  <TeamAvatar user={user} />
                 ))}
                 {homeTeamUsers.length > 3 && (
                   <Avatar className="border-2 border-white w-8 h-8 sm:w-10 sm:h-10">
@@ -146,18 +136,7 @@ export default function MatchScoreCard({
             <div className="flex flex-col items-center space-y-1 sm:space-y-2">
               <div className="flex -space-x-1 sm:-space-x-2">
                 {awayTeamUsers.slice(0, 3).map((user) => (
-                  <Avatar
-                    key={user.id}
-                    className="border-2 border-white w-8 h-8 sm:w-10 sm:h-10"
-                  >
-                    <AvatarFallback className="bg-secondary text-secondary-foreground text-xs sm:text-sm">
-                      {user.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")
-                        .toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
+                  <TeamAvatar variant="secondary" user={user} />
                 ))}
                 {awayTeamUsers.length > 3 && (
                   <Avatar className="border-2 border-white w-8 h-8 sm:w-10 sm:h-10">
@@ -226,7 +205,11 @@ export default function MatchScoreCard({
           )}
 
           {matchStatus === MatchStatusTypes.InProgress && (
-            <Button size="sm" className="text-xs h-8" onClick={handleUpdateScore}>
+            <Button
+              size="sm"
+              className="text-xs h-8"
+              onClick={handleUpdateScore}
+            >
               Update Score
             </Button>
           )}
