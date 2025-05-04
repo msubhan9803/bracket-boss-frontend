@@ -26,6 +26,8 @@ type MatchScoreCardProps = {
   refetchMatches: (
     options?: RefetchOptions
   ) => Promise<QueryObserverResult<Match[], Error>>;
+  setCurrentMatchId: React.Dispatch<React.SetStateAction<number | undefined>>;
+  setShowUpdateScoreDrawer: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const statusBadgeVariants: Record<MatchStatusTypes, string> = {
@@ -39,8 +41,9 @@ const statusBadgeVariants: Record<MatchStatusTypes, string> = {
 export default function MatchScoreCard({
   match,
   refetchMatches,
+  setCurrentMatchId,
+  setShowUpdateScoreDrawer
 }: MatchScoreCardProps) {
-  console.log("match: ", match);
   const [homeScore, setHomeScore] = useState(0);
   const [awayScore, setAwayScore] = useState(0);
 
@@ -74,15 +77,14 @@ export default function MatchScoreCard({
 
   const { startTournamentMutation } = useMatchOperations();
 
-  const handleUpdateScore = () => {
-    // In a real application, you would likely send these updated scores
-    // to your backend to persist them. For this example, we'll just log them.
-    console.log("Updated Score:", homeScore, "-", awayScore);
-  };
-
-  const handleStartTournament = async () => {
+  const handleStartMatch = async () => {
     await startTournamentMutation.mutateAsync(match.id);
     refetchMatches();
+  };
+
+  const handleUpdateScore = () => {
+    setCurrentMatchId(match.id);
+    setShowUpdateScoreDrawer(true);
   };
 
   return (
@@ -211,32 +213,20 @@ export default function MatchScoreCard({
 
       <CardFooter className="pt-0 pb-3 sm:pb-4 px-3 sm:px-4 flex flex-wrap gap-2 justify-end">
         <div className="flex flex-wrap gap-2">
-          {matchStatus !== MatchStatusTypes.InProgress && (
+          {matchStatus === MatchStatusTypes.NotStarted && (
             <Button
               variant="secondary"
               size="sm"
               className="text-xs h-8"
               loading={startTournamentMutation.isPending}
-              onClick={handleStartTournament}
+              onClick={handleStartMatch}
             >
               Start Match
             </Button>
           )}
 
           {matchStatus === MatchStatusTypes.InProgress && (
-            <Button
-              variant="destructive"
-              size="sm"
-              className="text-xs h-8"
-              loading={startTournamentMutation.isPending}
-              onClick={handleStartTournament}
-            >
-              End Match
-            </Button>
-          )}
-
-          {matchStatus === MatchStatusTypes.InProgress && (
-            <Button size="sm" className="text-xs h-8">
+            <Button size="sm" className="text-xs h-8" onClick={handleUpdateScore}>
               Update Score
             </Button>
           )}
