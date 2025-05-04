@@ -31,7 +31,7 @@ export default function Scoring({ tournamentId }: Props) {
     );
   }
 
-  if (tournament.status === TournamentStatusTypesEnum.NotStarted) {
+  if (tournament?.status === TournamentStatusTypesEnum.NotStarted) {
     return <EmptyScoring tournamentId={tournamentId} onRefetchTournament={refetchTournament} />;
   }
 

@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 import RoundContent from "./RoundContent";
 import useMatchOperations from "@/hooks/match/useMatchOperations";
 import useAllMatchesWithFilters from "@/hooks/match/useAllMatchesWithFilters";
+import { MatchDetails } from "../MatchScoreCard";
+import { Separator } from "@/components/ui/separator";
 
 interface UpdateMatchScoreContentProps {
   match: Match | undefined;
@@ -17,19 +19,29 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({
     return <div className="p-5">Match data not available</div>;
   }
 
-  const [homeTeamScores, setHomeTeamScores] = useState<Record<number, number>>({});
-  const [awayTeamScores, setAwayTeamScores] = useState<Record<number, number>>({});
+  const courtName = match.matchCourtSchedule?.courtSchedule.court.name;
+  const matchDate = match.matchCourtSchedule?.matchDate;
+  const startTime = match.matchCourtSchedule?.courtSchedule.timeSlot.startTime;
+  const endTime = match.matchCourtSchedule?.courtSchedule.timeSlot.endTime;
+
+  const [homeTeamScores, setHomeTeamScores] = useState<Record<number, number>>(
+    {}
+  );
+  const [awayTeamScores, setAwayTeamScores] = useState<Record<number, number>>(
+    {}
+  );
 
   const { updateScoreMutation } = useMatchOperations();
   const { refetchMatches } = useAllMatchesWithFilters();
 
-  const roundTabs = useMemo(() =>
-    match.matchRounds.map((round) => ({
-      value: round.matchRoundNumber.toString(),
-      label: `Round ${round.matchRoundNumber}`,
-      status: round.status,
-      id: round.id,
-    })),
+  const roundTabs = useMemo(
+    () =>
+      match.matchRounds.map((round) => ({
+        value: round.matchRoundNumber.toString(),
+        label: `Round ${round.matchRoundNumber}`,
+        status: round.status,
+        id: round.id,
+      })),
     [match.matchRounds]
   );
 
@@ -68,6 +80,21 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({
   return (
     <div className="flex flex-col h-full">
       <div className="p-5">
+        <h1 className="text-base sm:text-lg font-semibold text-foreground">
+          {match.title}
+        </h1>
+
+        <div className="space-y-4 mb-4">
+          <MatchDetails
+            poolName={match.pool.name}
+            courtName={courtName}
+            matchDate={matchDate}
+            startTime={startTime}
+            endTime={endTime}
+          />
+          <Separator />
+        </div>
+
         <Tabs defaultValue={defaultTab} className="w-full flex flex-col">
           <TabsList className="self-start">
             {roundTabs.map((tab) => (

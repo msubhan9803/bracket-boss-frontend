@@ -77,6 +77,9 @@ export const GET_MATCH_BY_MATCH_ID = graphql(`
         matchRoundNumber
         status
       }
+      pool {
+        name
+      }
     }
   }
 `);
