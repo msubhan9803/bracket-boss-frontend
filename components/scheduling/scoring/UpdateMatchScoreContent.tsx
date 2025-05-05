@@ -139,7 +139,7 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({
             ))}
           </TabsList>
 
-          {roundTabs.map((tab) => (
+          {roundTabs.map((tab, index) => (
             <TabsContent
               key={tab.value}
               value={tab.value}
@@ -159,6 +159,7 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({
                 onStartRound={handleStartRound}
                 onEndRound={handleEndRound}
                 endRoundLoading={endMatchRoundMutation.isPending}
+                previousRoundStatus={roundTabs[Math.max(0, index - 1)].status}
               />
             </TabsContent>
           ))}

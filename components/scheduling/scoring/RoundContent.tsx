@@ -16,6 +16,7 @@ interface RoundContentProps {
   team1Score: number;
   team2Score: number;
   endRoundLoading: boolean;
+  previousRoundStatus: MatchRoundStatusTypes;
   onTeam1ScoreChange: (score: number) => void;
   onTeam2ScoreChange: (score: number) => void;
   onStartRound?: (roundId: number) => void;
@@ -28,6 +29,7 @@ const RoundContent: React.FC<RoundContentProps> = ({
   team1Score,
   team2Score,
   endRoundLoading,
+  previousRoundStatus,
   onTeam1ScoreChange,
   onTeam2ScoreChange,
   onStartRound,
@@ -40,8 +42,16 @@ const RoundContent: React.FC<RoundContentProps> = ({
     <>
       {roundStatus === MatchRoundStatusTypes.NotStarted && (
         <div className="flex flex-col items-center justify-center space-y-4 py-20">
-          <p className="text-lg font-medium">Round not started yet</p>
-          <Button className="flex-1" onClick={() => onStartRound?.(roundId)}>
+          <p className="text-lg font-medium">
+            {previousRoundStatus !== MatchRoundStatusTypes.Completed
+              ? "Previous Round not completed yet"
+              : "Round not started yet"}
+          </p>
+          <Button
+            className="flex-1"
+            onClick={() => onStartRound?.(roundId)}
+            disabled={previousRoundStatus !== MatchRoundStatusTypes.Completed}
+          >
             Start Match Round
           </Button>
         </div>
