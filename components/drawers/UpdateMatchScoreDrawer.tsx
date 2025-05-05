@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import useMatchByMatchId from "@/hooks/match/useMatchByMatchId";
 import { Dispatch, SetStateAction } from "react";
 import UpdateMatchScoreContent from "../scheduling/scoring/UpdateMatchScoreContent";
@@ -22,11 +22,9 @@ const UpdateMatchScoreDrawer = ({
   isLoading,
   description,
 }: UpdateMatchScoreDrawerProps) => {
-  const { match, loadingMatch: isLoadingMatch } = useMatchByMatchId({
+  const { match, loadingMatch: isLoadingMatch, refetchMatch } = useMatchByMatchId({
     matchId: currentMatchId,
   });
-
-  console.log('match: ', match)
 
   const showLoading = isLoading || isLoadingMatch;
 
@@ -55,6 +53,7 @@ const UpdateMatchScoreDrawer = ({
     >
       <UpdateMatchScoreContent
         match={match}
+        refetchMatch={refetchMatch}
       />
     </DynamicSheet>
   );

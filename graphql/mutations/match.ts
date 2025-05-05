@@ -21,3 +21,15 @@ export const UPDATE_SCORE = graphql(`
     }
   }
 `);
+
+export const END_MATCH_ROUND = graphql(`
+  mutation EndMatchRound($matchId: Float!, $roundId: Float!) {
+    endMatchRound(matchId: $matchId, roundId: $roundId) {
+      id
+      matchRoundNumber
+      status
+      created_at
+      updated_at
+    }
+  }
+`);

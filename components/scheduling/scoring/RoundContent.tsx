@@ -1,9 +1,9 @@
 import { Match, MatchRoundStatusTypes } from "@/graphql/generated/graphql";
-import RoundActionButton from "./RoundActionButton";
 import { Card } from "@/components/ui/card";
 import TeamAvatars from "./TeamAvatars";
 import ScoreDisplay from "./ScoreDisplay";
 import TeamAvatar from "./TeamAvatar";
+import { Button } from "@/components/ui/button";
 
 interface RoundContentProps {
   round: {
@@ -15,6 +15,7 @@ interface RoundContentProps {
   match: Match;
   team1Score: number;
   team2Score: number;
+  endRoundLoading: boolean;
   onTeam1ScoreChange: (score: number) => void;
   onTeam2ScoreChange: (score: number) => void;
   onStartRound?: (roundId: number) => void;
@@ -26,6 +27,7 @@ const RoundContent: React.FC<RoundContentProps> = ({
   match,
   team1Score,
   team2Score,
+  endRoundLoading,
   onTeam1ScoreChange,
   onTeam2ScoreChange,
   onStartRound,
@@ -39,12 +41,9 @@ const RoundContent: React.FC<RoundContentProps> = ({
       {roundStatus === MatchRoundStatusTypes.NotStarted && (
         <div className="flex flex-col items-center justify-center space-y-4 py-20">
           <p className="text-lg font-medium">Round not started yet</p>
-          <RoundActionButton
-            onClick={() => onStartRound?.(roundId)}
-            className="bg-green-500 hover:bg-green-600 text-white"
-          >
+          <Button className="flex-1" onClick={() => onStartRound?.(roundId)}>
             Start Match Round
-          </RoundActionButton>
+          </Button>
         </div>
       )}
 
@@ -81,15 +80,20 @@ const RoundContent: React.FC<RoundContentProps> = ({
           </div>
 
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 mt-8">
-            <RoundActionButton onClick={() => onEndRound?.(roundId)}>
+            <Button
+              className="flex-1"
+              variant="secondary"
+              onClick={() => onEndRound?.(roundId)}
+              loading={endRoundLoading}
+            >
               End Match Round
-            </RoundActionButton>
+            </Button>
           </div>
         </div>
       )}
 
       {roundStatus === MatchRoundStatusTypes.Completed && (
-        <div className="flex flex-col items-center justify-center space-y-4 py-20">
+        <div className="flex flex-col items-center justify-center space-y-4 py-8">
           <p className="text-lg font-medium">Round completed</p>
           <div className="flex items-center justify-center space-x-8">
             <div className="text-center">

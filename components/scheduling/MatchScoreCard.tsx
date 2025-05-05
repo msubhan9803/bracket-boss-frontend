@@ -33,7 +33,7 @@ type StatusBadgeProps = {
 const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
   const statusBadgeVariants: Record<MatchStatusTypes, string> = {
     [MatchStatusTypes.Completed]: "bg-blue-500 hover:bg-blue-700 text-white",
-    [MatchStatusTypes.InProgress]: "bg-green-500 hover:bg-green-700 text-white",
+    [MatchStatusTypes.InProgress]: "bg-green-500 hover:bg-green-700 text-black",
     [MatchStatusTypes.NotStarted]: "bg-gray-500 hover:bg-gray-700 text-white",
     [MatchStatusTypes.Paused]: "bg-yellow-500 hover:bg-yellow-700 text-white",
     [MatchStatusTypes.Void]: "bg-red-500 hover:bg-red-700 text-white",
@@ -41,7 +41,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
 
   return (
     <Badge className={`${statusBadgeVariants[status]} rounded-md text-xs`}>
-      {convertSnakeCaseToTitleCase(status)}
+      Match {convertSnakeCaseToTitleCase(status)}
     </Badge>
   );
 };

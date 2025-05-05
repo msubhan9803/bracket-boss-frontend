@@ -7,13 +7,16 @@ import useMatchOperations from "@/hooks/match/useMatchOperations";
 import useAllMatchesWithFilters from "@/hooks/match/useAllMatchesWithFilters";
 import { MatchDetails } from "../MatchScoreCard";
 import { Separator } from "@/components/ui/separator";
+import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
 
 interface UpdateMatchScoreContentProps {
   match: Match | undefined;
+  refetchMatch: (options?: RefetchOptions) => Promise<QueryObserverResult<Match, Error>>
 }
 
 const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({
   match,
+  refetchMatch
 }) => {
   if (!match) {
     return <div className="p-5">Match data not available</div>;
@@ -31,7 +34,7 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({
     {}
   );
 
-  const { updateScoreMutation } = useMatchOperations();
+  const { updateScoreMutation, endMatchRoundMutation } = useMatchOperations();
   const { refetchMatches } = useAllMatchesWithFilters();
 
   useEffect(() => {
@@ -92,6 +95,13 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({
 
   const handleEndRound = (roundId: number) => {
     console.log("Ending Round.... ", roundId);
+
+    endMatchRoundMutation.mutate({
+      matchId: match.id,
+      roundId: roundId,
+    });
+
+    refetchMatch();
   };
 
   return (
@@ -148,6 +158,7 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({
                 }
                 onStartRound={handleStartRound}
                 onEndRound={handleEndRound}
+                endRoundLoading={endMatchRoundMutation.isPending}
               />
             </TabsContent>
           ))}
