@@ -33,3 +33,15 @@ export const END_MATCH_ROUND = graphql(`
     }
   }
 `);
+
+export const START_MATCH_ROUND = graphql(`
+  mutation StartMatchRound($matchId: Float!, $roundId: Float!) {
+    startMatchRound(matchId: $matchId, roundId: $roundId) {
+      created_at
+      id
+      matchRoundNumber
+      status
+      updated_at
+    }
+  }
+`);

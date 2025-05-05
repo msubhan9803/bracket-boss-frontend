@@ -11,12 +11,14 @@ import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
 
 interface UpdateMatchScoreContentProps {
   match: Match | undefined;
-  refetchMatch: (options?: RefetchOptions) => Promise<QueryObserverResult<Match, Error>>
+  refetchMatch: (
+    options?: RefetchOptions
+  ) => Promise<QueryObserverResult<Match, Error>>;
 }
 
 const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({
   match,
-  refetchMatch
+  refetchMatch,
 }) => {
   if (!match) {
     return <div className="p-5">Match data not available</div>;
@@ -34,25 +36,12 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({
     {}
   );
 
-  const { updateScoreMutation, endMatchRoundMutation } = useMatchOperations();
+  const {
+    updateScoreMutation,
+    endMatchRoundMutation,
+    startMatchRoundMutation,
+  } = useMatchOperations();
   const { refetchMatches } = useAllMatchesWithFilters();
-
-  useEffect(() => {
-    if (match?.matchRounds) {
-      const initialHomeScores: Record<number, number> = {};
-      const initialAwayScores: Record<number, number> = {};
-      match.matchRounds.forEach((round) => {
-        if (round.matchRoundScore) {
-          initialHomeScores[round.id] =
-            round.matchRoundScore.homeTeamScore || 0;
-          initialAwayScores[round.id] =
-            round.matchRoundScore.awayTeamScore || 0;
-        }
-      });
-      setHomeTeamScores(initialHomeScores);
-      setAwayTeamScores(initialAwayScores);
-    }
-  }, [match?.matchRounds]);
 
   const roundTabs = useMemo(
     () =>
@@ -90,12 +79,15 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({
   };
 
   const handleStartRound = (roundId: number) => {
-    console.log("Starting Round.... ", roundId);
+    startMatchRoundMutation.mutate({
+      matchId: match.id,
+      roundId: roundId,
+    });
+
+    refetchMatch();
   };
 
   const handleEndRound = (roundId: number) => {
-    console.log("Ending Round.... ", roundId);
-
     endMatchRoundMutation.mutate({
       matchId: match.id,
       roundId: roundId,
@@ -103,6 +95,23 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({
 
     refetchMatch();
   };
+
+  useEffect(() => {
+    if (match?.matchRounds) {
+      const initialHomeScores: Record<number, number> = {};
+      const initialAwayScores: Record<number, number> = {};
+      match.matchRounds.forEach((round) => {
+        if (round.matchRoundScore) {
+          initialHomeScores[round.id] =
+            round.matchRoundScore.homeTeamScore || 0;
+          initialAwayScores[round.id] =
+            round.matchRoundScore.awayTeamScore || 0;
+        }
+      });
+      setHomeTeamScores(initialHomeScores);
+      setAwayTeamScores(initialAwayScores);
+    }
+  }, [match?.matchRounds]);
 
   return (
     <div className="flex flex-col h-full">

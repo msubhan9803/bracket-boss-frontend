@@ -26,6 +26,8 @@ const UpdateMatchScoreDrawer = ({
     matchId: currentMatchId,
   });
 
+  console.log('match: ', match)
+
   const showLoading = isLoading || isLoadingMatch;
 
   const handleClose = () => {
