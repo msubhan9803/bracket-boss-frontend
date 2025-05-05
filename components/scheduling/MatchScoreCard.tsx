@@ -1,11 +1,16 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { BsCalendarDate, BsClock, BsLayoutThreeColumns } from "react-icons/bs";
 import moment from "moment";
 import { MdLocationOn } from "react-icons/md";
 import { convertSnakeCaseToTitleCase } from "@/lib/utils";
-import { Match, MatchStatusTypes, User } from "@/graphql/generated/graphql";
+import {
+  Match,
+  MatchStatusTypes,
+  User,
+  MatchRound,
+} from "@/graphql/generated/graphql";
 import {
   Card,
   CardContent,
@@ -174,9 +179,6 @@ export default function MatchScoreCard({
   setCurrentMatchId,
   setShowUpdateScoreDrawer,
 }: MatchScoreCardProps) {
-  const [homeScore, setHomeScore] = useState(0);
-  const [awayScore, setAwayScore] = useState(0);
-
   const homeTeamUsers = useMemo(() => match?.homeTeam?.users ?? [], [match]);
   const awayTeamUsers = useMemo(() => match?.awayTeam?.users ?? [], [match]);
   const matchStatus = useMemo(
@@ -189,21 +191,40 @@ export default function MatchScoreCard({
     [matchCourtSchedule]
   );
   const courtName = useMemo(
-    () => courtSchedule?.court.name ?? null,
+    () => courtSchedule?.court?.name ?? null,
     [courtSchedule]
   );
   const matchDate = useMemo(
-    () => matchCourtSchedule?.matchDate as Date,
+    () =>
+      matchCourtSchedule?.matchDate
+        ? new Date(matchCourtSchedule.matchDate)
+        : null,
     [matchCourtSchedule]
   );
   const startTime = useMemo(
-    () => courtSchedule?.timeSlot?.startTime,
+    () => courtSchedule?.timeSlot?.startTime ?? null,
     [courtSchedule]
   );
   const endTime = useMemo(
-    () => courtSchedule?.timeSlot?.endTime,
+    () => courtSchedule?.timeSlot?.endTime ?? null,
     [courtSchedule]
   );
+
+  const inProgressRound = useMemo(() => {
+    return match?.matchRounds?.find((round) => round?.status === "in_progress");
+  }, [match?.matchRounds]);
+
+  const inProgressRoundNumber = useMemo(() => {
+    return inProgressRound?.matchRoundNumber ?? null;
+  }, [inProgressRound]);
+
+  const homeScore = useMemo(() => {
+    return inProgressRound?.matchRoundScore?.homeTeamScore ?? 0;
+  }, [inProgressRound]);
+
+  const awayScore = useMemo(() => {
+    return inProgressRound?.matchRoundScore?.awayTeamScore ?? 0;
+  }, [inProgressRound]);
 
   const { startTournamentMutation } = useMatchOperations();
 
@@ -229,8 +250,17 @@ export default function MatchScoreCard({
       </CardHeader>
 
       <CardContent className="p-3 sm:p-4 space-y-4">
-        <div className="text-center py-3 sm:py-4 bg-muted/30 border border-border rounded-lg">
-          <div className="flex justify-between items-center px-2 sm:px-6">
+        <div className="bg-muted/30 border border-border rounded-lg">
+          {inProgressRoundNumber && (
+            <div className="px-4 py-2 border-b border-border bg-muted/80">
+              <p className="text-sm text-center font-medium text-foreground">
+                <span className="font-semibold text-primary">
+                  Round {inProgressRoundNumber}
+                </span>
+              </p>
+            </div>
+          )}
+          <div className="flex justify-between items-center px-2 sm:px-6 py-3 sm:py-4">
             <TeamInfo teamName={match?.homeTeam?.name} users={homeTeamUsers} />
             <ScoreDisplay homeScore={homeScore} awayScore={awayScore} />
             <TeamInfo
@@ -242,8 +272,8 @@ export default function MatchScoreCard({
         </div>
 
         <MatchDetails
-          poolName={match.pool.name}
-          roundName={match.round.name}
+          poolName={match?.pool?.name}
+          roundName={match?.round?.name}
           courtName={courtName}
           matchDate={matchDate}
           startTime={startTime}

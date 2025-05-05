@@ -129,6 +129,12 @@ export const GET_ALL_MATCHES_WITH_FILTERS = graphql(`
       created_at
       matchRounds {
         matchRoundNumber
+        status
+        matchRoundScore {
+          id
+          homeTeamScore
+          awayTeamScore
+        }
       }
       tournament {
         name
