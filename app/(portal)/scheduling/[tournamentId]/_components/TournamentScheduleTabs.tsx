@@ -37,7 +37,7 @@ export default function TournamentScheduleTabs({ initialState }: Props) {
       case "scoring":
         return <Scoring tournamentId={tournamentId} />;
       case "standing":
-        return <Standings />;
+        return <Standings tournamentId={tournamentId} />;
       default:
         return null;
     }
