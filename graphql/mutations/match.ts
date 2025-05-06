@@ -45,3 +45,14 @@ export const START_MATCH_ROUND = graphql(`
     }
   }
 `);
+
+export const END_MATCH = graphql(`
+  mutation EndMatch($matchId: Float!) {
+    endMatch(matchId: $matchId) {
+      created_at
+      id
+      status
+      updated_at
+    }
+  }
+`);

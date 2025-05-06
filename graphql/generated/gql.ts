@@ -27,6 +27,7 @@ const documents = {
     "\n  mutation UpdateScore($input: UpdateMatchScoreInputDto!) {\n    updateScore(input: $input) {\n      awayTeamScore\n      created_at\n      homeTeamScore\n      id\n      updated_at\n    }\n  }\n": types.UpdateScoreDocument,
     "\n  mutation EndMatchRound($matchId: Float!, $roundId: Float!) {\n    endMatchRound(matchId: $matchId, roundId: $roundId) {\n      id\n      matchRoundNumber\n      status\n      created_at\n      updated_at\n    }\n  }\n": types.EndMatchRoundDocument,
     "\n  mutation StartMatchRound($matchId: Float!, $roundId: Float!) {\n    startMatchRound(matchId: $matchId, roundId: $roundId) {\n      created_at\n      id\n      matchRoundNumber\n      status\n      updated_at\n    }\n  }\n": types.StartMatchRoundDocument,
+    "\n  mutation EndMatch($matchId: Float!) {\n    endMatch(matchId: $matchId) {\n      created_at\n      id\n      status\n      updated_at\n    }\n  }\n": types.EndMatchDocument,
     "\n  mutation CreateSchedule($tournamentId: Float!) {\n    createSchedule(tournamentId: $tournamentId) {\n      id\n      name\n      pools {\n        name\n        rounds {\n          id\n          name\n          matches {\n            id\n            title\n          }\n        }\n      }\n    }\n  }\n": types.CreateScheduleDocument,
     "\n  mutation DeleteSchedule($input: DeleteScheduleInputDto!) {\n    deleteSchedule(input: $input) {\n      message\n    }\n  }\n": types.DeleteScheduleDocument,
     "\n  mutation DownloadUserDataForSchedule {\n    downloadUserDataForSchedule\n  }\n": types.DownloadUserDataForScheduleDocument,
@@ -131,6 +132,10 @@ export function graphql(source: "\n  mutation EndMatchRound($matchId: Float!, $r
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation StartMatchRound($matchId: Float!, $roundId: Float!) {\n    startMatchRound(matchId: $matchId, roundId: $roundId) {\n      created_at\n      id\n      matchRoundNumber\n      status\n      updated_at\n    }\n  }\n"): (typeof documents)["\n  mutation StartMatchRound($matchId: Float!, $roundId: Float!) {\n    startMatchRound(matchId: $matchId, roundId: $roundId) {\n      created_at\n      id\n      matchRoundNumber\n      status\n      updated_at\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation EndMatch($matchId: Float!) {\n    endMatch(matchId: $matchId) {\n      created_at\n      id\n      status\n      updated_at\n    }\n  }\n"): (typeof documents)["\n  mutation EndMatch($matchId: Float!) {\n    endMatch(matchId: $matchId) {\n      created_at\n      id\n      status\n      updated_at\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

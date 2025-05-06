@@ -4,6 +4,8 @@ import { Dispatch, SetStateAction } from "react";
 import UpdateMatchScoreContent from "../scheduling/scoring/UpdateMatchScoreContent";
 import { Button } from "../ui/button";
 import DynamicSheet from "../core/DynamicSheet";
+import useMatchOperations from "@/hooks/match/useMatchOperations";
+import useAllMatchesWithFilters from "@/hooks/match/useAllMatchesWithFilters";
 
 type UpdateMatchScoreDrawerProps = {
   isOpen: boolean;
@@ -25,6 +27,8 @@ const UpdateMatchScoreDrawer = ({
   const { match, loadingMatch: isLoadingMatch, refetchMatch } = useMatchByMatchId({
     matchId: currentMatchId,
   });
+  const { endMatchMutation } = useMatchOperations();
+    const { refetchMatches } = useAllMatchesWithFilters();
 
   console.log('match: ', match)
 
@@ -32,6 +36,12 @@ const UpdateMatchScoreDrawer = ({
 
   const handleClose = () => {
     setIsOpen(false);
+  };
+
+  const handleEndMatch = async () => {
+    await endMatchMutation.mutateAsync({ matchId: match?.id });
+    refetchMatch();
+    refetchMatches();
   };
 
   if (!match) {
@@ -51,6 +61,7 @@ const UpdateMatchScoreDrawer = ({
           absoluteLoaderPosition
           type="button"
           className="w-full mt-4 font-bold"
+          onClick={handleEndMatch}
         >
           End Match
         </Button>

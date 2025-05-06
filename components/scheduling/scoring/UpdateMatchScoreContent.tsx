@@ -39,9 +39,9 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({ match
 
   const defaultTab = roundTabs.length > 0 ? roundTabs[0].value : "1";
 
-  const handleTeam1ScoreChange = (roundId: number, newScore: number) => {
+  const handleTeam1ScoreChange = async (roundId: number, newScore: number) => {
     setHomeTeamScores((prevScores) => ({ ...prevScores, [roundId]: newScore }));
-    updateScoreMutation.mutate({
+    await updateScoreMutation.mutateAsync({
       matchId: match.id,
       roundId: roundId,
       homeTeamScore: newScore,
@@ -50,9 +50,9 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({ match
     refetchMatches();
   };
 
-  const handleTeam2ScoreChange = (roundId: number, newScore: number) => {
+  const handleTeam2ScoreChange = async (roundId: number, newScore: number) => {
     setAwayTeamScores((prevScores) => ({ ...prevScores, [roundId]: newScore }));
-    updateScoreMutation.mutate({
+    await updateScoreMutation.mutateAsync({
       matchId: match.id,
       roundId: roundId,
       homeTeamScore: homeTeamScores[roundId] || 0,
@@ -61,8 +61,8 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({ match
     refetchMatches();
   };
 
-  const handleStartRound = (roundId: number) => {
-    startMatchRoundMutation.mutate({
+  const handleStartRound = async (roundId: number) => {
+    await startMatchRoundMutation.mutateAsync({
       matchId: match.id,
       roundId: roundId,
     });
@@ -70,8 +70,8 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({ match
     refetchMatch();
   };
 
-  const handleEndRound = (roundId: number) => {
-    endMatchRoundMutation.mutate({
+  const handleEndRound = async (roundId: number) => {
+    await endMatchRoundMutation.mutateAsync({
       matchId: match.id,
       roundId: roundId,
     });
