@@ -33,6 +33,10 @@ const UpdateMatchScoreDrawer = ({
   const handleClose = () => {
     setIsOpen(false);
   };
+
+  if (!match) {
+    return <div className="p-5">Match data not available</div>;
+  }
   
   return (
     <DynamicSheet

@@ -30,7 +30,7 @@ type StatusBadgeProps = {
   status: MatchStatusTypes;
 };
 
-const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
+export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
   const statusBadgeVariants: Record<MatchStatusTypes, string> = {
     [MatchStatusTypes.Completed]: "bg-blue-500 hover:bg-blue-700 text-white",
     [MatchStatusTypes.InProgress]: "bg-green-500 hover:bg-green-700 text-black",

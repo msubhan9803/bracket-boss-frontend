@@ -319,6 +319,7 @@ export type Mutation = {
   downloadEmptyScheduleTemplate: Scalars['String']['output'];
   /** Download user data for schedule */
   downloadUserDataForSchedule: Scalars['String']['output'];
+  endMatch: MatchRound;
   endMatchRound: MatchRound;
   login: LoginResponseDto;
   refreshToken: RefreshTokenResponseDto;
@@ -371,6 +372,11 @@ export type MutationCreateTournamentTeamArgs = {
 
 export type MutationDeleteScheduleArgs = {
   input: DeleteScheduleInputDto;
+};
+
+
+export type MutationEndMatchArgs = {
+  matchId: Scalars['Float']['input'];
 };
 
 
