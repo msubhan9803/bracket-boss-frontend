@@ -3,11 +3,50 @@ import { graphql } from "../generated";
 export const GET_MATCHES_BY_ROUND_ID = graphql(`
   query GetMatchesByRoundId($roundId: Float!) {
     getMatchesByRoundId(roundId: $roundId) {
-      created_at
-      id
-      status
+id
       title
-      updated_at
+      status
+      level {
+        order
+      }
+      pool {
+        name
+        order
+      }
+      round {
+        name
+        order
+        status
+      }
+      homeTeam {
+        id
+        name
+        users {
+          id
+          name
+        }
+      }
+      awayTeam {
+        id
+        name
+        users {
+          id
+          name
+        }
+      }
+      created_at
+      matchRounds {
+        matchRoundNumber
+        status
+        matchRoundScore {
+          id
+          homeTeamScore
+          awayTeamScore
+        }
+      }
+      tournament {
+        name
+      }
       matchCourtSchedule {
         matchDate
         courtSchedule {
@@ -23,12 +62,7 @@ export const GET_MATCHES_BY_ROUND_ID = graphql(`
           }
         }
       }
-      homeTeam {
-        name
-      }
-      awayTeam {
-        name
-      }
+      updated_at
     }
   }
 `);

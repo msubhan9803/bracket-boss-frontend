@@ -5,9 +5,10 @@ import { cn } from "@/lib/utils";
 import RoundContent from "./RoundContent";
 import useMatchOperations from "@/hooks/match/useMatchOperations";
 import useAllMatchesWithFilters from "@/hooks/match/useAllMatchesWithFilters";
-import { MatchDetails, StatusBadge } from "../MatchScoreCard";
+import { MatchDetails } from "../MatchScoreCard";
 import { Separator } from "@/components/ui/separator";
 import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
+import { MatchStatusBadge } from "@/components/shared/StatusBadge";
 
 interface UpdateMatchScoreContentProps {
   match: Match;
@@ -99,7 +100,7 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({ match
       <div className="p-5">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
           <h1 className="text-base sm:text-lg font-semibold text-foreground">{match.title}</h1>
-          <StatusBadge status={match.status} />
+          <MatchStatusBadge status={match.status} />
         </div>
 
         <div className="space-y-4 mb-4">

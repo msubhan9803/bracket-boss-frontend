@@ -9,7 +9,6 @@ import {
   Match,
   MatchStatusTypes,
   User,
-  MatchRound,
 } from "@/graphql/generated/graphql";
 import {
   Card,
@@ -25,26 +24,7 @@ import { Separator } from "@/components/ui/separator";
 import useMatchOperations from "@/hooks/match/useMatchOperations";
 import { RefetchOptions, QueryObserverResult } from "@tanstack/react-query";
 import TeamAvatar from "./scoring/TeamAvatar";
-
-type StatusBadgeProps = {
-  status: MatchStatusTypes;
-};
-
-export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
-  const statusBadgeVariants: Record<MatchStatusTypes, string> = {
-    [MatchStatusTypes.Completed]: "bg-blue-500 hover:bg-blue-700 text-white",
-    [MatchStatusTypes.InProgress]: "bg-green-500 hover:bg-green-700 text-black",
-    [MatchStatusTypes.NotStarted]: "bg-gray-500 hover:bg-gray-700 text-white",
-    [MatchStatusTypes.Paused]: "bg-yellow-500 hover:bg-yellow-700 text-white",
-    [MatchStatusTypes.Void]: "bg-red-500 hover:bg-red-700 text-white",
-  };
-
-  return (
-    <Badge className={`${statusBadgeVariants[status]} rounded-md text-xs`}>
-      Match {convertSnakeCaseToTitleCase(status)}
-    </Badge>
-  );
-};
+import { MatchStatusBadge } from "../shared/StatusBadge";
 
 type TeamMembersAvatarsProps = {
   users: User[];
@@ -250,7 +230,7 @@ export default function MatchScoreCard({
           <CardTitle className="text-base sm:text-lg font-semibold text-foreground">
             {match.title}
           </CardTitle>
-          <StatusBadge status={matchStatus} />
+          <MatchStatusBadge status={matchStatus} />
         </div>
       </CardHeader>
 

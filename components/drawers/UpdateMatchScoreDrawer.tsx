@@ -5,25 +5,27 @@ import UpdateMatchScoreContent from "../scheduling/scoring/UpdateMatchScoreConte
 import { Button } from "../ui/button";
 import DynamicSheet from "../core/DynamicSheet";
 import useMatchOperations from "@/hooks/match/useMatchOperations";
-import useAllMatchesWithFilters from "@/hooks/match/useAllMatchesWithFilters";
-import { MatchStatusTypes } from "@/graphql/generated/graphql";
+import { Match, MatchStatusTypes } from "@/graphql/generated/graphql";
+import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
 
 type UpdateMatchScoreDrawerProps = {
   isOpen: boolean;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
   currentMatchId: number;
   title: string;
   description?: string;
   isLoading?: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  refetchMatches: (options?: RefetchOptions) => Promise<QueryObserverResult<Match[], Error>>
 };
 
 const UpdateMatchScoreDrawer = ({
   isOpen,
-  setIsOpen,
   currentMatchId,
   title,
   isLoading,
   description,
+  setIsOpen,
+  refetchMatches,
 }: UpdateMatchScoreDrawerProps) => {
   const {
     match,
@@ -33,9 +35,6 @@ const UpdateMatchScoreDrawer = ({
     matchId: currentMatchId,
   });
   const { endMatchMutation } = useMatchOperations();
-  const { refetchMatches } = useAllMatchesWithFilters();
-
-  console.log("match status: ", match?.status);
 
   const showLoading = isLoading || isLoadingMatch;
 
