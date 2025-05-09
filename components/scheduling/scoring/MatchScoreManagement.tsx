@@ -27,7 +27,7 @@ export default function MatchScoreManagement({ tournamentId }: Props) {
   const [selectedRound, setSelectedRound] = useState<Round>();
   const [showUpdateScoreDrawer, setShowUpdateScoreDrawer] = useState(false);
   const [currentMatchId, setCurrentMatchId] = useState<number>();
-  const { advanceToNextPoolRoundMutation } = useScheduleOperations();
+  const { endRoundMutation } = useScheduleOperations();
 
   const { levels, refetchLevels } = useLevelsByTournament({
     tournamentId,
@@ -73,13 +73,14 @@ export default function MatchScoreManagement({ tournamentId }: Props) {
     );
 
     setSelectedRound(
-      inProgressRound ??
-        rounds.find((round) => round.status === RoundStatusTypesEnum.NotStarted)
+      inProgressRound ||
+        rounds.find((round) => round.status === RoundStatusTypesEnum.NotStarted) ||
+        rounds.find((round) => round.status === RoundStatusTypesEnum.Completed)
     );
   };
 
-  const handleAdvanceToNextPoolRound = async () => {
-    await advanceToNextPoolRoundMutation.mutateAsync({
+  const handleEndRound = async () => {
+    await endRoundMutation.mutateAsync({
       tournamentId: parseInt(tournamentId),
       poolId: selectedPool?.id,
     });
@@ -151,11 +152,8 @@ export default function MatchScoreManagement({ tournamentId }: Props) {
           </SelectContent>
         </Select>
 
-        <Button
-          loading={advanceToNextPoolRoundMutation.isPending}
-          onClick={handleAdvanceToNextPoolRound}
-        >
-          Advance to Next Round
+        <Button loading={endRoundMutation.isPending} onClick={handleEndRound}>
+          End Round
         </Button>
       </div>
 

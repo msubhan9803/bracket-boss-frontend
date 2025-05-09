@@ -20,15 +20,10 @@ export const CREATE_SCHEDULE = graphql(`
   }
 `);
 
-export const ADVANCE_TO_NEXT_POOL_ROUND = graphql(`
-  mutation AdvanceToNextPoolRound($poolId: Float!, $tournamentId: Float!) {
-    advanceToNextPoolRound(poolId: $poolId, tournamentId: $tournamentId) {
-      created_at
-      id
-      name
-      order
-      status
-      updated_at
+export const END_ROUND = graphql(`
+  mutation EndRound($poolId: Float!, $tournamentId: Float!) {
+    endRound(poolId: $poolId, tournamentId: $tournamentId) {
+      message
     }
   }
 `);
