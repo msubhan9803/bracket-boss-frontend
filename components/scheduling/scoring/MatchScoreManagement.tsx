@@ -7,6 +7,8 @@ import { setMatchFilter } from "@/redux/slices/matchFilter.slice";
 import LoadingSpinner from "@/components/core/LoadingSpinner";
 import MatchScoreCard from "../MatchScoreCard";
 import UpdateMatchScoreDrawer from "@/components/drawers/UpdateMatchScoreDrawer";
+import { Button } from "@/components/ui/button";
+import useScheduleOperations from "@/hooks/schedule/useScheduleOperations";
 
 type Props = {
   tournamentId: string;
@@ -17,7 +19,8 @@ export default function MatchScoreManagement({ tournamentId }: Props) {
   const filters = useSelector((state: RootState) => state.matchFilter.filter);
   const { matches, loadingMatches, refetchMatches } = useAllMatchesWithFilters();
   const [showUpdateScoreDrawer, setShowUpdateScoreDrawer] = useState(false);
-  const [currentMatchId, setCurrentMatchId] = useState<number>()
+  const [currentMatchId, setCurrentMatchId] = useState<number>();
+  const { advanceToNextPoolRoundMutation } = useScheduleOperations();
 
   useEffect(() => {
     dispatch(setMatchFilter({ tournamentId: parseInt(tournamentId) }));
@@ -27,14 +30,22 @@ export default function MatchScoreManagement({ tournamentId }: Props) {
     refetchMatches();
   }, [filters]);
 
+  const handleAdvanceToNextPoolRound = async () => {
+    // await advanceToNextPoolRoundMutation.mutateAsync(tournamentId, poolId);
+  };
+
   if (loadingMatches) {
     return <LoadingSpinner className="my-36" />;
   }
 
   return (
     <div className="space-y-5">
-      <div className="text-right">
+      <div className="flex justify-end items-center gap-x-3">
         <FilterScoringMatchesButton tournamentId={tournamentId} />
+
+        <Button onClick={handleAdvanceToNextPoolRound}>
+          Advance to Next Round
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">

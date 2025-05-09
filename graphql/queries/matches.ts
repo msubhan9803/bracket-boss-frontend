@@ -109,6 +109,7 @@ export const GET_ALL_MATCHES_WITH_FILTERS = graphql(`
       round {
         name
         order
+        status
       }
       homeTeam {
         id
