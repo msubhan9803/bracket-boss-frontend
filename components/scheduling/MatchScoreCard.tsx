@@ -233,6 +233,11 @@ export default function MatchScoreCard({
     refetchMatches();
   };
 
+  const handleMatchDetails = async () => {
+    setCurrentMatchId(match.id);
+    setShowUpdateScoreDrawer(true);
+  };
+
   const handleUpdateScore = () => {
     setCurrentMatchId(match.id);
     setShowUpdateScoreDrawer(true);
@@ -294,6 +299,17 @@ export default function MatchScoreCard({
               onClick={handleStartMatch}
             >
               Start Match
+            </Button>
+          )}
+
+          {matchStatus === MatchStatusTypes.Completed && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-xs h-8"
+              onClick={handleMatchDetails}
+            >
+              View Details
             </Button>
           )}
 

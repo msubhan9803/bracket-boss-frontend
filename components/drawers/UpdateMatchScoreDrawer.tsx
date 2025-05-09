@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import DynamicSheet from "../core/DynamicSheet";
 import useMatchOperations from "@/hooks/match/useMatchOperations";
 import useAllMatchesWithFilters from "@/hooks/match/useAllMatchesWithFilters";
+import { MatchStatusTypes } from "@/graphql/generated/graphql";
 
 type UpdateMatchScoreDrawerProps = {
   isOpen: boolean;
@@ -24,13 +25,17 @@ const UpdateMatchScoreDrawer = ({
   isLoading,
   description,
 }: UpdateMatchScoreDrawerProps) => {
-  const { match, loadingMatch: isLoadingMatch, refetchMatch } = useMatchByMatchId({
+  const {
+    match,
+    loadingMatch: isLoadingMatch,
+    refetchMatch,
+  } = useMatchByMatchId({
     matchId: currentMatchId,
   });
   const { endMatchMutation } = useMatchOperations();
-    const { refetchMatches } = useAllMatchesWithFilters();
+  const { refetchMatches } = useAllMatchesWithFilters();
 
-  console.log('match: ', match)
+  console.log("match status: ", match?.status);
 
   const showLoading = isLoading || isLoadingMatch;
 
@@ -47,7 +52,7 @@ const UpdateMatchScoreDrawer = ({
   if (!match) {
     return <div className="p-5">Match data not available</div>;
   }
-  
+
   return (
     <DynamicSheet
       isOpen={isOpen}
@@ -57,21 +62,20 @@ const UpdateMatchScoreDrawer = ({
       description={description}
       fixedFooter={true}
       footerActions={
-        <Button
-          absoluteLoaderPosition
-          type="button"
-          className="w-full mt-4 font-bold"
-          onClick={handleEndMatch}
-        >
-          End Match
-        </Button>
+        match.status !== MatchStatusTypes.Completed ? (
+          <Button
+            absoluteLoaderPosition
+            type="button"
+            className="w-full mt-4 font-bold"
+            onClick={handleEndMatch}
+          >
+            End Match
+          </Button>
+        ) : null
       }
       onCancel={handleClose}
     >
-      <UpdateMatchScoreContent
-        match={match}
-        refetchMatch={refetchMatch}
-      />
+      <UpdateMatchScoreContent match={match} refetchMatch={refetchMatch} />
     </DynamicSheet>
   );
 };
