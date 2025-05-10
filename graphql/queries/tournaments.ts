@@ -23,14 +23,6 @@ export const GET_ALL_TOURNAMENTS = graphql(`
         start_date
         end_date
         isPrivate
-        created_at
-        updated_at
-        poolPlayFormat {
-          name
-        }
-        playOffFormat {
-          name
-        }
         teamGenerationType {
           name
         }
@@ -38,6 +30,8 @@ export const GET_ALL_TOURNAMENTS = graphql(`
           name
         }
         splitSwitchGroupBy
+        created_at
+        updated_at
       }
     }
   }
@@ -61,25 +55,19 @@ export const GET_ALL_TOURNAMENTS_WITHOUT_PAGINATION = graphql(`
 export const GET_TOURNAMENT_BY_ID = graphql(`
   query GetTournamentById($tournamentId: Float!) {
     getTournamentById(tournamentId: $tournamentId) {
-      created_at
       description
       end_date
       id
       isPrivate
       name
       start_date
-      updated_at
-      poolPlayFormat {
-        name
-      }
-      playOffFormat {
-        name
-      }
       teamGenerationType {
         name
       }
       splitSwitchGroupBy
       status
+      created_at
+      updated_at
     }
   }
 `);

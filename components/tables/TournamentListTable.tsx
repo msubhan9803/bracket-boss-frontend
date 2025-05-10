@@ -62,16 +62,6 @@ const TournamentListTable = () => {
       header: "Name",
     },
     {
-      accessorKey: "poolPlayFormat.name",
-      header: "Pool Play Format",
-      cell: ({ getValue }) => <div>{toTitleCase(getValue())}</div>,
-    },
-    {
-      accessorKey: "playOffFormat.name",
-      header: "Play Off Format",
-      cell: ({ getValue }) => <div>{toTitleCase(getValue())}</div>,
-    },
-    {
       accessorKey: "teamGenerationType.name",
       header: "Team Generation",
       cell: ({ getValue }) => <div>{toTitleCase(getValue())}</div>,
