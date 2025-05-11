@@ -11,6 +11,7 @@ import useMatchesByRoundId from "@/hooks/match/useMatchesByRoundId";
 import usePoolsByLevel from "@/hooks/pool/usePoolsByLevel";
 import useRoundsByPool from "@/hooks/round/useRoundsByPool";
 import useScheduleOperations from "@/hooks/schedule/useScheduleOperations";
+import useSingleTournament from "../tournament/useSingleTournament";
 
 export default function useMatchScoreManagement(tournamentId: string) {
   const [selectedLevel, setSelectedLevel] = useState<Level>();
@@ -21,6 +22,7 @@ export default function useMatchScoreManagement(tournamentId: string) {
 
   const { endRoundMutation } = useScheduleOperations();
 
+  const { tournament } = useSingleTournament(tournamentId);
   const { levels, refetchLevels } = useLevelsByTournament({
     tournamentId,
     enabled: !!tournamentId,
@@ -37,6 +39,21 @@ export default function useMatchScoreManagement(tournamentId: string) {
     roundId: selectedRound?.id,
     enabled: !!selectedRound?.id,
   });
+
+  const allRoundsByTournamentCompleted = useMemo(() => {
+    if (!tournament?.rounds) return [];
+    return tournament.rounds.every((round) => {
+      return round.status === RoundStatusTypesEnum.Completed;
+    });
+  }, [tournament]);
+
+  const anotherNotStartedLevelLeft = useMemo(() => {
+    if (!levels) return undefined;
+    const notStartedLevels = levels.filter(
+      (level) => level.status === LevelStatusTypesEnum.NotStarted
+    );
+    return notStartedLevels.length > 0;
+  }, [levels]);
 
   const isSelectedLevelCompleted = useMemo(
     () => selectedLevel?.status === LevelStatusTypesEnum.Completed,
@@ -118,6 +135,8 @@ export default function useMatchScoreManagement(tournamentId: string) {
     areRoundsOfSelectedLevelAndPoolCompleted,
     endRoundMutation,
     nextLevel,
+    allRoundsByTournamentCompleted,
+    anotherNotStartedLevelLeft,
     setSelectedLevel,
     setSelectedPool,
     setSelectedRound,
