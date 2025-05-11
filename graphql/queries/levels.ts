@@ -7,7 +7,6 @@ export const GET_LEVELS_BY_TOURNAMENT = graphql(`
       id
       name
       order
-      type
       updated_at
     }
   }

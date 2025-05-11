@@ -1,20 +1,24 @@
 "use client";
-import { Fragment, useMemo, useState } from "react";
-import { DynamicFormField } from "@/global";
-import {
-  CreateTournamentInputDto,
-  TeamGenerationTypeEnum,
-} from "@/graphql/generated/graphql";
+import { Fragment, useState, useMemo } from "react";
+import DynamicFormSheet from "@/components/core/DynamicFormSheet";
 import { Button } from "@/components/ui/button";
+import { DynamicFormField as DynamicFormFieldType } from "@/global";
 import useTournamentOperations from "@/hooks/tournament/useTournamentOperations";
+import { useTournamentDrawer } from "@/hooks/court/useTournamentDrawer";
+import { CreateTournamentInputDto } from "@/graphql/generated/graphql";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import useFormats from "@/hooks/format/useFormats";
 import { toTitleCase } from "@/lib/utils";
-import { RootState } from "@/redux/store";
-import { useSelector } from "react-redux";
+import { FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import useTeamGenerationTypeByFormat from "@/hooks/teamGenerationTypes/useTeamGenerationTypes";
-import { GroupByEnum } from "@/lib/app-types";
-import { useForm } from "react-hook-form";
-import DynamicFormSheetWithoutFormContext from "../core/DynamicFormSheetWithoutFormContext";
 
 interface AddTournamentButtonProps {
   refetchTournamentList: () => void;
@@ -24,151 +28,205 @@ const AddTournamentButton: React.FC<AddTournamentButtonProps> = ({
   refetchTournamentList,
 }) => {
   const [showModal, setShowModal] = useState(false);
-  // const clubId = useSelector((state: RootState) => state.user.clubId);
 
-  const form = useForm<CreateTournamentInputDto>({
-    mode: "onBlur",
+  const { form, formState, levels, handleAddLevel, handleRemoveLevel } =
+    useTournamentDrawer();
+  const { formats } = useFormats();
+  const firstLevelFormatId = useMemo(() => levels[0]?.formatId, [levels]);
+  const { teamGenerationTypes } = useTeamGenerationTypeByFormat({
+    formatId: firstLevelFormatId,
   });
-
-  const poolPlayFormatId = form.watch("poolPlayFormatId");
-  const teamGenerationTypeId = form.watch("teamGenerationTypeId");
 
   const { createTournamentMutation } = useTournamentOperations();
-  const { formats } = useFormats();
-  const { teamGenerationTypes } = useTeamGenerationTypeByFormat({
-    poolPlayFormatId,
-  });
 
-  const selectedTeamGenerationType = useMemo(
-    () =>
-      teamGenerationTypes?.find(
-        (elem) => elem.id.toString() === teamGenerationTypeId
-      ),
-    [teamGenerationTypes, teamGenerationTypeId]
-  );
+  const formFields: DynamicFormFieldType<CreateTournamentInputDto>[] = useMemo(() => {
+    const baseFields: DynamicFormFieldType<CreateTournamentInputDto>[] = [
+      {
+        label: "Name",
+        name: "name",
+        type: "text",
+        placeholder: "Tournament Name",
+        required: true,
+        defaultValue: "",
+        className: "col-span-2",
+      },
+      {
+        label: "Description",
+        name: "description",
+        type: "textarea",
+        placeholder: "Description",
+        required: true,
+        defaultValue: "",
+        className: "col-span-2",
+      },
+      {
+        label: "Start Date",
+        name: "start_date",
+        type: "date",
+        placeholder: "Start Date",
+        required: true,
+        defaultValue: "",
+      },
+      {
+        label: "End Date",
+        name: "end_date",
+        type: "date",
+        placeholder: "End Date",
+        required: true,
+        defaultValue: null,
+      },
+      {
+        label: "Best of rounds of matches",
+        name: "matchBestOfRounds",
+        type: "number",
+        placeholder: "e.g. 3 or 5",
+        required: true,
+        defaultValue: 1,
+      },
+      {
+        label: "No. of Pools",
+        name: "numberOfPools",
+        type: "number",
+        placeholder: "e.g. 1",
+        required: true,
+        defaultValue: 1,
+      },
+      {
+        label: "Is Private?",
+        name: "isPrivate",
+        type: "switch",
+        placeholder: "",
+        required: true,
+        defaultValue: false,
+      },
+      {
+        type: "render",
+        className: "col-span-2 my-2",
+        isVisible: true,
+        render: () => <hr />,
+      },
+      {
+        type: "render",
+        className: "col-span-2",
+        isVisible: true,
+        render: () => (
+          <div>
+            <div className="flex items-center justify-between">
+              <h1 className="text-lg font-bold">Levels</h1>
+              <Button type="button" className="font-bold mt-2" onClick={handleAddLevel}>
+                Add Level
+              </Button>
+            </div>
 
-  const formFields: DynamicFormField<CreateTournamentInputDto>[] =
-    useMemo(() => {
-      const baseFields: DynamicFormField<CreateTournamentInputDto>[] = [
-        {
-          label: "Name",
-          name: "name" as keyof CreateTournamentInputDto,
-          type: "text",
-          placeholder: "Tournament Name",
-          required: true,
-          defaultValue: "",
-        },
-        {
-          label: "Description",
-          name: "description" as keyof CreateTournamentInputDto,
-          type: "textarea",
-          placeholder: "Description",
-          required: true,
-          defaultValue: "",
-        },
-        {
-          label: "Start Date",
-          name: "start_date" as keyof CreateTournamentInputDto,
-          type: "date",
-          placeholder: "Start Date",
-          required: true,
-          defaultValue: "",
-        },
-        {
-          label: "End Date",
-          name: "end_date" as keyof CreateTournamentInputDto,
-          type: "date",
-          placeholder: "End Date",
-          required: true,
-          defaultValue: "",
-        },
-        {
-          label: "Is Private?",
-          name: "isPrivate" as keyof CreateTournamentInputDto,
-          type: "switch",
-          placeholder: "",
-          required: true,
-          defaultValue: false,
-        },
-        {
-          label: "Pool Play Format",
-          name: "poolPlayFormatId" as keyof CreateTournamentInputDto,
-          type: "select",
-          placeholder: "Select format",
-          required: true,
-          options: formats?.map((format) => ({
-            label: toTitleCase(format.name),
-            value: format.id.toString(),
-          })),
-          defaultValue: "",
-        },
-        {
-          label: "Play Off Format",
-          name: "playOffFormatId" as keyof CreateTournamentInputDto,
-          type: "select",
-          placeholder: "Select format",
-          required: true,
-          options: formats?.map((format) => ({
-            label: toTitleCase(format.name),
-            value: format.id.toString(),
-          })),
-          defaultValue: "",
-        },
-        {
-          label: "Team Generation Type",
-          name: "teamGenerationTypeId" as keyof CreateTournamentInputDto,
-          type: "select",
-          placeholder: "Select type",
-          required: true,
-          options: teamGenerationTypes?.map((teamGenerationType) => ({
-            label: toTitleCase(teamGenerationType.name),
-            value: teamGenerationType.id.toString(),
-          })),
-          defaultValue: "",
-        },
-        {
-          label: "Best of rounds of matches",
-          name: "matchBestOfRounds" as keyof CreateTournamentInputDto,
-          type: "number",
-          placeholder: "e.g. 3 or 5",
-          required: true,
-          defaultValue: 1,
-        },
-        {
-          label: "No. of Pools",
-          name: "numberOfPools" as keyof CreateTournamentInputDto,
-          type: "number",
-          placeholder: "e.g. 1",
-          required: true,
-          defaultValue: 1,
-        },
-      ];
+            {levels.map((level, index) => (
+              <div key={level.id} className="flex items-end gap-4 my-2">
+                <div className="grid grid-cols-2 gap-2 w-full">
+                  <div className="space-y-2">
+                    <Label htmlFor={`levels.${index}.name`}>Level Name</Label>
+                    <Input
+                      type="text"
+                      id={`levels.${index}.name`}
+                      placeholder="e.g Pool Play"
+                      {...form.register(`levels.${index}.name`)}
+                    />
+                    {form.formState.errors.levels?.[index]?.name && (
+                      <p className="text-sm text-red-500">
+                        {form.formState.errors.levels[index].name?.message}
+                      </p>
+                    )}
+                  </div>
 
-      if (
-        selectedTeamGenerationType?.name === TeamGenerationTypeEnum.SplitSwitch
-      ) {
-        baseFields.push({
-          label: "Split Switch Group By",
-          name: "splitSwitchGroupBy" as keyof CreateTournamentInputDto,
-          type: "select",
-          placeholder: "Select group by",
-          required: true,
-          options: [
-            { label: "Gender", value: GroupByEnum.GENDER },
-            { label: "Rating", value: GroupByEnum.RATING },
-          ],
-          defaultValue: "",
-        });
-      }
+                  <div className="space-y-2">
+                    <FormField
+                      control={form.control}
+                      name={`levels.${index}.formatId`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Format</FormLabel>
+                          <FormControl>
+                            <Select
+                              value={field.value?.toString() ?? ""}
+                              onValueChange={(value) => field.onChange(parseInt(value))}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select a format" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {formats?.map((formatOption) => (
+                                  <SelectItem
+                                    key={formatOption.id}
+                                    value={formatOption.id.toString()}
+                                    className="text-left"
+                                  >
+                                    {toTitleCase(formatOption.name)}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
 
-      return baseFields;
-    }, [formats, teamGenerationTypes, selectedTeamGenerationType]);
+                    {form.formState.errors.levels?.[index]?.formatId && (
+                      <p className="text-sm text-red-500">
+                        {form.formState.errors.levels[index].formatId?.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => handleRemoveLevel(index)}
+                >
+                  Remove
+                </Button>
+              </div>
+            ))}
+          </div>
+        ),
+      },
+      {
+        label: "Team Generation Type",
+        name: "teamGenerationTypeId",
+        type: "select",
+        placeholder: "Select type",
+        required: true,
+        isVisible: teamGenerationTypes?.length > 0,
+        options: teamGenerationTypes?.map((teamGenerationType) => ({
+          label: toTitleCase(teamGenerationType.name),
+          value: teamGenerationType.id.toString(),
+        })),
+        defaultValue: "",
+      },
+    ];
+
+    // if (selectedTeamGenerationType?.name === TeamGenerationTypeEnum.SplitSwitch) {
+    //   baseFields.push({
+    //     label: "Split Switch Group By",
+    //     name: "splitSwitchGroupBy",
+    //     type: "select",
+    //     placeholder: "Select group by",
+    //     required: true,
+    //     options: [
+    //       { label: "Gender", value: GroupByEnum.GENDER },
+    //       { label: "Rating", value: GroupByEnum.RATING },
+    //     ],
+    //     defaultValue: "",
+    //   });
+    // }
+
+    return baseFields;
+    // }, [formats, teamGenerationTypes, selectedTeamGenerationType]);
+  }, [formState, formats, teamGenerationTypes]);
 
   const handleCreating = async (input: CreateTournamentInputDto) => {
+    console.log("Creating tournament with input:", input);
+
     await createTournamentMutation.mutateAsync({
       ...input,
-      poolPlayFormatId: parseInt(input.poolPlayFormatId.toString()),
-      playOffFormatId: parseInt(input.playOffFormatId.toString()),
       teamGenerationTypeId: parseInt(input.teamGenerationTypeId.toString()),
     });
     setShowModal(false);
@@ -180,15 +238,17 @@ const AddTournamentButton: React.FC<AddTournamentButtonProps> = ({
       <Button onClick={() => setShowModal(true)} variant="outline">
         Create Tournament
       </Button>
-      <DynamicFormSheetWithoutFormContext
-        form={form}
+      <DynamicFormSheet
         isOpen={showModal}
         setIsOpen={setShowModal}
-        fields={formFields}
         title="Create Tournament"
         description="Creates a new tournament for this club"
-        submitButtonLabel="Submit"
-        onSubmit={handleCreating}
+        formState={form}
+        fields={formFields}
+        onSubmit={() => handleCreating(formState)}
+        submitButtonLabel="Save Changes"
+        fixedFooter
+        formGridCols="grid-cols-2"
       />
     </Fragment>
   );
