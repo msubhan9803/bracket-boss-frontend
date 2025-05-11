@@ -11,11 +11,8 @@ const validationSchema = z.object({
   end_date: z.string().min(1, { message: "Start date is required" }),
   isPrivate: z.boolean().default(false),
   teamGenerationTypeId: z
-    .number({
-      invalid_type_error: "Team generation type is required",
-    })
-    .min(1, { message: "Team generation type must be greater than 0" })
-    .nullable(),
+    .string()
+    .min(1, { message: "Team Generation Type is required" }),
   matchBestOfRounds: z
     .number({
       invalid_type_error: "Best of rounds is required",

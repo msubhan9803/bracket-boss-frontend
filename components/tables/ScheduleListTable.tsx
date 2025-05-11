@@ -66,16 +66,6 @@ const ScheduleListTable = () => {
       header: "Name",
     },
     {
-      accessorKey: "poolPlayFormat.name",
-      header: "Pool Play Format",
-      cell: ({ getValue }) => <div>{toTitleCase(getValue())}</div>,
-    },
-    {
-      accessorKey: "playOffFormat.name",
-      header: "Play Off Format",
-      cell: ({ getValue }) => <div>{toTitleCase(getValue())}</div>,
-    },
-    {
       accessorKey: "start_date",
       header: "Start Date",
       cell: ({ getValue }) => <div>{moment(getValue()).format("ll")}</div>,

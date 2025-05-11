@@ -260,6 +260,7 @@ const AddTournamentButton: React.FC<AddTournamentButtonProps> = ({
         fields={formFields}
         onSubmit={() => handleCreating(formState)}
         submitButtonLabel="Save Changes"
+        submitButtonLoading={createTournamentMutation.isPending}
         fixedFooter
         formGridCols="grid-cols-2"
       />

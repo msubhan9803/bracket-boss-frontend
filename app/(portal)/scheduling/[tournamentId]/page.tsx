@@ -10,12 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import TournamentScheduleTabs from "./_components/TournamentScheduleTabs";
 
 const ScheduleDetails: NextPage<PageProps> = async ({ params }) => {
-  const users = await getAllUsersWithoutPagination(
-    PredefinedSystemRoles.player
-  );
-  const tournamentDetails = await getSingleTournament(
-    parseInt(params.tournamentId)
-  );
+  const users = await getAllUsersWithoutPagination(PredefinedSystemRoles.player);
+  const tournamentDetails = await getSingleTournament(parseInt(params.tournamentId));
 
   return (
     <>
@@ -27,9 +23,7 @@ const ScheduleDetails: NextPage<PageProps> = async ({ params }) => {
             </h1>
 
             <Badge className="my-2" variant="secondary">
-              {`${toTitleCase(
-                tournamentDetails.playOffFormat.name
-              )} - ${toTitleCase(tournamentDetails.teamGenerationType.name)}`}
+              {`${toTitleCase(tournamentDetails.teamGenerationType.name)}`}
             </Badge>
           </div>
         }
