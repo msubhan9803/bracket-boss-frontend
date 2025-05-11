@@ -1,7 +1,8 @@
-import { z } from "zod";
 import { useForm, useFieldArray } from "react-hook-form";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateTournamentInputDto, LevelInput } from "@/graphql/generated/graphql";
+import useTeamGenerationTypeByFormat from "../teamGenerationTypes/useTeamGenerationTypes";
 
 const validationSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
@@ -49,8 +50,8 @@ export const useTournamentDrawer = (item?: Partial<CreateTournamentInputDto>) =>
     defaultValues: {
       name: item?.name || "",
       description: item?.description || "",
-      start_date: item?.start_date ? new Date(item.start_date) : '',
-      end_date: item?.end_date ? new Date(item.end_date) : '',
+      start_date: item?.start_date ? new Date(item.start_date) : "",
+      end_date: item?.end_date ? new Date(item.end_date) : "",
       isPrivate: item?.isPrivate ?? false,
       teamGenerationTypeId: item?.teamGenerationTypeId || undefined,
       matchBestOfRounds: item?.matchBestOfRounds || undefined,
@@ -72,12 +73,17 @@ export const useTournamentDrawer = (item?: Partial<CreateTournamentInputDto>) =>
 
   const { fields: levels, append, update, remove } = levelsHandler;
 
+  const firstLevelFormatId = form.watch("levels.0.formatId");
+  const { teamGenerationTypes, refetchTeamGenerationTypes } =
+    useTeamGenerationTypeByFormat({ formatId: firstLevelFormatId ?? undefined });
+
   const handleAddLevel = () => {
     append({ name: "", formatId: undefined } as unknown as LevelInput);
   };
 
   const handleUpdateLevel = (levelIndex: number, value: Partial<LevelInput>) => {
     update(levelIndex, { ...levels[levelIndex], ...value });
+    refetchTeamGenerationTypes();
   };
 
   const handleRemoveLevel = (index: number) => {
@@ -88,6 +94,7 @@ export const useTournamentDrawer = (item?: Partial<CreateTournamentInputDto>) =>
     form,
     formState,
     levels,
+    teamGenerationTypes,
     handleAddLevel,
     handleUpdateLevel,
     handleRemoveLevel,

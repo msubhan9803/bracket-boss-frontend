@@ -1,11 +1,14 @@
 "use client";
-import { Fragment, useState, useMemo } from "react";
+import { Fragment, useState, useMemo, useEffect } from "react";
 import DynamicFormSheet from "@/components/core/DynamicFormSheet";
 import { Button } from "@/components/ui/button";
 import { DynamicFormField as DynamicFormFieldType } from "@/global";
 import useTournamentOperations from "@/hooks/tournament/useTournamentOperations";
 import { useTournamentDrawer } from "@/hooks/court/useTournamentDrawer";
-import { CreateTournamentInputDto } from "@/graphql/generated/graphql";
+import {
+  CreateTournamentInputDto,
+  TeamGenerationTypeEnum,
+} from "@/graphql/generated/graphql";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import {
@@ -14,11 +17,11 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "@/components/ui/select";
 import useFormats from "@/hooks/format/useFormats";
 import { toTitleCase } from "@/lib/utils";
-import { FormControl, FormField, FormItem, FormLabel } from "../ui/form";
-import useTeamGenerationTypeByFormat from "@/hooks/teamGenerationTypes/useTeamGenerationTypes";
+import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { GroupByEnum } from "@/lib/app-types";
 
 interface AddTournamentButtonProps {
   refetchTournamentList: () => void;
@@ -29,13 +32,20 @@ const AddTournamentButton: React.FC<AddTournamentButtonProps> = ({
 }) => {
   const [showModal, setShowModal] = useState(false);
 
-  const { form, formState, levels, handleAddLevel, handleRemoveLevel } =
-    useTournamentDrawer();
+  const {
+    form,
+    formState,
+    levels,
+    teamGenerationTypes,
+    handleAddLevel,
+    handleRemoveLevel,
+  } = useTournamentDrawer();
   const { formats } = useFormats();
-  const firstLevelFormatId = useMemo(() => levels[0]?.formatId, [levels]);
-  const { teamGenerationTypes } = useTeamGenerationTypeByFormat({
-    formatId: firstLevelFormatId,
-  });
+  const teamGenerationTypeId = form.watch("teamGenerationTypeId");
+  const selectedTeamGenerationType = useMemo(
+    () => teamGenerationTypes?.find((type) => type.id === parseInt(teamGenerationTypeId.toString())),
+    [teamGenerationTypeId]
+  );
 
   const { createTournamentMutation } = useTournamentOperations();
 
@@ -189,12 +199,18 @@ const AddTournamentButton: React.FC<AddTournamentButtonProps> = ({
         ),
       },
       {
+        type: "render",
+        className: "col-span-2 my-2",
+        isVisible: !!teamGenerationTypes,
+        render: () => <hr />,
+      },
+      {
         label: "Team Generation Type",
         name: "teamGenerationTypeId",
         type: "select",
         placeholder: "Select type",
         required: true,
-        isVisible: teamGenerationTypes?.length > 0,
+        isVisible: !!teamGenerationTypes,
         options: teamGenerationTypes?.map((teamGenerationType) => ({
           label: toTitleCase(teamGenerationType.name),
           value: teamGenerationType.id.toString(),
@@ -203,28 +219,25 @@ const AddTournamentButton: React.FC<AddTournamentButtonProps> = ({
       },
     ];
 
-    // if (selectedTeamGenerationType?.name === TeamGenerationTypeEnum.SplitSwitch) {
-    //   baseFields.push({
-    //     label: "Split Switch Group By",
-    //     name: "splitSwitchGroupBy",
-    //     type: "select",
-    //     placeholder: "Select group by",
-    //     required: true,
-    //     options: [
-    //       { label: "Gender", value: GroupByEnum.GENDER },
-    //       { label: "Rating", value: GroupByEnum.RATING },
-    //     ],
-    //     defaultValue: "",
-    //   });
-    // }
+    if (selectedTeamGenerationType?.name === TeamGenerationTypeEnum.SplitSwitch) {
+      baseFields.push({
+        label: "Split Switch Group By",
+        name: "splitSwitchGroupBy",
+        type: "select",
+        placeholder: "Select group by",
+        required: true,
+        options: [
+          { label: "Gender", value: GroupByEnum.GENDER },
+          { label: "Rating", value: GroupByEnum.RATING },
+        ],
+        defaultValue: "",
+      });
+    }
 
     return baseFields;
-    // }, [formats, teamGenerationTypes, selectedTeamGenerationType]);
-  }, [formState, formats, teamGenerationTypes]);
+  }, [formState, formats, teamGenerationTypes, selectedTeamGenerationType]);
 
   const handleCreating = async (input: CreateTournamentInputDto) => {
-    console.log("Creating tournament with input:", input);
-
     await createTournamentMutation.mutateAsync({
       ...input,
       teamGenerationTypeId: parseInt(input.teamGenerationTypeId.toString()),

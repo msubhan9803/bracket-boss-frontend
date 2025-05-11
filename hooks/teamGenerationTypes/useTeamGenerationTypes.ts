@@ -15,23 +15,17 @@ export default function useTeamGenerationTypeByFormat({
     data: teamGenerationTypes,
     isLoading,
     error,
+    refetch: refetchTeamGenerationTypes,
   } = useQuery({
     queryKey: [USE_BRACKET_KEY.GET_ALL_TEAM_GENERATION_TYPES, formatId],
     queryFn: () => getAllTeamGenerationTypesByFormatId(parseInt(formatId as any)),
     enabled: !!formatId,
   });
 
-  const teamGenerationTypesMemo = useMemo(
-    () =>
-      teamGenerationTypes?.length && teamGenerationTypes?.length > 0
-        ? teamGenerationTypes
-        : [],
-    [teamGenerationTypes]
-  );
-
   return {
-    teamGenerationTypes: teamGenerationTypesMemo,
+    teamGenerationTypes,
     isLoading,
     error,
+    refetchTeamGenerationTypes
   };
 }
