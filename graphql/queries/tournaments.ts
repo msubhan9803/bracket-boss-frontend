@@ -64,6 +64,15 @@ export const GET_TOURNAMENT_BY_ID = graphql(`
       teamGenerationType {
         name
       }
+      levels {
+        name
+        pools {
+          name
+          rounds {
+            name
+          }
+        }
+      }
       splitSwitchGroupBy
       status
       created_at

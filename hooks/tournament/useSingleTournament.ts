@@ -19,7 +19,7 @@ export default function useSingleTournament(tournamentId: string, enabled = true
 
   return {
     tournament: data as Tournament,
-    loadingOrder: isLoading,
+    loadingTournament: isLoading,
     refetchTournament,
   };
 }

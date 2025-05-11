@@ -5,17 +5,17 @@ import useScheduleCreation from "@/hooks/schedule/useScheduleCreation";
 
 type Props = {
   tournamentId: string;
-  refetchLevels: any;
+  refetchTournament: any;
 };
 
-export default function EmptySchedule({ tournamentId, refetchLevels }: Props) {
+export default function EmptySchedule({ tournamentId, refetchTournament }: Props) {
   const { createScheduleMutation } = useScheduleCreation();
 
   const handleScheduleCreation = async () => {
     await createScheduleMutation.mutateAsync({
       tournamentId: parseInt(tournamentId as string),
     });
-    refetchLevels();
+    refetchTournament();
   };
 
   return (

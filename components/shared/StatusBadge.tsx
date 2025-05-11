@@ -1,4 +1,4 @@
-import { MatchStatusTypes, RoundStatusTypesEnum } from "@/graphql/generated/graphql";
+import { LevelStatusTypesEnum, MatchStatusTypes, RoundStatusTypesEnum } from "@/graphql/generated/graphql";
 import { convertSnakeCaseToTitleCase } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
@@ -29,6 +29,23 @@ export const RoundStatusBadge: React.FC<RoundStatusBadgeProps> = ({ status }) =>
     [RoundStatusTypesEnum.Completed]: "bg-blue-500 text-white",
     [RoundStatusTypesEnum.InProgress]: "bg-green-500 text-black",
     [RoundStatusTypesEnum.NotStarted]: "bg-gray-500 text-white",
+  };
+
+  return (
+    <Badge className={`${MatchstatusBadgeVariants[status]} rounded-md text-xs`}>
+      {convertSnakeCaseToTitleCase(status)}
+    </Badge>
+  );
+};
+
+type LevelStatusBadgeProps = {
+  status: LevelStatusTypesEnum;
+};
+export const LevelStatusBadge: React.FC<LevelStatusBadgeProps> = ({ status }) => {
+  const MatchstatusBadgeVariants: Record<LevelStatusTypesEnum, string> = {
+    [LevelStatusTypesEnum.Completed]: "bg-blue-500 text-white",
+    [LevelStatusTypesEnum.InProgress]: "bg-green-500 text-black",
+    [LevelStatusTypesEnum.NotStarted]: "bg-gray-500 text-white",
   };
 
   return (

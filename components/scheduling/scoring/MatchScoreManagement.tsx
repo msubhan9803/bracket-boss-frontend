@@ -1,9 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import MatchScoreCard from "../MatchScoreCard";
 import UpdateMatchScoreDrawer from "@/components/drawers/UpdateMatchScoreDrawer";
 import { Button } from "@/components/ui/button";
 import useScheduleOperations from "@/hooks/schedule/useScheduleOperations";
-import { Level, Pool, Round, RoundStatusTypesEnum } from "@/graphql/generated/graphql";
+import {
+  Level,
+  LevelStatusTypesEnum,
+  Pool,
+  Round,
+  RoundStatusTypesEnum,
+} from "@/graphql/generated/graphql";
 import useLevelsByTournament from "@/hooks/level/useLevelsByTournament";
 import useMatchesByRoundId from "@/hooks/match/useMatchesByRoundId";
 import usePoolsByLevel from "@/hooks/pool/usePoolsByLevel";
@@ -15,7 +21,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { RoundStatusBadge } from "@/components/shared/StatusBadge";
+import { LevelStatusBadge, RoundStatusBadge } from "@/components/shared/StatusBadge";
 
 type Props = {
   tournamentId: string;
@@ -33,21 +39,29 @@ export default function MatchScoreManagement({ tournamentId }: Props) {
     tournamentId,
     enabled: !!tournamentId,
   });
-
   const { pools, refetchPools } = usePoolsByLevel({
     levelId: selectedLevel?.id,
     enabled: !!selectedLevel?.id,
   });
-
   const { rounds, refetchRounds } = useRoundsByPool({
     poolId: selectedPool?.id,
     enabled: !!selectedPool?.id,
   });
-
   const { matches, refetchMatches } = useMatchesByRoundId({
     roundId: selectedRound?.id,
     enabled: !!selectedRound?.id,
   });
+
+  const isSelectedLevelCompleted = useMemo(
+    () => selectedLevel?.status === LevelStatusTypesEnum.Completed,
+    [selectedLevel]
+  );
+  const areRoundsOfSelectedLevelAndPoolCompleted = useMemo(
+    () =>
+      rounds.every((round) => round.status === RoundStatusTypesEnum.Completed) ??
+      undefined,
+    [rounds]
+  );
 
   useEffect(() => {
     if (levels?.length > 0 && !selectedLevel) {
@@ -98,13 +112,15 @@ export default function MatchScoreManagement({ tournamentId }: Props) {
           }}
           value={selectedLevel?.id}
         >
-          <SelectTrigger className="w-[200px]">
+          <SelectTrigger className="w-[250px]">
             <SelectValue placeholder="Select Level" />
           </SelectTrigger>
           <SelectContent>
             {levels?.map((level) => (
               <SelectItem key={level.id} value={level.id}>
-                {level.name}
+                <span>{level.name}</span>
+                <span className="text-muted-foreground mx-2">-</span>
+                <LevelStatusBadge status={level.status} />
               </SelectItem>
             ))}
           </SelectContent>
@@ -118,7 +134,7 @@ export default function MatchScoreManagement({ tournamentId }: Props) {
           value={selectedPool?.id}
           disabled={!selectedLevel}
         >
-          <SelectTrigger className="w-[200px]">
+          <SelectTrigger className="w-[250px]">
             <SelectValue placeholder="Select Pool" />
           </SelectTrigger>
           <SelectContent>
@@ -152,9 +168,11 @@ export default function MatchScoreManagement({ tournamentId }: Props) {
           </SelectContent>
         </Select>
 
-        <Button loading={endRoundMutation.isPending} onClick={handleEndRound}>
-          End Round
-        </Button>
+        {!isSelectedLevelCompleted && !areRoundsOfSelectedLevelAndPoolCompleted && (
+          <Button loading={endRoundMutation.isPending} onClick={handleEndRound}>
+            End Round
+          </Button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
