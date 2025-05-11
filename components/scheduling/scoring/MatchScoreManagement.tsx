@@ -1,19 +1,7 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React from "react";
 import MatchScoreCard from "../MatchScoreCard";
 import UpdateMatchScoreDrawer from "@/components/drawers/UpdateMatchScoreDrawer";
 import { Button } from "@/components/ui/button";
-import useScheduleOperations from "@/hooks/schedule/useScheduleOperations";
-import {
-  Level,
-  LevelStatusTypesEnum,
-  Pool,
-  Round,
-  RoundStatusTypesEnum,
-} from "@/graphql/generated/graphql";
-import useLevelsByTournament from "@/hooks/level/useLevelsByTournament";
-import useMatchesByRoundId from "@/hooks/match/useMatchesByRoundId";
-import usePoolsByLevel from "@/hooks/pool/usePoolsByLevel";
-import useRoundsByPool from "@/hooks/round/useRoundsByPool";
 import {
   Select,
   SelectTrigger,
@@ -22,85 +10,35 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { LevelStatusBadge, RoundStatusBadge } from "@/components/shared/StatusBadge";
+import useMatchScoreManagement from "@/hooks/schedule/useMatchScoreManagement";
 
 type Props = {
   tournamentId: string;
 };
 
 export default function MatchScoreManagement({ tournamentId }: Props) {
-  const [selectedLevel, setSelectedLevel] = useState<Level>();
-  const [selectedPool, setSelectedPool] = useState<Pool>();
-  const [selectedRound, setSelectedRound] = useState<Round>();
-  const [showUpdateScoreDrawer, setShowUpdateScoreDrawer] = useState(false);
-  const [currentMatchId, setCurrentMatchId] = useState<number>();
-  const { endRoundMutation } = useScheduleOperations();
-
-  const { levels, refetchLevels } = useLevelsByTournament({
-    tournamentId,
-    enabled: !!tournamentId,
-  });
-  const { pools, refetchPools } = usePoolsByLevel({
-    levelId: selectedLevel?.id,
-    enabled: !!selectedLevel?.id,
-  });
-  const { rounds, refetchRounds } = useRoundsByPool({
-    poolId: selectedPool?.id,
-    enabled: !!selectedPool?.id,
-  });
-  const { matches, refetchMatches } = useMatchesByRoundId({
-    roundId: selectedRound?.id,
-    enabled: !!selectedRound?.id,
-  });
-
-  const isSelectedLevelCompleted = useMemo(
-    () => selectedLevel?.status === LevelStatusTypesEnum.Completed,
-    [selectedLevel]
-  );
-  const areRoundsOfSelectedLevelAndPoolCompleted = useMemo(
-    () =>
-      rounds.every((round) => round.status === RoundStatusTypesEnum.Completed) ??
-      undefined,
-    [rounds]
-  );
-
-  useEffect(() => {
-    if (levels?.length > 0 && !selectedLevel) {
-      setSelectedLevel(levels[0]);
-    }
-  }, [levels]);
-
-  useEffect(() => {
-    if (pools?.length > 0 && !selectedPool) {
-      setSelectedPool(pools[0]);
-    }
-  }, [pools]);
-
-  useEffect(() => {
-    if (rounds?.length > 0) {
-      updateSelectedRound();
-    }
-  }, [rounds]);
-
-  const updateSelectedRound = () => {
-    const inProgressRound = rounds.find(
-      (round) => round.status === RoundStatusTypesEnum.InProgress
-    );
-
-    setSelectedRound(
-      inProgressRound ||
-        rounds.find((round) => round.status === RoundStatusTypesEnum.NotStarted) ||
-        rounds.find((round) => round.status === RoundStatusTypesEnum.Completed)
-    );
-  };
-
-  const handleEndRound = async () => {
-    await endRoundMutation.mutateAsync({
-      tournamentId: parseInt(tournamentId),
-      poolId: selectedPool?.id,
-    });
-    refetchRounds();
-    refetchMatches();
-  };
+  const {
+    selectedLevel,
+    selectedPool,
+    selectedRound,
+    showUpdateScoreDrawer,
+    currentMatchId,
+    levels,
+    pools,
+    rounds,
+    matches,
+    isSelectedLevelCompleted,
+    areRoundsOfSelectedLevelAndPoolCompleted,
+    endRoundMutation,
+    nextLevel,
+    setSelectedLevel,
+    setSelectedPool,
+    setSelectedRound,
+    setShowUpdateScoreDrawer,
+    setCurrentMatchId,
+    handleEndRound,
+    refetchMatches,
+  } = useMatchScoreManagement(tournamentId);
 
   return (
     <div className="space-y-5">
@@ -159,7 +97,7 @@ export default function MatchScoreManagement({ tournamentId }: Props) {
           </SelectTrigger>
           <SelectContent>
             {rounds?.map((round) => (
-              <SelectItem key={round.id} value={round.id} className="">
+              <SelectItem key={round.id} value={round.id}>
                 <span>{round.name}</span>
                 <span className="text-muted-foreground mx-2">-</span>
                 <RoundStatusBadge status={round.status} />
@@ -173,6 +111,10 @@ export default function MatchScoreManagement({ tournamentId }: Props) {
             End Round
           </Button>
         )}
+
+        <Button loading={endRoundMutation.isPending} onClick={handleEndRound}>
+          Move to {nextLevel?.name}
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
