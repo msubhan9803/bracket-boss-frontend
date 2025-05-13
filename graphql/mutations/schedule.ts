@@ -21,8 +21,8 @@ export const CREATE_SCHEDULE = graphql(`
 `);
 
 export const END_ROUND = graphql(`
-  mutation EndRound($poolId: Float!, $tournamentId: Float!) {
-    endRound(poolId: $poolId, tournamentId: $tournamentId) {
+  mutation EndRound($poolId: Float!, $levelId: Float!) {
+    endRound(poolId: $poolId, levelId: $levelId) {
       message
     }
   }

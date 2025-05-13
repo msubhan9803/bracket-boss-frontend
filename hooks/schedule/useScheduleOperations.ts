@@ -27,7 +27,7 @@ export default function useScheduleOperations() {
 
   const endRoundMutation = useMutation({
     mutationKey: [USE_SCHEDULE_OPERATIONS_KEY.END_ROUND],
-    mutationFn: async (variables: { tournamentId: number, poolId: number }) =>
+    mutationFn: async (variables: { levelId: number, poolId: number }) =>
       graphqlRequestHandler({
         query: END_ROUND,
         variables,

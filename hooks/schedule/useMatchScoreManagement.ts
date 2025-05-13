@@ -114,7 +114,7 @@ export default function useMatchScoreManagement(tournamentId: string) {
 
   const handleEndRound = async () => {
     await endRoundMutation.mutateAsync({
-      tournamentId: parseInt(tournamentId),
+      levelId: selectedLevel?.id,
       poolId: selectedPool?.id,
     });
     refetchLevels();
