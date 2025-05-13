@@ -28,6 +28,14 @@ export const END_ROUND = graphql(`
   }
 `);
 
+export const PROCEED_TO_NEXT_LEVEL = graphql(`
+  mutation ProceedToNextLevel($tournamentId: Float!) {
+    proceedToNextLevel(tournamentId: $tournamentId) {
+      message
+    }
+  }
+`);
+
 export const DELETE_SCHEDULE = graphql(`
   mutation DeleteSchedule($input: DeleteScheduleInputDto!) {
     deleteSchedule(input: $input) {
