@@ -32,6 +32,7 @@ export default function MatchScoreManagement({ tournamentId }: Props) {
     endRoundMutation,
     nextLevel,
     allTournamentRoundsCompleted,
+    allTournamentLevelsCompleted,
     anotherNotStartedLevelLeft,
     setSelectedLevel,
     setSelectedPool,
@@ -119,8 +120,20 @@ export default function MatchScoreManagement({ tournamentId }: Props) {
           )}
 
           {allTournamentRoundsCompleted && anotherNotStartedLevelLeft && (
-            <Button loading={endRoundMutation.isPending} onClick={handleProceedToNextLevel}>
+            <Button
+              loading={endRoundMutation.isPending}
+              onClick={handleProceedToNextLevel}
+            >
               Move to {nextLevel?.name}
+            </Button>
+          )}
+
+          {allTournamentLevelsCompleted && allTournamentRoundsCompleted && (
+            <Button
+              loading={endRoundMutation.isPending}
+              onClick={handleProceedToNextLevel}
+            >
+              Conclude
             </Button>
           )}
         </div>

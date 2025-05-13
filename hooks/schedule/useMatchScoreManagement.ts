@@ -40,6 +40,13 @@ export default function useMatchScoreManagement(tournamentId: string) {
     enabled: !!selectedRound?.id,
   });
 
+  const allTournamentLevelsCompleted = useMemo(() => {
+    if (!levels || levels.length === 0) return false;
+    return levels.every((level) => {
+      return level.status === LevelStatusTypesEnum.Completed;
+    });
+  }, [levels]);
+
   const allTournamentRoundsCompleted = useMemo(() => {
     if (!tournament?.rounds) return false;
     return tournament.rounds.every((round) => {
@@ -148,6 +155,7 @@ export default function useMatchScoreManagement(tournamentId: string) {
     endRoundMutation,
     nextLevel,
     allTournamentRoundsCompleted,
+    allTournamentLevelsCompleted,
     anotherNotStartedLevelLeft,
     setSelectedLevel,
     setSelectedPool,
