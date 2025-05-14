@@ -337,6 +337,7 @@ export type ModulePolicyRole = {
 export type Mutation = {
   __typename?: 'Mutation';
   bulkMatchImport: BulkMatchImportResponseDto;
+  concludeTournament: MessageResponseDto;
   createClub: CreateClubResponseDto;
   createSchedule: Array<Level>;
   createTeam: Team;
@@ -372,6 +373,11 @@ export type Mutation = {
 
 export type MutationBulkMatchImportArgs = {
   file: Scalars['Upload']['input'];
+};
+
+
+export type MutationConcludeTournamentArgs = {
+  tournamentId: Scalars['Float']['input'];
 };
 
 
@@ -878,12 +884,32 @@ export type TournamentListResponse = {
   tournaments: Array<Tournament>;
 };
 
+export type TournamentResult = {
+  __typename?: 'TournamentResult';
+  created_at: Scalars['DateTime']['output'];
+  id: Scalars['CustomID']['output'];
+  tournament: Tournament;
+  updated_at: Scalars['DateTime']['output'];
+  winners: Array<TournamentWinner>;
+};
+
 export enum TournamentStatusTypesEnum {
   Completed = 'completed',
   NotStarted = 'not_started',
   PlayOffInProgress = 'play_off_in_progress',
   PoolPlayInProgress = 'pool_play_in_progress'
 }
+
+export type TournamentWinner = {
+  __typename?: 'TournamentWinner';
+  created_at: Scalars['DateTime']['output'];
+  id: Scalars['CustomID']['output'];
+  rank: Scalars['Float']['output'];
+  team: Team;
+  tournament: Tournament;
+  tournamentResult: TournamentResult;
+  updated_at: Scalars['DateTime']['output'];
+};
 
 export type UpdateMatchScoreInputDto = {
   awayTeamScore: Scalars['Float']['input'];
@@ -1109,6 +1135,13 @@ export type ProceedToNextLevelMutationVariables = Exact<{
 
 
 export type ProceedToNextLevelMutation = { __typename?: 'Mutation', proceedToNextLevel: { __typename?: 'MessageResponseDto', message: string } };
+
+export type ConcludeTournamentMutationVariables = Exact<{
+  tournamentId: Scalars['Float']['input'];
+}>;
+
+
+export type ConcludeTournamentMutation = { __typename?: 'Mutation', concludeTournament: { __typename?: 'MessageResponseDto', message: string } };
 
 export type DeleteScheduleMutationVariables = Exact<{
   input: DeleteScheduleInputDto;
@@ -1358,6 +1391,7 @@ export const EndMatchDocument = {"kind":"Document","definitions":[{"kind":"Opera
 export const CreateScheduleDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateSchedule"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tournamentId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createSchedule"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tournamentId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tournamentId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"pools"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"rounds"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"matches"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<CreateScheduleMutation, CreateScheduleMutationVariables>;
 export const EndRoundDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"EndRound"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"poolId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"levelId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endRound"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"poolId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"poolId"}}},{"kind":"Argument","name":{"kind":"Name","value":"levelId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"levelId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]} as unknown as DocumentNode<EndRoundMutation, EndRoundMutationVariables>;
 export const ProceedToNextLevelDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ProceedToNextLevel"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tournamentId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"proceedToNextLevel"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tournamentId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tournamentId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]} as unknown as DocumentNode<ProceedToNextLevelMutation, ProceedToNextLevelMutationVariables>;
+export const ConcludeTournamentDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ConcludeTournament"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tournamentId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"concludeTournament"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"tournamentId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tournamentId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]} as unknown as DocumentNode<ConcludeTournamentMutation, ConcludeTournamentMutationVariables>;
 export const DeleteScheduleDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteSchedule"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DeleteScheduleInputDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteSchedule"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]} as unknown as DocumentNode<DeleteScheduleMutation, DeleteScheduleMutationVariables>;
 export const DownloadUserDataForScheduleDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DownloadUserDataForSchedule"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"downloadUserDataForSchedule"}}]}}]} as unknown as DocumentNode<DownloadUserDataForScheduleMutation, DownloadUserDataForScheduleMutationVariables>;
 export const DownloadEmptyScheduleTemplateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DownloadEmptyScheduleTemplate"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"downloadEmptyScheduleTemplate"}}]}}]} as unknown as DocumentNode<DownloadEmptyScheduleTemplateMutation, DownloadEmptyScheduleTemplateMutationVariables>;

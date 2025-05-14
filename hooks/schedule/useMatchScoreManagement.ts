@@ -21,9 +21,9 @@ export default function useMatchScoreManagement(tournamentId: string) {
   const [showUpdateScoreDrawer, setShowUpdateScoreDrawer] = useState(false);
   const [currentMatchId, setCurrentMatchId] = useState<number>();
 
-  const { endRoundMutation, proceedToNextLevelMutation } = useScheduleOperations();
+  const { endRoundMutation, proceedToNextLevelMutation, concludeTournamentMutation } = useScheduleOperations();
 
-  const { tournament } = useSingleTournament(tournamentId);
+  const { tournament, refetchTournament } = useSingleTournament(tournamentId);
   const { levels, refetchLevels } = useLevelsByTournament({
     tournamentId,
     enabled: !!tournamentId,
@@ -146,6 +146,17 @@ export default function useMatchScoreManagement(tournamentId: string) {
     refetchMatches();
   };
 
+  const handleConcludeTournament = async () => {
+    await concludeTournamentMutation.mutateAsync({
+      tournamentId: parseInt(tournamentId),
+    });
+    refetchTournament();
+    refetchLevels();
+    refetchPools();
+    refetchRounds();
+    refetchMatches();
+  };
+
   return {
     selectedLevel,
     selectedPool,
@@ -160,6 +171,8 @@ export default function useMatchScoreManagement(tournamentId: string) {
     isSelectedLevelCompleted,
     areRoundsOfSelectedLevelAndPoolCompleted,
     endRoundMutation,
+    proceedToNextLevelMutation,
+    concludeTournamentMutation,
     nextLevel,
     allTournamentRoundsCompleted,
     allTournamentLevelsCompleted,
@@ -172,5 +185,6 @@ export default function useMatchScoreManagement(tournamentId: string) {
     handleEndRound,
     handleProceedToNextLevel,
     refetchMatches,
+    handleConcludeTournament,
   };
 }

@@ -31,6 +31,7 @@ const documents = {
     "\n  mutation CreateSchedule($tournamentId: Float!) {\n    createSchedule(tournamentId: $tournamentId) {\n      id\n      name\n      pools {\n        name\n        rounds {\n          id\n          name\n          matches {\n            id\n            title\n          }\n        }\n      }\n    }\n  }\n": types.CreateScheduleDocument,
     "\n  mutation EndRound($poolId: Float!, $levelId: Float!) {\n    endRound(poolId: $poolId, levelId: $levelId) {\n      message\n    }\n  }\n": types.EndRoundDocument,
     "\n  mutation ProceedToNextLevel($tournamentId: Float!) {\n    proceedToNextLevel(tournamentId: $tournamentId) {\n      message\n    }\n  }\n": types.ProceedToNextLevelDocument,
+    "\n  mutation ConcludeTournament($tournamentId: Float!) {\n    concludeTournament(tournamentId: $tournamentId) {\n      message\n    }\n  }\n": types.ConcludeTournamentDocument,
     "\n  mutation DeleteSchedule($input: DeleteScheduleInputDto!) {\n    deleteSchedule(input: $input) {\n      message\n    }\n  }\n": types.DeleteScheduleDocument,
     "\n  mutation DownloadUserDataForSchedule {\n    downloadUserDataForSchedule\n  }\n": types.DownloadUserDataForScheduleDocument,
     "\n  mutation DownloadEmptyScheduleTemplate {\n    downloadEmptyScheduleTemplate\n  }\n": types.DownloadEmptyScheduleTemplateDocument,
@@ -151,6 +152,10 @@ export function graphql(source: "\n  mutation EndRound($poolId: Float!, $levelId
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation ProceedToNextLevel($tournamentId: Float!) {\n    proceedToNextLevel(tournamentId: $tournamentId) {\n      message\n    }\n  }\n"): (typeof documents)["\n  mutation ProceedToNextLevel($tournamentId: Float!) {\n    proceedToNextLevel(tournamentId: $tournamentId) {\n      message\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation ConcludeTournament($tournamentId: Float!) {\n    concludeTournament(tournamentId: $tournamentId) {\n      message\n    }\n  }\n"): (typeof documents)["\n  mutation ConcludeTournament($tournamentId: Float!) {\n    concludeTournament(tournamentId: $tournamentId) {\n      message\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -16,8 +16,8 @@ export const TournamentStatusBadge: React.FC<TournamentStatusBadgeProps> = ({
   const TournamentStatusBadgeVariants: Record<TournamentStatusTypesEnum, string> = {
     [TournamentStatusTypesEnum.Completed]: "bg-blue-500 text-white",
     [TournamentStatusTypesEnum.NotStarted]: "bg-gray-500 text-white",
-    [TournamentStatusTypesEnum.PlayOffInProgress]: "bg-green-500 text-black",
-    [TournamentStatusTypesEnum.PoolPlayInProgress]: "bg-yellow-500 text-white",
+    [TournamentStatusTypesEnum.PoolPlayInProgress]: "bg-orange-500 text-white",
+    [TournamentStatusTypesEnum.PlayOffInProgress]: "bg-purple-500 text-black",
   };
 
   return (

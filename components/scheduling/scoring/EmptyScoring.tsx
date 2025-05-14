@@ -6,15 +6,15 @@ import { RefetchOptions, QueryObserverResult } from "@tanstack/react-query";
 
 type Props = {
   tournamentId: string;
-  onRefetchTournament: (options?: RefetchOptions) => Promise<QueryObserverResult<Tournament, Error>>;
+  refetchTournament: (options?: RefetchOptions) => Promise<QueryObserverResult<Tournament, Error>>;
 };
 
-export default function EmptyScoring({ tournamentId, onRefetchTournament }: Props) {
+export default function EmptyScoring({ tournamentId, refetchTournament }: Props) {
   const { startTournamentMutation } = useTournamentOperations();
 
   const handleStartTournament = async () => {
     await startTournamentMutation.mutateAsync(parseInt(tournamentId as string));
-    onRefetchTournament();
+    refetchTournament();
   };
 
   return (
