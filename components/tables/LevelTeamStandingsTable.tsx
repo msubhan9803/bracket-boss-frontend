@@ -15,6 +15,16 @@ import { useTable } from "@/hooks/shared/useTable";
 import useLevelTeamStandingsByLevelId from "@/hooks/level/useLevelTeamStandingsByLevelId";
 import TeamAvatar from "../scheduling/scoring/TeamAvatar";
 import { Avatar, AvatarFallback } from "../ui/avatar";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import FilterComponent from "../core/FilterComponent";
 import ColumnButton from "../ColumnButton";
 
 const LevelTeamStandingsTable = ({ levelId }: { levelId: string }) => {
@@ -109,35 +119,35 @@ const LevelTeamStandingsTable = ({ levelId }: { levelId: string }) => {
       accessorKey: "pointsScored",
       header: "Points Scored",
       cell: ({ getValue }) => (
-        <div className="text-center text-white font-semibold">{getValue()}</div>
+        <div className="text-center font-semibold">{getValue()}</div>
       ),
     },
     {
       accessorKey: "pointsAgainst",
       header: "Points Against",
       cell: ({ getValue }) => (
-        <div className="text-center text-white font-semibold">{getValue()}</div>
+        <div className="text-center font-semibold">{getValue()}</div>
       ),
     },
     {
       accessorKey: "pointsScoredByNumberOfGames",
       header: "Points/Game Scored",
       cell: ({ getValue }) => (
-        <div className="text-center text-white font-semibold">{getValue()}</div>
+        <div className="text-center font-semibold">{getValue()}</div>
       ),
     },
     {
       accessorKey: "pointsAgainstByNumberOfGames",
       header: "Points/Game Against",
       cell: ({ getValue }) => (
-        <div className="text-center text-white font-semibold">{getValue()}</div>
+        <div className="text-center font-semibold">{getValue()}</div>
       ),
     },
     {
       accessorKey: "pointDiffByNumberOfGames",
       header: "Point Diff/Game",
       cell: ({ getValue }) => (
-        <div className="text-center text-white font-semibold">{getValue()}</div>
+        <div className="text-center font-semibold">{getValue()}</div>
       ),
     },
   ];
@@ -157,85 +167,83 @@ const LevelTeamStandingsTable = ({ levelId }: { levelId: string }) => {
   }, [pageSize, sort, filterBy, filter, page]);
 
   return (
-    <div className="rounded-md border border-zinc-800">
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="text-left text-zinc-400 text-sm border-b border-zinc-800">
-              <th colSpan={columns.length} className="py-2 px-4">
-                <div className="flex justify-between items-center">
-                  <div className="text-sm font-medium">Team Standings</div>
-                  <ColumnButton table={table} />
-                </div>
-              </th>
-            </tr>
-            <tr className="text-left text-zinc-400 text-sm border-b border-zinc-800">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <>
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <th key={header.id} className="py-3 px-4">
-                        <span
-                          className="cursor-pointer flex items-center gap-1"
-                          onClick={() => handleSort(header.column.id)}
-                        >
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
+    <div className="rounded-md border">
+      <Table>
+        <TableHeader className="bg-none !hover:bg-none">
+          <TableRow>
+            <TableHead className="px-1 hover:bg-transparent" colSpan={columns.length}>
+              <div className="flex justify-between w-full py-1">
+                <FilterComponent
+                  columns={
+                    columns as {
+                      header: string;
+                      accessorKey: string;
+                    }[]
+                  }
+                  filterBy={filterBy}
+                  setFilterBy={setFilterBy}
+                  setFilter={setFilter}
+                />
+                <ColumnButton table={table} />
+              </div>
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                return (
+                  <TableHead key={header.id} onClick={() => handleSort(header.column.id)}>
+                    <span className="cursor-pointer flex items-center gap-1">
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(header.column.columnDef.header, header.getContext())}
 
-                          {sort.field === header.column.id &&
-                            (sort.direction === "asc" ? (
-                              <ChevronUp className="w-4 h-4" />
-                            ) : (
-                              <ChevronDown className="w-4 h-4" />
-                            ))}
-                        </span>
-                      </th>
-                    );
-                  })}
-                </>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {loadingLevelTeamStandings ? (
-              Array(pageSize)
-                .fill(0)
-                .map((_, index) => (
-                  <tr key={index} className="border-b border-zinc-800">
-                    {columns.map((column, columnIndex) => (
-                      <td key={columnIndex} className="py-4 px-4">
-                        <SkeletonLoader className="my-auto h-4" />
-                      </td>
-                    ))}
-                  </tr>
-                ))
-            ) : table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <tr
-                  key={row.id}
-                  className="border-b border-zinc-800 hover:bg-zinc-800/50"
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="py-4 px-4">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
+                      {sort.field === header.column.id &&
+                        (sort.direction === "asc" ? (
+                          <ChevronUp className="w-5 h-5" />
+                        ) : (
+                          <ChevronDown className="w-5 h-5" />
+                        ))}
+                    </span>
+                  </TableHead>
+                );
+              })}
+            </TableRow>
+          ))}
+
+          {loadingLevelTeamStandings ? (
+            Array(pageSize)
+              .fill(0)
+              .map((_, index) => (
+                <TableRow key={index}>
+                  {columns.map((column, columnIndex) => (
+                    <TableCell key={columnIndex}>
+                      <SkeletonLoader className="my-auto" height="3" />
+                    </TableCell>
                   ))}
-                </tr>
+                </TableRow>
               ))
-            ) : (
-              <tr>
-                <td colSpan={columns.length} className="h-24 text-center py-4 px-4">
-                  No results.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+          ) : table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                No results.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
     </div>
   );
 };

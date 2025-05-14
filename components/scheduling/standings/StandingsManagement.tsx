@@ -26,18 +26,6 @@ interface WinnerWithMembers {
   };
 }
 
-const StandingsCard = ({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => (
-  <Card className={`bg-zinc-900 border-zinc-800 overflow-hidden ${className}`}>
-    {children}
-  </Card>
-);
-
 const TeamBadge = ({
   letter,
   color = "bg-green-500",
@@ -93,7 +81,7 @@ const StandingsManagement = ({ tournament }: { tournament: Tournament }) => {
         onValueChange={(value) => setActiveTab(value as "standings" | "winners")}
         className="w-full"
       >
-        <TabsList className="grid grid-cols-2 mb-6 bg-zinc-800">
+        <TabsList className="grid grid-cols-2 mb-6">
           <TabsTrigger
             value="standings"
             className="data-[state=active]:bg-green-500 data-[state=active]:text-white"
@@ -115,16 +103,12 @@ const StandingsManagement = ({ tournament }: { tournament: Tournament }) => {
           {levels.length > 0 && (
             <div className="flex mb-4">
               <Select value={selectedLevelId} onValueChange={setSelectedLevelId}>
-                <SelectTrigger className="w-[200px] bg-zinc-800 border-zinc-700">
+                <SelectTrigger className="w-[200px]">
                   <SelectValue placeholder="Select Level" />
                 </SelectTrigger>
-                <SelectContent className="bg-zinc-800 border-zinc-700">
+                <SelectContent>
                   {levels.map((level) => (
-                    <SelectItem
-                      key={level.id}
-                      value={level.id}
-                      className="hover:bg-zinc-700"
-                    >
+                    <SelectItem key={level.id} value={level.id}>
                       {level.name}
                     </SelectItem>
                   ))}
@@ -133,9 +117,9 @@ const StandingsManagement = ({ tournament }: { tournament: Tournament }) => {
             </div>
           )}
 
-          <StandingsCard>
-            <CardHeader className="bg-zinc-800 pb-4">
-              <CardTitle className="text-lg text-white">
+          <Card>
+            <CardHeader className="bg-muted pb-4">
+              <CardTitle className="text-lg text-black dark:text-white">
                 {levels.find((l) => l.id === selectedLevelId)?.name || "Tournament"}{" "}
                 Standings
               </CardTitle>
@@ -143,14 +127,16 @@ const StandingsManagement = ({ tournament }: { tournament: Tournament }) => {
             <CardContent className="p-0">
               <LevelTeamStandingsTable levelId={selectedLevelId} />
             </CardContent>
-          </StandingsCard>
+          </Card>
         </TabsContent>
 
         {/* Winners tab content */}
         <TabsContent value="winners" className="space-y-6">
-          <StandingsCard>
-            <CardHeader className="bg-zinc-800 pb-4">
-              <CardTitle className="text-lg text-white">Tournament Winners</CardTitle>
+          <Card>
+            <CardHeader className="bg-muted pb-4">
+              <CardTitle className="text-lg text-black dark:text-white">
+                Tournament Winners
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
@@ -160,18 +146,18 @@ const StandingsManagement = ({ tournament }: { tournament: Tournament }) => {
                       key={`winner-${winner.team.id}`}
                       className={`flex items-center p-4 rounded-lg my-8 ${
                         winner.rank === 1
-                          ? "bg-gradient-to-r from-green-600/20 to-transparent border border-green-600/30"
-                          : "bg-zinc-800/50 border border-zinc-700/30"
+                          ? "bg-gradient-to-r from-green-600/20 dark:from-green-600/20 to-transparent border border-green-600/30 dark:border-green-600/30"
+                          : "bg-zinc-800/50 dark:bg-zinc-200/50 border border-zinc-700/30 dark:border-zinc-300/30"
                       }`}
                     >
                       <div className="mr-4">
                         {winner.rank === 1 ? (
-                          <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+                          <div className="w-12 h-12 bg-green-500 dark:bg-green-600 rounded-full flex items-center justify-center">
                             <Trophy className="h-6 w-6 text-white" />
                           </div>
                         ) : (
-                          <div className="w-12 h-12 bg-zinc-700 rounded-full flex items-center justify-center">
-                            <Medal className="h-6 w-6 text-white" />
+                          <div className="w-12 h-12 bg-zinc-700 dark:bg-zinc-400 rounded-full flex items-center justify-center">
+                            <Medal className="h-6 w-6 text-white dark:text-zinc-800" />
                           </div>
                         )}
                       </div>
@@ -182,11 +168,15 @@ const StandingsManagement = ({ tournament }: { tournament: Tournament }) => {
                               <TeamBadge
                                 key={i}
                                 letter={member.initial}
-                                color={winner.rank === 1 ? "bg-green-500" : "bg-zinc-700"}
+                                color={
+                                  winner.rank === 1
+                                    ? "bg-green-500 dark:bg-green-600"
+                                    : "bg-zinc-700 dark:bg-zinc-400"
+                                }
                               />
                             ))}
                           </div>
-                          <h3 className="text-lg font-semibold text-white">
+                          <h3 className="text-lg font-semibold text-zinc-800 dark:text-white">
                             {winner.team.name}
                           </h3>
                         </div>
@@ -195,10 +185,10 @@ const StandingsManagement = ({ tournament }: { tournament: Tournament }) => {
                         <Badge
                           className={
                             winner.rank === 1
-                              ? "bg-yellow-300"
+                              ? "bg-yellow-300 dark:bg-yellow-400 text-zinc-800"
                               : winner.rank === 2
-                              ? "bg-zinc-500"
-                              : "bg-amber-800"
+                              ? "bg-zinc-500 dark:bg-zinc-300 text-white dark:text-zinc-800"
+                              : "bg-amber-800 dark:bg-amber-600 text-white"
                           }
                         >
                           {winner.rank === 1
@@ -211,13 +201,13 @@ const StandingsManagement = ({ tournament }: { tournament: Tournament }) => {
                     </div>
                   ))
                 ) : (
-                  <div className="text-center text-gray-400 py-8">
+                  <div className="text-center text-gray-400 dark:text-zinc-500 py-8">
                     No winners data available
                   </div>
                 )}
               </div>
             </CardContent>
-          </StandingsCard>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
