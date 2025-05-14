@@ -27,6 +27,7 @@ export default function MatchScoreManagement({ tournamentId }: Props) {
     pools,
     rounds,
     matches,
+    isTournamentCompleted,
     isSelectedLevelCompleted,
     areRoundsOfSelectedLevelAndPoolCompleted,
     endRoundMutation,
@@ -128,7 +129,7 @@ export default function MatchScoreManagement({ tournamentId }: Props) {
             </Button>
           )}
 
-          {allTournamentLevelsCompleted && allTournamentRoundsCompleted && (
+          {allTournamentLevelsCompleted && allTournamentRoundsCompleted && !isTournamentCompleted && (
             <Button
               loading={endRoundMutation.isPending}
               onClick={handleProceedToNextLevel}

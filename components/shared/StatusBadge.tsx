@@ -1,6 +1,31 @@
-import { LevelStatusTypesEnum, MatchStatusTypes, RoundStatusTypesEnum } from "@/graphql/generated/graphql";
+import {
+  LevelStatusTypesEnum,
+  MatchStatusTypes,
+  RoundStatusTypesEnum,
+  TournamentStatusTypesEnum,
+} from "@/graphql/generated/graphql";
 import { convertSnakeCaseToTitleCase } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+
+type TournamentStatusBadgeProps = {
+  status: TournamentStatusTypesEnum;
+};
+export const TournamentStatusBadge: React.FC<TournamentStatusBadgeProps> = ({
+  status,
+}) => {
+  const TournamentStatusBadgeVariants: Record<TournamentStatusTypesEnum, string> = {
+    [TournamentStatusTypesEnum.Completed]: "bg-blue-500 text-white",
+    [TournamentStatusTypesEnum.NotStarted]: "bg-gray-500 text-white",
+    [TournamentStatusTypesEnum.PlayOffInProgress]: "bg-green-500 text-black",
+    [TournamentStatusTypesEnum.PoolPlayInProgress]: "bg-yellow-500 text-white",
+  };
+
+  return (
+    <Badge className={`${TournamentStatusBadgeVariants[status]} rounded-md text-xs`}>
+      {convertSnakeCaseToTitleCase(status)}
+    </Badge>
+  );
+};
 
 type MatchStatusBadgeProps = {
   status: MatchStatusTypes;

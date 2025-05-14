@@ -5,6 +5,7 @@ import {
   Pool,
   Round,
   RoundStatusTypesEnum,
+  TournamentStatusTypesEnum,
 } from "@/graphql/generated/graphql";
 import useLevelsByTournament from "@/hooks/level/useLevelsByTournament";
 import useMatchesByRoundId from "@/hooks/match/useMatchesByRoundId";
@@ -39,6 +40,11 @@ export default function useMatchScoreManagement(tournamentId: string) {
     roundId: selectedRound?.id,
     enabled: !!selectedRound?.id,
   });
+
+  const isTournamentCompleted = useMemo(
+    () => tournament?.status === TournamentStatusTypesEnum.Completed,
+    [tournament]
+  );
 
   const allTournamentLevelsCompleted = useMemo(() => {
     if (!levels || levels.length === 0) return false;
@@ -150,6 +156,7 @@ export default function useMatchScoreManagement(tournamentId: string) {
     pools,
     rounds,
     matches,
+    isTournamentCompleted,
     isSelectedLevelCompleted,
     areRoundsOfSelectedLevelAndPoolCompleted,
     endRoundMutation,
