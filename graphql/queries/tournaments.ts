@@ -65,7 +65,9 @@ export const GET_TOURNAMENT_BY_ID = graphql(`
         name
       }
       levels {
+        id
         name
+        status
         pools {
           name
           rounds {
@@ -75,6 +77,7 @@ export const GET_TOURNAMENT_BY_ID = graphql(`
       }
       rounds {
         id
+        status
       }
       splitSwitchGroupBy
       status

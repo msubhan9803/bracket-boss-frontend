@@ -21,7 +21,8 @@ export default function useMatchScoreManagement(tournamentId: string) {
   const [showUpdateScoreDrawer, setShowUpdateScoreDrawer] = useState(false);
   const [currentMatchId, setCurrentMatchId] = useState<number>();
 
-  const { endRoundMutation, proceedToNextLevelMutation, concludeTournamentMutation } = useScheduleOperations();
+  const { endRoundMutation, proceedToNextLevelMutation, concludeTournamentMutation } =
+    useScheduleOperations();
 
   const { tournament, refetchTournament } = useSingleTournament(tournamentId);
   const { levels, refetchLevels } = useLevelsByTournament({
@@ -96,21 +97,25 @@ export default function useMatchScoreManagement(tournamentId: string) {
   }, [levels]);
 
   useEffect(() => {
-    if (levels?.length > 0 && !selectedLevel) {
+    if (levels?.length === 0) return;
+
+    if (allTournamentLevelsCompleted) {
       setSelectedLevel(levels[0]);
+    } else {
+      setSelectedLevel(
+        levels?.find((level) => level.status === LevelStatusTypesEnum.InProgress)
+      );
     }
-  }, [levels]);
+  }, [allTournamentLevelsCompleted, levels]);
 
   useEffect(() => {
-    if (pools?.length > 0 && !selectedPool) {
-      setSelectedPool(pools[0]);
-    }
+    if (pools?.length === 0) return;
+    setSelectedPool(pools[0]);
   }, [pools]);
 
   useEffect(() => {
-    if (rounds?.length > 0) {
-      updateSelectedRound();
-    }
+    if (rounds?.length === 0) return;
+    updateSelectedRound();
   }, [rounds]);
 
   const updateSelectedRound = () => {
@@ -136,7 +141,7 @@ export default function useMatchScoreManagement(tournamentId: string) {
     refetchRounds();
     refetchMatches();
   };
-  
+
   const handleProceedToNextLevel = async () => {
     await proceedToNextLevelMutation.mutateAsync({
       tournamentId: parseInt(tournamentId),
@@ -147,7 +152,7 @@ export default function useMatchScoreManagement(tournamentId: string) {
     refetchRounds();
     refetchMatches();
   };
-  
+
   const handleConcludeTournament = async () => {
     await concludeTournamentMutation.mutateAsync({
       tournamentId: parseInt(tournamentId),
