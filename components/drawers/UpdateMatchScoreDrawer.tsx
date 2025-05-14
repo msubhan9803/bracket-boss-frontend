@@ -74,7 +74,7 @@ const UpdateMatchScoreDrawer = ({
       }
       onCancel={handleClose}
     >
-      <UpdateMatchScoreContent match={match} refetchMatch={refetchMatch} />
+      <UpdateMatchScoreContent match={match} refetchMatch={refetchMatch} refetchMatches={refetchMatches} />
     </DynamicSheet>
   );
 };

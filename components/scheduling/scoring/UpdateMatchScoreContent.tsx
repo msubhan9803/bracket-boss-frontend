@@ -1,10 +1,10 @@
 import React, { useMemo, useState, useEffect } from "react";
+import { debounce } from "lodash";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Match, MatchRoundStatusTypes } from "@/graphql/generated/graphql";
 import { cn } from "@/lib/utils";
 import RoundContent from "./RoundContent";
 import useMatchOperations from "@/hooks/match/useMatchOperations";
-import useAllMatchesWithFilters from "@/hooks/match/useAllMatchesWithFilters";
 import { MatchDetails } from "../MatchScoreCard";
 import { Separator } from "@/components/ui/separator";
 import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
@@ -13,9 +13,10 @@ import { MatchStatusBadge } from "@/components/shared/StatusBadge";
 interface UpdateMatchScoreContentProps {
   match: Match;
   refetchMatch: (options?: RefetchOptions) => Promise<QueryObserverResult<Match, Error>>;
+  refetchMatches: (options?: RefetchOptions) => Promise<QueryObserverResult<Match[], Error>>
 }
 
-const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({ match, refetchMatch }) => {
+const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({ match, refetchMatch, refetchMatches }) => {
   const courtName = match.matchCourtSchedule?.courtSchedule.court.name;
   const matchDate = match.matchCourtSchedule?.matchDate;
   const startTime = match.matchCourtSchedule?.courtSchedule.timeSlot.startTime;
@@ -25,7 +26,6 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({ match
   const [awayTeamScores, setAwayTeamScores] = useState<Record<number, number>>({});
 
   const { updateScoreMutation, endMatchRoundMutation, startMatchRoundMutation } = useMatchOperations();
-  const { refetchMatches } = useAllMatchesWithFilters();
 
   const roundTabs = useMemo(
     () =>
@@ -40,26 +40,28 @@ const UpdateMatchScoreContent: React.FC<UpdateMatchScoreContentProps> = ({ match
 
   const defaultTab = roundTabs.length > 0 ? roundTabs[0].value : "1";
 
-  const handleTeam1ScoreChange = async (roundId: number, newScore: number) => {
+  const debouncedUpdateScore = debounce(
+    async (roundId: number, homeScore: number, awayScore: number) => {
+      await updateScoreMutation.mutateAsync({
+        matchId: match.id,
+        roundId: roundId,
+        homeTeamScore: homeScore,
+        awayTeamScore: awayScore,
+      }).then(() => {
+        refetchMatches();
+      });
+    },
+    300
+  );
+
+  const handleTeam1ScoreChange = (roundId: number, newScore: number) => {
     setHomeTeamScores((prevScores) => ({ ...prevScores, [roundId]: newScore }));
-    await updateScoreMutation.mutateAsync({
-      matchId: match.id,
-      roundId: roundId,
-      homeTeamScore: newScore,
-      awayTeamScore: awayTeamScores[roundId] || 0,
-    });
-    refetchMatches();
+    debouncedUpdateScore(roundId, newScore, awayTeamScores[roundId] || 0);
   };
 
-  const handleTeam2ScoreChange = async (roundId: number, newScore: number) => {
+  const handleTeam2ScoreChange = (roundId: number, newScore: number) => {
     setAwayTeamScores((prevScores) => ({ ...prevScores, [roundId]: newScore }));
-    await updateScoreMutation.mutateAsync({
-      matchId: match.id,
-      roundId: roundId,
-      homeTeamScore: homeTeamScores[roundId] || 0,
-      awayTeamScore: newScore,
-    });
-    refetchMatches();
+    debouncedUpdateScore(roundId, homeTeamScores[roundId] || 0, newScore);
   };
 
   const handleStartRound = async (roundId: number) => {

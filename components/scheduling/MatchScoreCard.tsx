@@ -148,7 +148,6 @@ export default function MatchScoreCard({
   setCurrentMatchId,
   setShowUpdateScoreDrawer,
 }: MatchScoreCardProps) {
-  console.log("⭐️⭐️⭐️⭐️⭐️⭐️ MatchScoreCard", match);
   const homeTeamUsers = useMemo(() => match?.homeTeam?.users ?? [], [match]);
   const awayTeamUsers = useMemo(() => match?.awayTeam?.users ?? [], [match]);
   const matchStatus = useMemo(
@@ -243,7 +242,7 @@ export default function MatchScoreCard({
             />
           </div>
 
-          <Separator className="my-2" />
+          {match.winnerTeam && (<Separator className="my-2" />)}
 
           {match.resultType === MatchResultType.Winner && (
             <div className="flex flex-col justify-center items-center my-2">
