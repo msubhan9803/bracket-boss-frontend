@@ -3,9 +3,10 @@ import { graphql } from "../generated";
 export const GET_MATCHES_BY_ROUND_ID = graphql(`
   query GetMatchesByRoundId($roundId: Float!) {
     getMatchesByRoundId(roundId: $roundId) {
-id
+      id
       title
       status
+      resultType
       level {
         order
       }
@@ -33,6 +34,10 @@ id
           id
           name
         }
+      }
+      winnerTeam {
+        id
+        name
       }
       created_at
       matchRounds {

@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { BsCalendarDate, BsClock, BsLayoutThreeColumns } from "react-icons/bs";
+import { BsCalendarDate, BsClock, BsLayoutThreeColumns, BsTrophy } from "react-icons/bs";
 import moment from "moment";
 import { MdLocationOn } from "react-icons/md";
 import { convertSnakeCaseToTitleCase } from "@/lib/utils";
 import {
   Match,
+  MatchResultType,
   MatchStatusTypes,
   User,
 } from "@/graphql/generated/graphql";
@@ -31,10 +32,7 @@ type TeamMembersAvatarsProps = {
   variant?: "primary" | "secondary";
 };
 
-const TeamMembersAvatars: React.FC<TeamMembersAvatarsProps> = ({
-  users,
-  variant,
-}) => {
+const TeamMembersAvatars: React.FC<TeamMembersAvatarsProps> = ({ users, variant }) => {
   const avatarClassName = `border-2 border-white w-8 h-8 sm:w-10 sm:h-10 ${
     variant === "secondary"
       ? "bg-secondary text-secondary-foreground"
@@ -60,11 +58,7 @@ type TeamInfoProps = {
   variant?: "primary" | "secondary";
 };
 
-export const TeamInfo: React.FC<TeamInfoProps> = ({
-  teamName,
-  users,
-  variant,
-}) => (
+export const TeamInfo: React.FC<TeamInfoProps> = ({ teamName, users, variant }) => (
   <div className="flex flex-col items-center space-y-1 sm:space-y-2">
     <TeamMembersAvatars users={users} variant={variant} />
     <span className="text-xs sm:text-sm font-medium text-foreground truncate max-w-[80px] sm:max-w-[100px]">
@@ -78,10 +72,7 @@ type ScoreDisplayProps = {
   awayScore: number;
 };
 
-export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({
-  homeScore,
-  awayScore,
-}) => (
+export const ScoreDisplay: React.FC<ScoreDisplayProps> = ({ homeScore, awayScore }) => (
   <div className="text-2xl sm:text-3xl font-bold text-foreground flex items-center space-x-2 sm:space-x-3">
     <span className="w-6 sm:w-8 text-center">{homeScore}</span>
     <span>-</span>
@@ -111,9 +102,7 @@ export const MatchDetails: React.FC<MatchDetailsProps> = ({
       <div className="flex items-center gap-2 text-muted-foreground">
         <BsLayoutThreeColumns className="text-primary text-base sm:text-lg flex-shrink-0" />
         <span className="text-xs sm:text-sm">
-          {poolName && roundName
-            ? `${poolName} - ${roundName}`
-            : poolName || roundName}
+          {poolName && roundName ? `${poolName} - ${roundName}` : poolName || roundName}
         </span>
       </div>
     }
@@ -159,6 +148,7 @@ export default function MatchScoreCard({
   setCurrentMatchId,
   setShowUpdateScoreDrawer,
 }: MatchScoreCardProps) {
+  console.log("⭐️⭐️⭐️⭐️⭐️⭐️ MatchScoreCard", match);
   const homeTeamUsers = useMemo(() => match?.homeTeam?.users ?? [], [match]);
   const awayTeamUsers = useMemo(() => match?.awayTeam?.users ?? [], [match]);
   const matchStatus = useMemo(
@@ -170,15 +160,9 @@ export default function MatchScoreCard({
     () => matchCourtSchedule?.courtSchedule ?? null,
     [matchCourtSchedule]
   );
-  const courtName = useMemo(
-    () => courtSchedule?.court?.name ?? null,
-    [courtSchedule]
-  );
+  const courtName = useMemo(() => courtSchedule?.court?.name ?? null, [courtSchedule]);
   const matchDate = useMemo(
-    () =>
-      matchCourtSchedule?.matchDate
-        ? new Date(matchCourtSchedule.matchDate)
-        : null,
+    () => (matchCourtSchedule?.matchDate ? new Date(matchCourtSchedule.matchDate) : null),
     [matchCourtSchedule]
   );
   const startTime = useMemo(
@@ -247,13 +231,39 @@ export default function MatchScoreCard({
           )}
           <div className="flex justify-between items-center px-2 sm:px-6 py-3 sm:py-4">
             <TeamInfo teamName={match?.homeTeam?.name} users={homeTeamUsers} />
-            <ScoreDisplay homeScore={homeScore} awayScore={awayScore} />
+            {matchStatus !== MatchStatusTypes.InProgress ? (
+              <span className="text-lg font-medium text-muted-foreground">vs</span>
+            ) : (
+              <ScoreDisplay homeScore={homeScore} awayScore={awayScore} />
+            )}
             <TeamInfo
               variant="secondary"
               teamName={match?.awayTeam?.name}
               users={awayTeamUsers}
             />
           </div>
+
+          <Separator className="my-2" />
+
+          {match.resultType === MatchResultType.Winner && (
+            <div className="flex flex-col justify-center items-center my-2">
+              {match.winnerTeam?.id === match?.homeTeam?.id && (
+                <div className="flex items-center space-x-2 text-primary">
+                  <span className="text-lg font-bold">Winner</span>
+                  <BsTrophy className="text-lg" style={{ strokeWidth: "0.6px" }} />
+                </div>
+              )}
+              {match.winnerTeam?.id === match?.awayTeam?.id && (
+                <div className="flex items-center space-x-2 text-primary">
+                  <span className="text-lg font-bold">Winner</span>
+                  <BsTrophy className="text-lg" style={{ strokeWidth: "0.6px" }} />
+                </div>
+              )}
+              <span className="text-md">
+                {match.winnerTeam?.name}
+              </span>
+            </div>
+          )}
         </div>
 
         <MatchDetails
@@ -294,11 +304,7 @@ export default function MatchScoreCard({
           )}
 
           {matchStatus === MatchStatusTypes.InProgress && (
-            <Button
-              size="sm"
-              className="text-xs h-8"
-              onClick={handleUpdateScore}
-            >
+            <Button size="sm" className="text-xs h-8" onClick={handleUpdateScore}>
               Update Score
             </Button>
           )}
