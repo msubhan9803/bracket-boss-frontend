@@ -130,22 +130,24 @@ export default function useMatchScoreManagement(tournamentId: string) {
       levelId: selectedLevel?.id,
       poolId: selectedPool?.id,
     });
+    refetchTournament();
     refetchLevels();
     refetchPools();
     refetchRounds();
     refetchMatches();
   };
-
+  
   const handleProceedToNextLevel = async () => {
     await proceedToNextLevelMutation.mutateAsync({
       tournamentId: parseInt(tournamentId),
     });
+    refetchTournament();
     refetchLevels();
     refetchPools();
     refetchRounds();
     refetchMatches();
   };
-
+  
   const handleConcludeTournament = async () => {
     await concludeTournamentMutation.mutateAsync({
       tournamentId: parseInt(tournamentId),

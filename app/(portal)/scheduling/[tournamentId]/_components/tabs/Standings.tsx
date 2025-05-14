@@ -2,7 +2,7 @@
 import React, { useMemo } from "react";
 import LoadingSpinner from "@/components/core/LoadingSpinner";
 import EmptyStanding from "@/components/scheduling/standings/EmptyStanding";
-import StandingsManagement from "@/components/scheduling/standings/Standings";
+import StandingsManagement from "@/components/scheduling/standings/StandingsManagement";
 import { TournamentStatusTypesEnum } from "@/graphql/generated/graphql";
 import useLevelsByTournament from "@/hooks/level/useLevelsByTournament";
 import useSingleTournament from "@/hooks/tournament/useSingleTournament";
@@ -31,5 +31,5 @@ export default function Standings({ tournamentId }: Props) {
     return <EmptyStanding text="Tournament not started yet" />;
   }
 
-  return <StandingsManagement levels={levels} />;
+  return <StandingsManagement tournament={tournament} />;
 }
