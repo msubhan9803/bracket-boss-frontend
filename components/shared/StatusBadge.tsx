@@ -8,7 +8,7 @@ import { convertSnakeCaseToTitleCase } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
 type TournamentStatusBadgeProps = {
-  status: TournamentStatusTypesEnum;
+  status: TournamentStatusTypesEnum | string;
 };
 export const TournamentStatusBadge: React.FC<TournamentStatusBadgeProps> = ({
   status,
@@ -21,7 +21,12 @@ export const TournamentStatusBadge: React.FC<TournamentStatusBadgeProps> = ({
   };
 
   return (
-    <Badge className={`${TournamentStatusBadgeVariants[status]} rounded-md text-xs`}>
+    <Badge
+      className={`${
+        TournamentStatusBadgeVariants[status as TournamentStatusTypesEnum] ??
+        "bg-orange-500 text-white"
+      } rounded-md text-xs`}
+    >
       {convertSnakeCaseToTitleCase(status)}
     </Badge>
   );
