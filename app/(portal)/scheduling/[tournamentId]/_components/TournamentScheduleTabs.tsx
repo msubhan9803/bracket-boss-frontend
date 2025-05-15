@@ -10,6 +10,13 @@ import Standings from "./tabs/Standings";
 import Team from "./tabs/Team";
 import { Button } from "@/components/ui/button";
 import useScheduleOperations from "@/hooks/schedule/useScheduleOperations";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 type Props = {
   initialState: {
@@ -22,6 +29,8 @@ export default function TournamentScheduleTabs({ initialState }: Props) {
   const router = useRouter();
   const { users, tournamentDetails } = initialState;
   const tournamentId = useMemo(() => tournamentDetails.id, [tournamentDetails]);
+
+  const [deleteScheduleModalOpen, setDeleteScheduleModalOpen] = useState(false);
 
   const { deleteScheduleMutation } = useScheduleOperations();
 
@@ -76,11 +85,7 @@ export default function TournamentScheduleTabs({ initialState }: Props) {
             ))}
           </TabsList>
 
-          <Button
-            loading={deleteScheduleMutation.isPending}
-            onClick={handleDeleteSchedule}
-            variant="secondary"
-          >
+          <Button onClick={() => setDeleteScheduleModalOpen(true)} variant="secondary">
             Delete Schedule
           </Button>
         </div>
@@ -89,6 +94,33 @@ export default function TournamentScheduleTabs({ initialState }: Props) {
           {renderTabContent()}
         </TabsContent>
       </Tabs>
+
+      <Dialog open={deleteScheduleModalOpen} onOpenChange={setDeleteScheduleModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Are you sure?</DialogTitle>
+            <DialogDescription className="pt-2">
+              Do you want to delete schedule?
+            </DialogDescription>
+            <div className="pt-5 w-full flex flex-col md:flex-row gap-4">
+              <Button
+                onClick={() => setDeleteScheduleModalOpen(false)}
+                className="w-full"
+                variant="outline"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleDeleteSchedule}
+                loading={deleteScheduleMutation.isPending}
+                className="w-full"
+              >
+                Delete Schedule
+              </Button>
+            </div>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
