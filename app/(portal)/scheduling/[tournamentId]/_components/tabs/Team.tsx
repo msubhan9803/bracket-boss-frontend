@@ -49,9 +49,10 @@ export default function TeamContent({ tournamentId, users }: Props) {
         <SelectPlayers
           selectedUsers={selectedUsers}
           doesTeamExists={doesTeamExists}
+          users={users}
+          loadingCreateTournamentTeamMutation={createTournamentTeamMutation.isPending}
           handleCreateTeams={handleCreateTeams}
           handleUsersSelection={handleUsersSelection}
-          users={users}
         />
       )}
     </div>

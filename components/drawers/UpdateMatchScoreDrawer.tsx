@@ -67,6 +67,7 @@ const UpdateMatchScoreDrawer = ({
             type="button"
             className="w-full mt-4 font-bold"
             onClick={handleEndMatch}
+            loading={endMatchMutation.isPending}
           >
             End Match
           </Button>

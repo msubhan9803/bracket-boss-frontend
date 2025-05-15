@@ -6,17 +6,19 @@ import { User } from "@/graphql/generated/graphql";
 type SelectPlayersProps = {
   selectedUsers: number[];
   doesTeamExists: boolean;
+  users: User[];
+  loadingCreateTournamentTeamMutation: boolean;
   handleCreateTeams: () => Promise<void>;
   handleUsersSelection: (userIds: number[]) => void;
-  users: User[];
 };
 
 export default function SelectPlayers({
   selectedUsers,
   doesTeamExists,
+  users,
+  loadingCreateTournamentTeamMutation,
   handleCreateTeams,
   handleUsersSelection,
-  users,
 }: SelectPlayersProps) {
   return (
     <>
@@ -32,6 +34,7 @@ export default function SelectPlayers({
             <Button
               disabled={selectedUsers.length === 0}
               onClick={handleCreateTeams}
+              loading={loadingCreateTournamentTeamMutation}
             >
               Create Teams
             </Button>
