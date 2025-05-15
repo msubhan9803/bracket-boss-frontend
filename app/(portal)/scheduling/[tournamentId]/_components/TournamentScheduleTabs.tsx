@@ -1,12 +1,15 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Tournament, User } from "@/graphql/generated/graphql";
 import Scheduling from "./tabs/Scheduling";
 import Scoring from "./tabs/Scoring";
 import Standings from "./tabs/Standings";
 import Team from "./tabs/Team";
+import { Button } from "@/components/ui/button";
+import useScheduleOperations from "@/hooks/schedule/useScheduleOperations";
 
 type Props = {
   initialState: {
@@ -16,8 +19,11 @@ type Props = {
 };
 
 export default function TournamentScheduleTabs({ initialState }: Props) {
+  const router = useRouter();
   const { users, tournamentDetails } = initialState;
   const tournamentId = useMemo(() => tournamentDetails.id, [tournamentDetails]);
+
+  const { deleteScheduleMutation } = useScheduleOperations();
 
   const tabs = [
     { value: "team", label: "Team" },
@@ -43,6 +49,17 @@ export default function TournamentScheduleTabs({ initialState }: Props) {
     }
   };
 
+  const handleDeleteSchedule = async () => {
+    try {
+      await deleteScheduleMutation.mutateAsync({
+        tournamentId: parseInt(tournamentId),
+      });
+      router.back();
+    } catch (error) {
+      console.error("Failed to delete schedule:", error);
+    }
+  };
+
   return (
     <>
       <Tabs
@@ -50,13 +67,23 @@ export default function TournamentScheduleTabs({ initialState }: Props) {
         className="w-full flex-1 flex flex-col"
         onValueChange={(value) => setActiveTab(value)}
       >
-        <TabsList className="self-start">
-          {tabs.map((tab) => (
-            <TabsTrigger key={tab.value} value={tab.value}>
-              {tab.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
+        <div className="flex justify-between items-center">
+          <TabsList className="self-start">
+            {tabs.map((tab) => (
+              <TabsTrigger key={tab.value} value={tab.value}>
+                {tab.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+
+          <Button
+            loading={deleteScheduleMutation.isPending}
+            onClick={handleDeleteSchedule}
+            variant="secondary"
+          >
+            Delete Schedule
+          </Button>
+        </div>
 
         <TabsContent value={activeTab} className="flex-1 flex flex-col my-8">
           {renderTabContent()}

@@ -291,6 +291,7 @@ export type MatchRoundScore = {
   homeTeamScore: Scalars['Float']['output'];
   id: Scalars['CustomID']['output'];
   matchRound: MatchRound;
+  matchRoundId: Scalars['CustomID']['output'];
   updated_at: Scalars['DateTime']['output'];
 };
 
@@ -867,6 +868,7 @@ export type Tournament = {
   isPrivate: Scalars['Boolean']['output'];
   levels: Array<Level>;
   matchBestOfRounds: Scalars['Float']['output'];
+  matches: Array<Match>;
   name: Scalars['String']['output'];
   numberOfPools: Scalars['Float']['output'];
   rounds?: Maybe<Array<Round>>;
@@ -875,6 +877,7 @@ export type Tournament = {
   start_date: Scalars['DateTime']['output'];
   status: TournamentStatusTypesEnum;
   teamGenerationType: TeamGenerationType;
+  teams: Array<Team>;
   tournamentResult?: Maybe<TournamentResult>;
   updated_at: Scalars['DateTime']['output'];
 };

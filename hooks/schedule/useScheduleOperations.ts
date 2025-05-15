@@ -2,7 +2,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { graphqlRequestHandler } from "@/lib/graphql-client";
-import { END_ROUND, CREATE_SCHEDULE, PROCEED_TO_NEXT_LEVEL, CONCLUDE_TOURNAMENT } from "@/graphql/mutations/schedule";
+import { END_ROUND, CREATE_SCHEDULE, PROCEED_TO_NEXT_LEVEL, CONCLUDE_TOURNAMENT, DELETE_SCHEDULE } from "@/graphql/mutations/schedule";
 
 export enum USE_SCHEDULE_OPERATIONS_KEY {
   CREATE_SCHEDULE = "CREATE_SCHEDULE",
@@ -70,10 +70,26 @@ export default function useScheduleOperations() {
     },
   });
 
+  const deleteScheduleMutation = useMutation({
+    mutationKey: [USE_SCHEDULE_OPERATIONS_KEY.END_ROUND],
+    mutationFn: async (variables: { tournamentId: number }) =>
+      graphqlRequestHandler({
+        query: DELETE_SCHEDULE,
+        variables: { input: variables },
+      }),
+    onSuccess: () => {
+      toast.success("Schedule deleted successfully");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
   return {
     createScheduleMutation,
     endRoundMutation,
     proceedToNextLevelMutation,
-    concludeTournamentMutation
+    concludeTournamentMutation,
+    deleteScheduleMutation
   };
 }
