@@ -6,7 +6,10 @@ import { END_ROUND, CREATE_SCHEDULE, PROCEED_TO_NEXT_LEVEL, CONCLUDE_TOURNAMENT,
 
 export enum USE_SCHEDULE_OPERATIONS_KEY {
   CREATE_SCHEDULE = "CREATE_SCHEDULE",
-  END_ROUND = 'END_ROUND'
+  CONCLUDE_TOURNAMENT = "CONCLUDE_TOURNAMENT",
+  END_ROUND = 'END_ROUND',
+  PROCEED_TO_NEXT_LEVEL = 'PROCEED_TO_NEXT_LEVEL',
+  DELETE_SCHEDULE = 'DELETE_SCHEDULE'
 }
 
 export default function useScheduleOperations() {
@@ -41,7 +44,7 @@ export default function useScheduleOperations() {
   });
 
   const proceedToNextLevelMutation = useMutation({
-    mutationKey: [USE_SCHEDULE_OPERATIONS_KEY.END_ROUND],
+    mutationKey: [USE_SCHEDULE_OPERATIONS_KEY.PROCEED_TO_NEXT_LEVEL],
     mutationFn: async (variables: { tournamentId: number }) =>
       graphqlRequestHandler({
         query: PROCEED_TO_NEXT_LEVEL,
@@ -56,7 +59,7 @@ export default function useScheduleOperations() {
   });
 
   const concludeTournamentMutation = useMutation({
-    mutationKey: [USE_SCHEDULE_OPERATIONS_KEY.END_ROUND],
+    mutationKey: [USE_SCHEDULE_OPERATIONS_KEY.CONCLUDE_TOURNAMENT],
     mutationFn: async (variables: { tournamentId: number }) =>
       graphqlRequestHandler({
         query: CONCLUDE_TOURNAMENT,
@@ -71,7 +74,7 @@ export default function useScheduleOperations() {
   });
 
   const deleteScheduleMutation = useMutation({
-    mutationKey: [USE_SCHEDULE_OPERATIONS_KEY.END_ROUND],
+    mutationKey: [USE_SCHEDULE_OPERATIONS_KEY.DELETE_SCHEDULE],
     mutationFn: async (variables: { tournamentId: number }) =>
       graphqlRequestHandler({
         query: DELETE_SCHEDULE,

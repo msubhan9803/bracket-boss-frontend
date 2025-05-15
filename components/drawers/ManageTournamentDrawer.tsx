@@ -1,38 +1,46 @@
-"use client";
-import { Fragment, useState, useMemo, useEffect } from "react";
-import DynamicFormSheet from "@/components/core/DynamicFormSheet";
-import { Button } from "@/components/ui/button";
+import { useMemo } from "react";
+import { z } from "zod";
 import { DynamicFormField as DynamicFormFieldType } from "@/global";
-import useTournamentOperations from "@/hooks/tournament/useTournamentOperations";
-import { useTournamentDrawer } from "@/hooks/court/useTournamentDrawer";
+import DynamicFormSheet from "../core/DynamicFormSheet";
 import {
   CreateTournamentInputDto,
   TeamGenerationTypeEnum,
   Tournament,
 } from "@/graphql/generated/graphql";
+import { useTournamentDrawer } from "@/hooks/court/useTournamentDrawer";
+import useFormats from "@/hooks/format/useFormats";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { FormControl, FormField, FormItem, FormLabel } from "../ui/form";
+import { toTitleCase } from "@/lib/utils";
+import { GroupByEnum } from "@/lib/app-types";
 import {
   Select,
-  SelectContent,
-  SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import useFormats from "@/hooks/format/useFormats";
-import { toTitleCase } from "@/lib/utils";
-import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
-import { GroupByEnum } from "@/lib/app-types";
+  SelectContent,
+  SelectItem,
+} from "@radix-ui/react-select";
+import useSingleTournament from "@/hooks/tournament/useSingleTournament";
 
-interface AddTournamentButtonProps {
-  refetchTournamentList: () => void;
-}
+type ManageTournamentDrawerProps = {
+  editModalOpen: boolean;
+  setEditModalOpen: any;
+  onUpdate: (id: number, data: any) => any;
+  item: Partial<Tournament>;
+  submitButtonLoading: boolean;
+};
 
-const AddTournamentButton: React.FC<AddTournamentButtonProps> = ({
-  refetchTournamentList,
-}) => {
-  const [showModal, setShowModal] = useState(false);
-
+const ManageTournamentDrawer = ({
+  editModalOpen,
+  setEditModalOpen,
+  onUpdate,
+  item,
+  submitButtonLoading,
+}: ManageTournamentDrawerProps) => {
+  
+  const { tournament } = useSingleTournament(item?.id);
   const {
     form,
     formState,
@@ -40,18 +48,16 @@ const AddTournamentButton: React.FC<AddTournamentButtonProps> = ({
     teamGenerationTypes,
     handleAddLevel,
     handleRemoveLevel,
-  } = useTournamentDrawer();
+  } = useTournamentDrawer(tournament);
   const { formats } = useFormats();
   const teamGenerationTypeId = form.watch("teamGenerationTypeId");
   const selectedTeamGenerationType = useMemo(
     () =>
       teamGenerationTypes?.find(
-        (type) => type.id === parseInt(teamGenerationTypeId.toString())
+        (type) => type.id === parseInt(teamGenerationTypeId?.toString())
       ),
     [teamGenerationTypeId]
   );
-
-  const { createTournamentMutation } = useTournamentOperations();
 
   const formFields: DynamicFormFieldType<CreateTournamentInputDto>[] = useMemo(() => {
     const baseFields: DynamicFormFieldType<CreateTournamentInputDto>[] = [
@@ -241,35 +247,21 @@ const AddTournamentButton: React.FC<AddTournamentButtonProps> = ({
     return baseFields;
   }, [formState, formats, teamGenerationTypes, selectedTeamGenerationType]);
 
-  const handleCreating = async (input: CreateTournamentInputDto) => {
-    await createTournamentMutation.mutateAsync({
-      ...input,
-      teamGenerationTypeId: parseInt(input.teamGenerationTypeId.toString()),
-    });
-    setShowModal(false);
-    refetchTournamentList();
-  };
-
   return (
-    <Fragment>
-      <Button onClick={() => setShowModal(true)} variant="outline">
-        Create Tournament
-      </Button>
-      <DynamicFormSheet
-        isOpen={showModal}
-        setIsOpen={setShowModal}
-        title="Create Tournament"
-        description="Creates a new tournament for this club"
-        formState={form}
-        fields={formFields}
-        onSubmit={() => handleCreating(formState)}
-        submitButtonLabel="Save Changes"
-        submitButtonLoading={createTournamentMutation.isPending}
-        fixedFooter
-        formGridCols="grid-cols-2"
-      />
-    </Fragment>
+    <DynamicFormSheet
+      isOpen={editModalOpen}
+      setIsOpen={setEditModalOpen}
+      title="Update Tournament"
+      description="Update Tournament details."
+      formState={form}
+      fields={formFields}
+      onSubmit={() => onUpdate(item.id, formState)}
+      submitButtonLabel="Save Changes"
+      submitButtonLoading={submitButtonLoading}
+      fixedFooter
+      formGridCols="grid-cols-2"
+    />
   );
 };
 
-export default AddTournamentButton;
+export default ManageTournamentDrawer;

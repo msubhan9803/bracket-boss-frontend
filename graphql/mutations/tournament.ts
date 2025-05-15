@@ -24,3 +24,11 @@ export const START_TOURNAMENT = graphql(`
     }
   }
 `);
+
+export const DELETE_TOURNAMENT = graphql(`
+  mutation DeleteTournament($tournamentId: Float!) {
+    deleteTournament(tournamentId: $tournamentId) {
+      message
+    }
+  }
+`);

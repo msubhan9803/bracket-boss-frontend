@@ -1,8 +1,14 @@
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CreateTournamentInputDto, LevelInput } from "@/graphql/generated/graphql";
+import {
+  CreateTournamentInputDto,
+  LevelInput,
+  Tournament,
+} from "@/graphql/generated/graphql";
 import useTeamGenerationTypeByFormat from "../teamGenerationTypes/useTeamGenerationTypes";
+import { useEffect } from "react";
+import moment from "moment";
 
 const validationSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
@@ -41,7 +47,7 @@ const validationSchema = z.object({
     .min(1, { message: "At least one level is required" }),
 });
 
-export const useTournamentDrawer = (item?: Partial<CreateTournamentInputDto>) => {
+export const useTournamentDrawer = (item?: Partial<Tournament>) => {
   const form = useForm<CreateTournamentInputDto>({
     resolver: zodResolver(validationSchema),
     defaultValues: {
@@ -50,13 +56,13 @@ export const useTournamentDrawer = (item?: Partial<CreateTournamentInputDto>) =>
       start_date: item?.start_date ? new Date(item.start_date) : "",
       end_date: item?.end_date ? new Date(item.end_date) : "",
       isPrivate: item?.isPrivate ?? false,
-      teamGenerationTypeId: item?.teamGenerationTypeId || undefined,
+      teamGenerationTypeId: item?.teamGenerationType?.id || undefined,
       matchBestOfRounds: item?.matchBestOfRounds || undefined,
       numberOfPools: item?.numberOfPools || undefined,
       levels:
         item?.levels?.map((level) => ({
           name: level.name || "",
-          formatId: level.formatId || undefined,
+          formatId: level.format.id || undefined,
         })) || [],
     },
   });
@@ -86,6 +92,37 @@ export const useTournamentDrawer = (item?: Partial<CreateTournamentInputDto>) =>
   const handleRemoveLevel = (index: number) => {
     remove(index);
   };
+
+  useEffect(() => {
+    if (item) {
+      console.log("🔥🔥🔥🔥🔥 Setting form values", item);
+
+      form.reset({
+        name: item.name || "",
+        description: item.description || "",
+        start_date: item.start_date
+          ? new Date(moment(item.start_date).format("yyyy-MM-dd"))
+          : "",
+        end_date: item.end_date
+          ? new Date(moment(item.end_date).format("yyyy-MM-dd"))
+          : "",
+        isPrivate: item.isPrivate ?? false,
+        teamGenerationTypeId: item.teamGenerationType?.id || undefined,
+        matchBestOfRounds: item.matchBestOfRounds || undefined,
+        numberOfPools: item.numberOfPools || undefined,
+        levels:
+          item.levels?.map((level) => ({
+            id: level.id,
+            name: level.name || "",
+            formatId: level.format?.id || undefined,
+          })) || [],
+      });
+
+      if (item.levels?.[0]?.format?.id !== firstLevelFormatId) {
+        refetchTeamGenerationTypes();
+      }
+    }
+  }, [item, form, refetchTeamGenerationTypes, firstLevelFormatId]);
 
   return {
     form,

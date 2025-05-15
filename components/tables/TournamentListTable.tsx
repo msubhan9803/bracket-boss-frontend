@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Pencil, Trash2 } from "lucide-react";
 import moment from "moment";
 import { Tournament } from "@/graphql/generated/graphql";
 import SkeletonLoader from "@/components/ui/skeleton";
@@ -25,6 +25,16 @@ import useTournaments from "@/hooks/tournament/useTournaments";
 import FilterComponent from "@/components/core/FilterComponent";
 import { toTitleCase } from "@/lib/utils";
 import AddTournamentButton from "@/components/mutation-buttons/AddTournamentButton";
+import useTournamentOperations from "@/hooks/tournament/useTournamentOperations";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
+import { Button } from "../ui/button";
+import ManageTournamentDrawer from "../drawers/ManageTournamentDrawer";
 
 const TournamentListTable = () => {
   const [page, setPage] = useState(1);
@@ -34,23 +44,41 @@ const TournamentListTable = () => {
   const [filter, setFilter] = useState("");
   const [sort, setSort] = useState({ field: "id", direction: "ASC" });
 
+  const [deleteTournamentModalOpen, setDeleteTournamentModalOpen] = useState(false);
+  const [selectedTournamentId, setSelectedTournamentId] = useState<number | null>(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [currentEditingTournament, setCurrentEditingTournament] =
+    useState<Partial<Tournament>>();
+
   const { handleSort, getTotalPages, handlePrevBtn, handleNextBtn } = useTable(
     setPage,
     sort,
     setSort
   );
 
-  const {
-    tournamentListFetched,
-    totalRecords,
-    loadingOrder,
-    refetchTournamentList,
-  } = useTournaments(page, pageSize, filterBy, filter, sort);
+  const { tournamentListFetched, totalRecords, loadingOrder, refetchTournamentList } =
+    useTournaments(page, pageSize, filterBy, filter, sort);
+
+  const { deleteTournamentMutation } = useTournamentOperations();
 
   const tournamentList = useMemo<Partial<Tournament>[]>(
     () => [...tournamentListFetched],
     [tournamentListFetched]
   );
+
+  const openDeleteModal = (tournamentId: number) => {
+    setSelectedTournamentId(tournamentId);
+    setDeleteTournamentModalOpen(true);
+  };
+
+  const handleEditOpen = (tournament: Partial<Tournament>) => {
+    setCurrentEditingTournament(tournament);
+    setEditModalOpen(true);
+  };
+
+  const handleEdit = async (courtId: number | undefined, values: any) => {
+    console.log("Editing ....");
+  };
 
   const columns: ColumnDef<Partial<Tournament>, any>[] = [
     {
@@ -76,11 +104,37 @@ const TournamentListTable = () => {
       header: "End Date",
       cell: ({ getValue }) => <div>{moment(getValue()).format("ll")}</div>,
     },
-
     {
       accessorKey: "isPrivate",
       header: "Private",
       cell: ({ getValue }) => <div>{getValue() ? "Yes" : "No"}</div>,
+    },
+    {
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center justify-center">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => handleEditOpen(row.original)}
+              className="h-8 w-8"
+            >
+              <Pencil size={18} />
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => openDeleteModal(row.original.id as number)}
+              className="h-8 w-8"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        );
+      },
     },
   ];
 
@@ -89,7 +143,19 @@ const TournamentListTable = () => {
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-  
+
+  const handleDeleteTournament = async () => {
+    if (!selectedTournamentId) return;
+
+    try {
+      await deleteTournamentMutation.mutateAsync(selectedTournamentId);
+      setDeleteTournamentModalOpen(false);
+      refetchTournamentList();
+    } catch (error) {
+      console.error("Failed to delete tournament:", error);
+    }
+  };
+
   useEffect(() => {
     refetchTournamentList();
   }, [pageSize, sort, filterBy, filter, page]);
@@ -99,14 +165,11 @@ const TournamentListTable = () => {
       <Table>
         <TableHeader className="bg-none !hover:bg-none">
           <TableRow>
-            <TableHead
-              className="px-1 hover:bg-transparent"
-              colSpan={columns.length}
-            >
+            <TableHead className="px-1 hover:bg-transparent" colSpan={columns.length}>
               <div className="flex justify-between w-full py-1">
                 <FilterComponent
                   columns={
-                    columns as {
+                    columns.filter((col) => col.id !== "actions") as {
                       header: string;
                       accessorKey: string;
                     }[]
@@ -116,9 +179,7 @@ const TournamentListTable = () => {
                   setFilter={setFilter}
                 />
 
-                <AddTournamentButton
-                  refetchTournamentList={refetchTournamentList}
-                />
+                <AddTournamentButton refetchTournamentList={refetchTournamentList} />
               </div>
             </TableHead>
           </TableRow>
@@ -130,15 +191,18 @@ const TournamentListTable = () => {
                 return (
                   <TableHead
                     key={header.id}
-                    onClick={() => handleSort(header.column.id)}
+                    onClick={() =>
+                      header.column.id !== "actions" ? handleSort(header.column.id) : null
+                    }
                   >
-                    <span className="cursor-pointer flex items-center gap-1">
+                    <span
+                      className={`flex items-center gap-1 ${
+                        header.column.id !== "actions" ? "cursor-pointer" : ""
+                      }`}
+                    >
                       {header.isPlaceholder
                         ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                        : flexRender(header.column.columnDef.header, header.getContext())}
 
                       {sort.field === header.column.id &&
                         (sort.direction === "asc" ? (
@@ -167,10 +231,7 @@ const TournamentListTable = () => {
               ))
           ) : table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
+              <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -204,6 +265,46 @@ const TournamentListTable = () => {
           </TableRow>
         </TableFooter>
       </Table>
+
+      {editModalOpen && (
+        <ManageTournamentDrawer
+          editModalOpen={editModalOpen}
+          setEditModalOpen={setEditModalOpen}
+          item={currentEditingTournament as Partial<Tournament>}
+          onUpdate={handleEdit}
+          submitButtonLoading={false}
+        />
+      )}
+
+      <Dialog
+        open={deleteTournamentModalOpen}
+        onOpenChange={setDeleteTournamentModalOpen}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Are you sure?</DialogTitle>
+            <DialogDescription className="pt-2">
+              Do you want to delete this tournament?
+            </DialogDescription>
+            <div className="pt-5 w-full flex flex-col md:flex-row gap-4">
+              <Button
+                onClick={() => setDeleteTournamentModalOpen(false)}
+                className="w-full"
+                variant="outline"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleDeleteTournament}
+                loading={deleteTournamentMutation.isPending}
+                className="w-full"
+              >
+                Delete Tournament
+              </Button>
+            </div>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
